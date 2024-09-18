@@ -28,4 +28,4 @@ dependencyResolutionManagement {
 	}
 }
 
-include(":mrx-app")
+include(":composeApp")
