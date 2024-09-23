@@ -5,7 +5,7 @@ import ComposeApp
 @main
 struct iOSApp: App {
 
-    init(){
+    init() {
         FirebaseApp.configure()
     }
     
@@ -13,7 +13,7 @@ struct iOSApp: App {
     
     var body: some Scene {
 		WindowGroup {
-            ContentView().onOpenURL{(url) in
+            ContentView().onOpenURL{ (url) in
                 rinku.onDeepLinkReceived(url: url.absoluteString)
             }
 		}

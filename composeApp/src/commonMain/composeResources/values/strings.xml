@@ -46,7 +46,6 @@
 	<string name="incorrect_code_error">There is no game with this code</string>
 	<string name="normal_question_not_found_error">Normal question is not found</string>
 	<string name="mr_x">Mr. %1$s</string>
-	<string name="ask_question">Ask a question</string>
 	<string name="answer_question">Answer question</string>
 	<string name="host">Host: %1$s</string>
 	<string name="pass_button_label">Pass</string>
@@ -73,8 +72,6 @@
 	<string name="host_answer_template">Host's last answer: %1$s</string>
 	<string name="player_answer_template">Players' answer: %1$s</string>
 	<string name="specify_question">Add more details</string>
-	<string name="false_button_label">False</string>
-	<string name="true_button_label">True</string>
 	<string name="host_answer_text">Host's answer: %1$s</string>
 	<string name="player_answer_text">Players' answer: %1$s</string>
 	<string name="correct_answer_text">Correct answer: %1$s</string>
