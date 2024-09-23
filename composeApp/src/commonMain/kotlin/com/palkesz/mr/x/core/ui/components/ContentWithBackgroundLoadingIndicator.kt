@@ -18,8 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.palkesz.mr.x.core.util.DebouncedButton
-import com.palkesz.mr.x.core.util.ViewState
+import com.palkesz.mr.x.core.util.networking.ViewState
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.error_screen_button_label
 import mrx.composeapp.generated.resources.something_wrong

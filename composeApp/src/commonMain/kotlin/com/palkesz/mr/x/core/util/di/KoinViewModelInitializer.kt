@@ -1,4 +1,4 @@
-package com.palkesz.mr.x.di
+package com.palkesz.mr.x.core.util.di
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
@@ -7,8 +7,8 @@ import org.koin.compose.currentKoinScope
 
 @Composable
 inline fun <reified T : ViewModel> koinViewModel(): T {
-	val scope = currentKoinScope()
-	return viewModel {
-		scope.get<T>()
-	}
+    val scope = currentKoinScope()
+    return viewModel {
+        scope.get<T>()
+    }
 }

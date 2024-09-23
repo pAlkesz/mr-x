@@ -21,126 +21,134 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.BaseTextField
-import com.palkesz.mr.x.core.util.DebouncedButton
-import com.palkesz.mr.x.core.util.QuestionMarkTransformation
-import com.palkesz.mr.x.di.koinViewModel
+import com.palkesz.mr.x.core.ui.components.DebouncedButton
+import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
+import com.palkesz.mr.x.core.util.di.koinViewModel
 import com.palkesz.mr.x.feature.app.LocalAppScope
 import com.palkesz.mr.x.feature.app.LocalAppState
 import com.palkesz.mr.x.feature.app.LocalNavController
 import com.palkesz.mr.x.feature.app.LocalSnackBarHostState
 import com.palkesz.mr.x.feature.games.GameScreenRoute
 import kotlinx.coroutines.launch
-import mrx.composeapp.generated.resources.*
+import mrx.composeapp.generated.resources.Res
+import mrx.composeapp.generated.resources.ask_question
+import mrx.composeapp.generated.resources.barkochba_question
+import mrx.composeapp.generated.resources.enter_question
+import mrx.composeapp.generated.resources.question
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun BarkochbaQuestionScreen(
-	viewModel: BarkochbaQuestionViewModel = koinViewModel<BarkochbaQuestionViewModelImpl>(),
-	gameId: String
+    viewModel: BarkochbaQuestionViewModel = koinViewModel<BarkochbaQuestionViewModelImpl>(),
+    gameId: String
 ) {
-	val viewState by viewModel.viewState.collectAsState()
+    val viewState by viewModel.viewState.collectAsState()
 
-	BarkochbaQuestionScreenContent(
-		viewState = viewState,
-		gameId = gameId,
-		setGameId = viewModel::setGameId,
-		onEventHandled = viewModel::onEventHandled,
-		onTextChanged = viewModel::onTextChanged,
-		onAskQuestionClicked = viewModel::onAskQuestionClicked
-	)
+    BarkochbaQuestionScreenContent(
+        viewState = viewState,
+        gameId = gameId,
+        setGameId = viewModel::setGameId,
+        onEventHandled = viewModel::onEventHandled,
+        onTextChanged = viewModel::onTextChanged,
+        onAskQuestionClicked = viewModel::onAskQuestionClicked
+    )
 }
 
 @Composable
 fun BarkochbaQuestionScreenContent(
-	viewState: BarkochbaQuestionViewState,
-	gameId: String,
-	setGameId: (String) -> Unit,
-	onEventHandled: () -> Unit,
-	onTextChanged: (String) -> Unit,
-	onAskQuestionClicked: () -> Unit
+    viewState: BarkochbaQuestionViewState,
+    gameId: String,
+    setGameId: (String) -> Unit,
+    onEventHandled: () -> Unit,
+    onTextChanged: (String) -> Unit,
+    onAskQuestionClicked: () -> Unit
 ) {
-	val appState = LocalAppState.current
-	LaunchedEffect(Unit) {
-		setGameId(gameId)
-		appState.apply {
-			setScreenTitle(getString(Res.string.barkochba_question))
-			showTopAppBar()
-			hideBottomAppBar()
-		}
-	}
-	val keyboardController = LocalSoftwareKeyboardController.current
+    val appState = LocalAppState.current
+    LaunchedEffect(Unit) {
+        setGameId(gameId)
+        appState.apply {
+            setScreenTitle(getString(Res.string.barkochba_question))
+            showTopAppBar()
+            hideBottomAppBar()
+        }
+    }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
-	HandleEvent(
-		onEventHandled = onEventHandled,
-		event = viewState.event
-	)
+    HandleEvent(
+        onEventHandled = onEventHandled,
+        event = viewState.event
+    )
 
-	Column(
-		modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-		horizontalAlignment = Alignment.CenterHorizontally
-	) {
-		BaseTextField(
-			modifier = Modifier.fillMaxWidth(),
-			value = viewState.text,
-			onValueChange = {
-				onTextChanged(it)
-			},
-			label = {
-				Text(text = stringResource(Res.string.question))
-			},
-			placeholder = {
-				Text(text = stringResource(Res.string.enter_question))
-			},
-			imeAction = ImeAction.Done,
-			keyboardCapitalization = KeyboardCapitalization.Sentences,
-			keyboardActions = KeyboardActions(onDone = {
-				keyboardController?.hide()
-				onAskQuestionClicked()
-			}),
-			isError = viewState.isTextInvalid,
-			shape = RoundedCornerShape(
-				topStartPercent = 100, topEndPercent = 5,
-				bottomEndPercent = 100, bottomStartPercent = 5
-			),
-			visualTransformation = QuestionMarkTransformation
-		)
-		DebouncedButton(
-			onClick = {
-				keyboardController?.hide()
-				onAskQuestionClicked()
-			}, shape = RoundedCornerShape(
-				topStartPercent = 5, topEndPercent = 100,
-				bottomEndPercent = 5, bottomStartPercent = 100),
-			modifier = Modifier.fillMaxWidth().padding(all = 12.dp)) {
-			Text(
-				text = stringResource(Res.string.ask_question),
-				style = MaterialTheme.typography.headlineMedium
-			)
-		}
-	}
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        BaseTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = viewState.text,
+            onValueChange = {
+                onTextChanged(it)
+            },
+            label = {
+                Text(text = stringResource(Res.string.question))
+            },
+            placeholder = {
+                Text(text = stringResource(Res.string.enter_question))
+            },
+            imeAction = ImeAction.Done,
+            keyboardCapitalization = KeyboardCapitalization.Sentences,
+            keyboardActions = KeyboardActions(onDone = {
+                keyboardController?.hide()
+                onAskQuestionClicked()
+            }),
+            isError = viewState.isTextInvalid,
+            shape = RoundedCornerShape(
+                topStartPercent = 100, topEndPercent = 5,
+                bottomEndPercent = 100, bottomStartPercent = 5
+            ),
+            visualTransformation = QuestionMarkTransformation
+        )
+        DebouncedButton(
+            onClick = {
+                keyboardController?.hide()
+                onAskQuestionClicked()
+            }, shape = RoundedCornerShape(
+                topStartPercent = 5, topEndPercent = 100,
+                bottomEndPercent = 5, bottomStartPercent = 100
+            ),
+            modifier = Modifier.fillMaxWidth().padding(all = 12.dp)
+        ) {
+            Text(
+                text = stringResource(Res.string.ask_question),
+                style = MaterialTheme.typography.headlineMedium
+            )
+        }
+    }
 }
 
 @Composable
 fun HandleEvent(
-	onEventHandled: () -> Unit,
-	event: BarkochbaQuestionEvent?
+    onEventHandled: () -> Unit,
+    event: BarkochbaQuestionEvent?
 ) {
-	val snackbarHostState = LocalSnackBarHostState.current
-	val navController = LocalNavController.current
-	when (event) {
-		is BarkochbaQuestionEvent.ValidationError -> {
-			LocalAppScope.current?.launch {
-				snackbarHostState.showSnackbar(message = getString(event.message))
-			}
-		}
-		is BarkochbaQuestionEvent.NavigateUp -> {
-			LocalAppScope.current?.launch {
-				snackbarHostState.showSnackbar(message = getString(event.message))
-			}
-			navController?.popBackStack(GameScreenRoute.InGame.createRoute(event.uuid), false)
-		}
-		null -> return
-	}
-	onEventHandled()
+    val snackbarHostState = LocalSnackBarHostState.current
+    val navController = LocalNavController.current
+    when (event) {
+        is BarkochbaQuestionEvent.ValidationError -> {
+            LocalAppScope.current?.launch {
+                snackbarHostState.showSnackbar(message = getString(event.message))
+            }
+        }
+
+        is BarkochbaQuestionEvent.NavigateUp -> {
+            LocalAppScope.current?.launch {
+                snackbarHostState.showSnackbar(message = getString(event.message))
+            }
+            navController?.popBackStack(GameScreenRoute.InGame.createRoute(event.uuid), false)
+        }
+
+        null -> return
+    }
+    onEventHandled()
 }

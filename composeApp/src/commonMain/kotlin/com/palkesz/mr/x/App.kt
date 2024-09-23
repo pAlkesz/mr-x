@@ -5,12 +5,11 @@ import com.palkesz.mr.x.core.ui.theme.MrXTheme
 import com.palkesz.mr.x.feature.app.MrXApp
 import org.koin.compose.KoinContext
 
-
 @Composable
 fun App() {
-	KoinContext {
-		MrXTheme {
-			MrXApp()
-		}
-	}
+    KoinContext {
+        MrXTheme {
+            MrXApp()
+        }
+    }
 }

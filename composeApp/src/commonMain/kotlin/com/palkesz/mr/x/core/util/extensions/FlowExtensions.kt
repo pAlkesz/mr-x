@@ -1,6 +1,15 @@
-package com.palkesz.mr.x.core.util
+package com.palkesz.mr.x.core.util.extensions
 
-import kotlinx.coroutines.flow.*
+import com.palkesz.mr.x.core.util.networking.Error
+import com.palkesz.mr.x.core.util.networking.Loading
+import com.palkesz.mr.x.core.util.networking.Result
+import com.palkesz.mr.x.core.util.networking.Success
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flattenMerge
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 
 inline fun <T, R> Flow<Result<T>>.mapResult(crossinline block: suspend (T) -> R): Flow<Result<R>> =
 	map { result ->

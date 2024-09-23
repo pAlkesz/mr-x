@@ -5,7 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.usecase.game.GetGameAndQuestionUseCase
 import com.palkesz.mr.x.core.usecase.game.question.AcceptHostAnswerUseCase
-import com.palkesz.mr.x.core.util.*
+import com.palkesz.mr.x.core.util.extensions.safeLet
+import com.palkesz.mr.x.core.util.networking.Error
+import com.palkesz.mr.x.core.util.networking.Loading
+import com.palkesz.mr.x.core.util.networking.Success
+import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.core.util.networking.getOrNull
+import com.palkesz.mr.x.core.util.networking.updateIfSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

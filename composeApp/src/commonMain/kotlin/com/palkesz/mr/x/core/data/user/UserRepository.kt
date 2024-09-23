@@ -1,11 +1,11 @@
 package com.palkesz.mr.x.core.data.user
 
 import com.palkesz.mr.x.core.model.User
-import com.palkesz.mr.x.core.util.Error
-import com.palkesz.mr.x.core.util.Loading
-import com.palkesz.mr.x.core.util.Result
-import com.palkesz.mr.x.core.util.Success
-import com.palkesz.mr.x.core.util.network.NetworkErrorRepository
+import com.palkesz.mr.x.core.util.networking.Error
+import com.palkesz.mr.x.core.util.networking.Loading
+import com.palkesz.mr.x.core.util.networking.Result
+import com.palkesz.mr.x.core.util.networking.Success
+import com.palkesz.mr.x.feature.network.NetworkErrorRepository
 import dev.gitlive.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

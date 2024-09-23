@@ -11,37 +11,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import com.palkesz.mr.x.core.util.DebouncedButton
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.sign_up_button_label
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ButtonWithLoading(
-	modifier: Modifier = Modifier,
-	isLoading: Boolean,
-	onClick: () -> Unit,
-	shape: Shape = CustomRoundedCornerShape()
+    modifier: Modifier = Modifier,
+    isLoading: Boolean,
+    onClick: () -> Unit,
+    shape: Shape = CustomRoundedCornerShape()
 ) {
-	CrossFade(
-		modifier = modifier.fillMaxWidth(),
-		condition = isLoading,
-		onConditionFalse = {
-			DebouncedButton(
-				onClick = onClick,
-				shape = shape,
-				modifier = Modifier.fillMaxWidth().padding(12.dp)
-			) {
-				Text(
-					text = stringResource(Res.string.sign_up_button_label),
-					style = MaterialTheme.typography.headlineMedium
-				)
-			}
-		},
-		onConditionTrue = {
-			Box(modifier = Modifier.fillMaxWidth()) {
-				CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-			}
-		}
-	)
+    CrossFade(
+        modifier = modifier.fillMaxWidth(),
+        condition = isLoading,
+        onConditionFalse = {
+            DebouncedButton(
+                onClick = onClick,
+                shape = shape,
+                modifier = Modifier.fillMaxWidth().padding(12.dp)
+            ) {
+                Text(
+                    text = stringResource(Res.string.sign_up_button_label),
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
+        },
+        onConditionTrue = {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+        }
+    )
 }

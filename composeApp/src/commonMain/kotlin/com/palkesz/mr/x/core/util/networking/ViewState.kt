@@ -1,4 +1,4 @@
-package com.palkesz.mr.x.core.util
+package com.palkesz.mr.x.core.util.networking
 
 import kotlinx.coroutines.flow.MutableStateFlow
 

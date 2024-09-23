@@ -1,9 +1,8 @@
-package com.palkesz.mr.x.di
+package com.palkesz.mr.x.feature.app
 
-import com.palkesz.mr.x.feature.app.AppViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 actual val appViewModelModule = module {
-	factoryOf(::AppViewModel)
+    factoryOf(::AppViewModel)
 }

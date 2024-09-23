@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.usecase.game.GetAndObserveGameUseCase
 import com.palkesz.mr.x.core.usecase.game.UploadBarkochbaQuestionUseCase
-import com.palkesz.mr.x.core.util.onSuccess
+import com.palkesz.mr.x.core.util.networking.onSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,86 +18,89 @@ import mrx.composeapp.generated.resources.missing_question
 
 interface BarkochbaQuestionViewModel {
 
-	val viewState: StateFlow<BarkochbaQuestionViewState>
+    val viewState: StateFlow<BarkochbaQuestionViewState>
 
-	fun onTextChanged(text: String)
-	fun onAskQuestionClicked()
-	fun onEventHandled()
-	fun setGameId(gameId: String)
+    fun onTextChanged(text: String)
+    fun onAskQuestionClicked()
+    fun onEventHandled()
+    fun setGameId(gameId: String)
 }
 
 class BarkochbaQuestionViewModelImpl(
-	private val uploadBarkochbaQuestionUseCase: UploadBarkochbaQuestionUseCase,
-	private val getAndObserveGameUseCase: GetAndObserveGameUseCase
+    private val uploadBarkochbaQuestionUseCase: UploadBarkochbaQuestionUseCase,
+    private val getAndObserveGameUseCase: GetAndObserveGameUseCase
 ) : ViewModel(), BarkochbaQuestionViewModel {
 
-	private var gameId: String? = null
+    private var gameId: String? = null
 
-	private val _viewState = MutableStateFlow(BarkochbaQuestionViewState())
-	override val viewState = _viewState.asStateFlow()
+    private val _viewState = MutableStateFlow(BarkochbaQuestionViewState())
+    override val viewState = _viewState.asStateFlow()
 
-	override fun onTextChanged(text: String) {
-		_viewState.update { currentState ->
-			currentState.copy(
-				text = text,
-				isTextInvalid = false
-			)
-		}
-	}
+    override fun onTextChanged(text: String) {
+        _viewState.update { currentState ->
+            currentState.copy(
+                text = text,
+                isTextInvalid = false
+            )
+        }
+    }
 
-	override fun onAskQuestionClicked() {
-		when {
-			_viewState.value.text.isEmpty() ->
-				_viewState.update { currentState ->
-					currentState.copy(
-						event = BarkochbaQuestionEvent.ValidationError(Res.string.missing_question),
-						isTextInvalid = true
-					)
-				}
-			else -> gameId?.let { gameId ->
+    override fun onAskQuestionClicked() {
+        when {
+            _viewState.value.text.isEmpty() ->
+                _viewState.update { currentState ->
+                    currentState.copy(
+                        event = BarkochbaQuestionEvent.ValidationError(Res.string.missing_question),
+                        isTextInvalid = true
+                    )
+                }
 
-				uploadBarkochbaQuestionUseCase.run(gameId = gameId, text = _viewState.value.text)
+            else -> gameId?.let { gameId ->
 
-				_viewState.update { currentState ->
-					currentState.copy(
-						event = BarkochbaQuestionEvent.NavigateUp(
-							gameId,
-							Res.string.ask_in_progress)
-					)
-				}
-			}
-		}
-	}
+                uploadBarkochbaQuestionUseCase.run(gameId = gameId, text = _viewState.value.text)
 
-	override fun onEventHandled() {
-		_viewState.update { currentState ->
-			currentState.copy(event = null)
-		}
-	}
+                _viewState.update { currentState ->
+                    currentState.copy(
+                        event = BarkochbaQuestionEvent.NavigateUp(
+                            gameId,
+                            Res.string.ask_in_progress
+                        )
+                    )
+                }
+            }
+        }
+    }
 
-	override fun setGameId(gameId: String) {
-		this.gameId = gameId
-		observeGameStatus()
-	}
+    override fun onEventHandled() {
+        _viewState.update { currentState ->
+            currentState.copy(event = null)
+        }
+    }
 
-	private fun observeGameStatus() {
-		viewModelScope.launch {
-			gameId?.let { gameId ->
-				getAndObserveGameUseCase.run(gameId).collect { result ->
-					result.onSuccess { game ->
-						if (game.status == GameStatus.FINISHED) {
-							_viewState.update { currentState ->
-								currentState.copy(
-									event = BarkochbaQuestionEvent.NavigateUp(
-										gameId,
-										Res.string.game_ended_message)
-								)
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+    override fun setGameId(gameId: String) {
+        this.gameId = gameId
+        observeGameStatus()
+    }
+
+    private fun observeGameStatus() {
+        viewModelScope.launch {
+            gameId?.let { gameId ->
+                getAndObserveGameUseCase.run(gameId).collect { result ->
+                    result.onSuccess { game ->
+                        if (game.status == GameStatus.FINISHED) {
+                            _viewState.update { currentState ->
+                                currentState.copy(
+                                    event = BarkochbaQuestionEvent.NavigateUp(
+                                        gameId,
+                                        Res.string.game_ended_message
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }

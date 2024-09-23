@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.palkesz.mr.x.di.koinViewModel
+import com.palkesz.mr.x.core.util.di.koinViewModel
 import com.palkesz.mr.x.feature.app.LocalAppScope
 import com.palkesz.mr.x.feature.app.LocalNavController
 import com.palkesz.mr.x.feature.app.LocalSnackBarHostState
@@ -26,50 +26,51 @@ import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun LoadingScreen(viewModel: LoadingViewModel = koinViewModel<LoadingViewModelImpl>()) {
-	val viewState by viewModel.viewState.collectAsState()
-	LoadingScreenContent(
-		viewState = viewState,
-		onEventHandled = viewModel::onEventHandled
-	)
+    val viewState by viewModel.viewState.collectAsState()
+    LoadingScreenContent(
+        viewState = viewState,
+        onEventHandled = viewModel::onEventHandled
+    )
 }
 
 @Composable
 fun LoadingScreenContent(
-	viewState: LoadingViewState,
-	onEventHandled: () -> Unit
+    viewState: LoadingViewState,
+    onEventHandled: () -> Unit
 ) {
 
-	HandleEvent(
-		onEventHandled = onEventHandled,
-		event = viewState.event
-	)
+    HandleEvent(
+        onEventHandled = onEventHandled,
+        event = viewState.event
+    )
 
-	Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer)) {
-		Icon(
-			imageVector = vectorResource(Res.drawable.spy),
-			contentDescription = null,
-			modifier = Modifier.align(Alignment.Center).size(300.dp),
-		)
-	}
+    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer)) {
+        Icon(
+            imageVector = vectorResource(Res.drawable.spy),
+            contentDescription = null,
+            modifier = Modifier.align(Alignment.Center).size(300.dp),
+        )
+    }
 }
 
 @Composable
 fun HandleEvent(
-	onEventHandled: () -> Unit,
-	event: LoadingEvent?
+    onEventHandled: () -> Unit,
+    event: LoadingEvent?
 ) {
-	event?.let { event ->
-		val snackbarHostState = LocalSnackBarHostState.current
-		val navController = LocalNavController.current
-		when (event) {
-			is LoadingEvent.LoginSuccess -> {
-				LocalAppScope.current?.launch {
-					snackbarHostState.showSnackbar(message = getString(Res.string.login_success_message))
-				}
-				navController?.navigate(HomeScreenRoute.HomePage.route)
-			}
-			is LoadingEvent.LoginFailure -> navController?.navigate(HomeScreenRoute.Login.route)
-		}
-		onEventHandled()
-	}
+    event?.let { event ->
+        val snackbarHostState = LocalSnackBarHostState.current
+        val navController = LocalNavController.current
+        when (event) {
+            is LoadingEvent.LoginSuccess -> {
+                LocalAppScope.current?.launch {
+                    snackbarHostState.showSnackbar(message = getString(Res.string.login_success_message))
+                }
+                navController?.navigate(HomeScreenRoute.HomePage.route)
+            }
+
+            is LoadingEvent.LoginFailure -> navController?.navigate(HomeScreenRoute.Login.route)
+        }
+        onEventHandled()
+    }
 }

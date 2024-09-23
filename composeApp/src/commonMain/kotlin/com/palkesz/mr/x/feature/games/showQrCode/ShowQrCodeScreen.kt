@@ -16,7 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.palkesz.mr.x.core.ui.components.AnimatedNullability
-import com.palkesz.mr.x.di.koinViewModel
+import com.palkesz.mr.x.core.util.di.koinViewModel
 import com.palkesz.mr.x.feature.app.LocalAppState
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.share_link

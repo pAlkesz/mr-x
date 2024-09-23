@@ -40,6 +40,7 @@ kotlin {
                 optIn("androidx.compose.foundation.ExperimentalFoundationApi")
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+                optIn("kotlin.uuid.ExperimentalUuidApi")
             }
         }
         androidMain.dependencies {

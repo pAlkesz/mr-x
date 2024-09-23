@@ -1,9 +1,8 @@
-package com.palkesz.mr.x.di
+package com.palkesz.mr.x.feature.app
 
-import com.palkesz.mr.x.feature.app.AppViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 
 actual val appViewModelModule = module {
-	viewModelOf(::AppViewModel)
+    viewModelOf(::AppViewModel)
 }

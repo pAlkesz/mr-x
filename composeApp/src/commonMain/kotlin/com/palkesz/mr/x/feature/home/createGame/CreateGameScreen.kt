@@ -17,9 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import com.palkesz.mr.x.core.ui.components.DebouncedButton
 import com.palkesz.mr.x.core.ui.components.FirstAndLastNameTexFields
-import com.palkesz.mr.x.core.util.DebouncedButton
-import com.palkesz.mr.x.di.koinViewModel
+import com.palkesz.mr.x.core.util.di.koinViewModel
 import com.palkesz.mr.x.feature.app.LocalAppScope
 import com.palkesz.mr.x.feature.app.LocalAppState
 import com.palkesz.mr.x.feature.app.LocalNavController
@@ -34,89 +34,93 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CreateGameScreen(viewModel: CreateGameViewModel = koinViewModel<CreateGameViewModelImpl>()) {
-	val viewState by viewModel.viewState.collectAsState()
-	CreateGameScreenContent(
-		viewState = viewState,
-		onEventHandled = viewModel::onEventHandled,
-		onFirstNameChanged = viewModel::onFirstNameChanged,
-		onLastNameChanged = viewModel::onLastNameChanged,
-		onCreateGameClicked = viewModel::onCreateGameClicked
-	)
+    val viewState by viewModel.viewState.collectAsState()
+    CreateGameScreenContent(
+        viewState = viewState,
+        onEventHandled = viewModel::onEventHandled,
+        onFirstNameChanged = viewModel::onFirstNameChanged,
+        onLastNameChanged = viewModel::onLastNameChanged,
+        onCreateGameClicked = viewModel::onCreateGameClicked
+    )
 }
 
 @Composable
 fun CreateGameScreenContent(
-	viewState: CreateGameViewState,
-	onEventHandled: () -> Unit,
-	onFirstNameChanged: (String) -> Unit,
-	onLastNameChanged: (String) -> Unit,
-	onCreateGameClicked: () -> Unit
+    viewState: CreateGameViewState,
+    onEventHandled: () -> Unit,
+    onFirstNameChanged: (String) -> Unit,
+    onLastNameChanged: (String) -> Unit,
+    onCreateGameClicked: () -> Unit
 ) {
-	val appState = LocalAppState.current
-	LaunchedEffect(Unit) {
-		appState.apply {
-			setScreenTitle(getString(Res.string.create_game))
-			showTopAppBar()
-			hideBottomAppBar()
-		}
-	}
-	val keyboardController = LocalSoftwareKeyboardController.current
+    val appState = LocalAppState.current
+    LaunchedEffect(Unit) {
+        appState.apply {
+            setScreenTitle(getString(Res.string.create_game))
+            showTopAppBar()
+            hideBottomAppBar()
+        }
+    }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
-	HandleEvent(
-		onEventHandled = onEventHandled,
-		event = viewState.event
-	)
+    HandleEvent(
+        onEventHandled = onEventHandled,
+        event = viewState.event
+    )
 
-	Column(
-		modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-		horizontalAlignment = Alignment.CenterHorizontally
-	) {
-		FirstAndLastNameTexFields(
-			firstName = viewState.firstName,
-			lastName = viewState.lastName,
-			isFirstNameInvalid = viewState.isFirstNameInvalid,
-			isLastNameInvalid = viewState.isLastNameInvalid,
-			onFirstNameChanged = onFirstNameChanged,
-			onLastNameChanged = onLastNameChanged,
-			onDone = {
-				keyboardController?.hide()
-				onCreateGameClicked()
-			}
-		)
-		DebouncedButton(
-			onClick = {
-				keyboardController?.hide()
-				onCreateGameClicked()
-			}, shape = RoundedCornerShape(
-				topStartPercent = 100, topEndPercent = 5,
-				bottomEndPercent = 100, bottomStartPercent = 5),
-			modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp, horizontal = 12.dp)) {
-			Text(
-				text = stringResource(Res.string.create_game),
-				style = MaterialTheme.typography.headlineMedium
-			)
-		}
-	}
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        FirstAndLastNameTexFields(
+            firstName = viewState.firstName,
+            lastName = viewState.lastName,
+            isFirstNameInvalid = viewState.isFirstNameInvalid,
+            isLastNameInvalid = viewState.isLastNameInvalid,
+            onFirstNameChanged = onFirstNameChanged,
+            onLastNameChanged = onLastNameChanged,
+            onDone = {
+                keyboardController?.hide()
+                onCreateGameClicked()
+            }
+        )
+        DebouncedButton(
+            onClick = {
+                keyboardController?.hide()
+                onCreateGameClicked()
+            }, shape = RoundedCornerShape(
+                topStartPercent = 100, topEndPercent = 5,
+                bottomEndPercent = 100, bottomStartPercent = 5
+            ),
+            modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp, horizontal = 12.dp)
+        ) {
+            Text(
+                text = stringResource(Res.string.create_game),
+                style = MaterialTheme.typography.headlineMedium
+            )
+        }
+    }
 }
 
 @Composable
 fun HandleEvent(
-	onEventHandled: () -> Unit,
-	event: CreateGameEvent?
+    onEventHandled: () -> Unit,
+    event: CreateGameEvent?
 ) {
-	val snackbarHostState = LocalSnackBarHostState.current
-	val navController = LocalNavController.current
-	when (event) {
-		is CreateGameEvent.ValidationError -> LocalAppScope.current?.launch {
-			snackbarHostState.showSnackbar(message = getString(event.message))
-		}
-		is CreateGameEvent.GameCreationInProgress -> {
-			LocalAppScope.current?.launch {
-				snackbarHostState.showSnackbar(message = getString(Res.string.creation_in_progress))
-			}
-			navController?.navigate(GameScreenRoute.MyGamesPage.route)
-		}
-		null -> return
-	}
-	onEventHandled()
+    val snackbarHostState = LocalSnackBarHostState.current
+    val navController = LocalNavController.current
+    when (event) {
+        is CreateGameEvent.ValidationError -> LocalAppScope.current?.launch {
+            snackbarHostState.showSnackbar(message = getString(event.message))
+        }
+
+        is CreateGameEvent.GameCreationInProgress -> {
+            LocalAppScope.current?.launch {
+                snackbarHostState.showSnackbar(message = getString(Res.string.creation_in_progress))
+            }
+            navController?.navigate(GameScreenRoute.MyGamesPage.route)
+        }
+
+        null -> return
+    }
+    onEventHandled()
 }

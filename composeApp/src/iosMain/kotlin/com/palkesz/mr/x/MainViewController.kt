@@ -1,10 +1,9 @@
 package com.palkesz.mr.x
 
 import androidx.compose.ui.window.ComposeUIViewController
-import com.palkesz.mr.x.di.KoinInitializer
+import com.palkesz.mr.x.feature.app.appModule
+import org.koin.core.context.startKoin
 
-fun MainViewController() = ComposeUIViewController(
-	configure = {
-		KoinInitializer().init()
-	}
-) { App() }
+@Suppress("FunctionName", "Unused")
+fun MainViewController() =
+    ComposeUIViewController(configure = { startKoin { modules(appModule) } }) { App() }
