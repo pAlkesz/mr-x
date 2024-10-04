@@ -52,8 +52,6 @@ kotlin {
             implementation(libs.firebase.common.ktx)
         }
         commonMain.dependencies {
-            api(libs.rinqu)
-            api(project.dependencies.platform(libs.koin.bom))
             api(project.dependencies.platform(libs.androidx.compose.composeBom))
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -61,18 +59,29 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
             implementation(libs.androidx.lifecycle.viewmodel.compose)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.compose.navigation)
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
+
             implementation(libs.firebase.firestore)
             implementation(libs.firebase.common)
             implementation(libs.firebase.auth)
-            implementation(libs.kotlinx.serialization.json)
+
+            api(project.dependencies.platform(libs.koin.bom))
             api(libs.koin.core)
             implementation(libs.koin.compose)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.compose.navigation)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.compose.viewmodel.navigation)
+
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.collections.immutable)
             implementation(libs.qr.kit)
+            api(libs.rinqu)
             implementation(libs.rinqu.compose.ext)
+            implementation(libs.aakira.napier)
         }
     }
 }
@@ -96,7 +105,7 @@ android {
         }
     }
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = true
         }
     }

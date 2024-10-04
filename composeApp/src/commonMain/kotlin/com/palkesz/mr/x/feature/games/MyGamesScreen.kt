@@ -28,13 +28,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.palkesz.mr.x.core.ui.components.AwaitedEnterTransition
 import com.palkesz.mr.x.core.ui.components.AwaitedExitTransition
-import com.palkesz.mr.x.core.ui.components.ContentWithBackgroundLoadingIndicator
-import com.palkesz.mr.x.core.ui.components.CrossFade
 import com.palkesz.mr.x.core.ui.components.FilterDropdownMenu
 import com.palkesz.mr.x.core.ui.components.GameCard
 import com.palkesz.mr.x.core.ui.components.LazyAnimatedColumn
+import com.palkesz.mr.x.core.ui.components.animation.CrossFade
+import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.modifiers.fadingEdge
-import com.palkesz.mr.x.core.util.di.koinViewModel
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.feature.app.LocalAppState
 import com.palkesz.mr.x.feature.app.LocalNavController
@@ -47,6 +46,7 @@ import mrx.composeapp.generated.resources.mr_x
 import mrx.composeapp.generated.resources.my_games
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MyGamesScreen(
@@ -76,7 +76,6 @@ fun MyGamesScreenContent(
 
     LaunchedEffect(Unit) {
         appState.apply {
-            hideTopAppBar()
             showBottomAppBar()
             setScreenTitle(getString(Res.string.my_games))
         }
@@ -169,11 +168,11 @@ fun HandleEvent(
 
     when (event) {
         is GameClickedEvent.GameClicked -> {
-            navController?.navigate(GameScreenRoute.InGame.createRoute(event.uuid))
+            navController?.navigate(GameGraphRoute.InGame.createRoute(event.uuid))
         }
 
         is GameClickedEvent.ShowQrCodeClicked -> {
-            navController?.navigate(GameScreenRoute.GameQRCode.createRoute(event.uuid))
+            navController?.navigate(GameGraphRoute.GameQRCode.createRoute(event.uuid))
         }
 
         null -> return

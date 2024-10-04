@@ -1,7 +1,7 @@
 package com.palkesz.mr.x.core.usecase.game
 
+import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.game.QuestionRepository
-import com.palkesz.mr.x.core.data.user.AuthRepository
 import com.palkesz.mr.x.core.util.coroutines.CoroutineHelper
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -11,7 +11,7 @@ class UploadBarkochbaQuestionUseCase(
 	private val authRepository: AuthRepository
 ) {
 	fun run(gameId: String, text: String) {
-		authRepository.currentUserId?.let { userId ->
+		authRepository.userId?.let { userId ->
 			CoroutineHelper.ioScope.launch {
 				questionRepository.uploadBarkochbaQuestion(
 					gameId = gameId,

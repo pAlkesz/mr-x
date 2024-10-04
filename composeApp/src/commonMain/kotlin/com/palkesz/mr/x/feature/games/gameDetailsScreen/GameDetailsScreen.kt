@@ -38,12 +38,12 @@ import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.ui.components.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.AwaitedEnterTransition
 import com.palkesz.mr.x.core.ui.components.AwaitedExitTransition
-import com.palkesz.mr.x.core.ui.components.ContentWithBackgroundLoadingIndicator
-import com.palkesz.mr.x.core.ui.components.CrossFade
 import com.palkesz.mr.x.core.ui.components.CustomRoundedCornerShape
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
 import com.palkesz.mr.x.core.ui.components.FilterDropdownMenu
 import com.palkesz.mr.x.core.ui.components.LazyAnimatedColumn
+import com.palkesz.mr.x.core.ui.components.animation.CrossFade
+import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.modifiers.conditional
 import com.palkesz.mr.x.core.ui.modifiers.fadingEdge
 import com.palkesz.mr.x.core.ui.theme.MrXTheme
@@ -55,12 +55,11 @@ import com.palkesz.mr.x.core.ui.theme.onTertiaryContainerLight
 import com.palkesz.mr.x.core.ui.theme.primaryContainerLight
 import com.palkesz.mr.x.core.ui.theme.surfaceLight
 import com.palkesz.mr.x.core.ui.theme.tertiaryContainerLight
-import com.palkesz.mr.x.core.util.di.koinViewModel
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.core.util.networking.getOrNull
 import com.palkesz.mr.x.feature.app.LocalAppState
 import com.palkesz.mr.x.feature.app.LocalNavController
-import com.palkesz.mr.x.feature.games.GameScreenRoute
+import com.palkesz.mr.x.feature.games.GameGraphRoute
 import kotlinx.collections.immutable.toPersistentList
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.accept_button_label
@@ -94,6 +93,7 @@ import mrx.composeapp.generated.resources.yes_or_no_text
 import mrx.composeapp.generated.resources.your_up_label
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun GameDetailsScreen(
@@ -138,7 +138,6 @@ fun GameDetailsScreenContent(
         setGameId(gameId)
         appState.apply {
             showTopAppBar()
-            hideBottomAppBar()
         }
     }
 
@@ -363,15 +362,15 @@ fun HandleEvent(
     val navController = LocalNavController.current
     when (event) {
         is GameDetailsEvent.AskQuestionClicked -> navController?.navigate(
-            GameScreenRoute.ChooseQuestion.createRoute(event.gameId)
+            GameGraphRoute.ChooseQuestion.createRoute(event.gameId)
         )
 
         is GameDetailsEvent.NavigateToSpecifyQuestionScreen -> navController?.navigate(
-            GameScreenRoute.SpecifyQuestion.createRoute(event.questionId, event.gameId)
+            GameGraphRoute.SpecifyQuestion.createRoute(event.questionId, event.gameId)
         )
 
         is GameDetailsEvent.NavigateToAnswerScreen -> navController?.navigate(
-            GameScreenRoute.AnswerQuestion.createRoute(
+            GameGraphRoute.AnswerQuestion.createRoute(
                 questionId = event.questionId,
                 gameId = event.gameId,
                 isHost = event.isHost

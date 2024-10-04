@@ -41,7 +41,6 @@ fun RulesScreen() {
     LaunchedEffect(Unit) {
         appState.apply {
             showTopAppBar()
-            hideBottomAppBar()
             setScreenTitle(getString(Res.string.rules_title))
         }
     }

@@ -3,8 +3,8 @@ package com.palkesz.mr.x.feature.games.gameDetailsScreen
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.game.QuestionRepository
-import com.palkesz.mr.x.core.data.user.AuthRepository
 import com.palkesz.mr.x.core.usecase.game.AnswerBarkochbaQuestionUseCase
 import com.palkesz.mr.x.core.usecase.game.GetGameWithHostUseCase
 import com.palkesz.mr.x.core.usecase.game.GetQuestionsOfGameUseCase
@@ -50,12 +50,12 @@ class GamesDetailViewModel(
                 ).collect { pair ->
                     _viewState.update {
                         when (pair) {
-                            is Error -> ViewState.Failure
+                            is Error -> ViewState.Failure()
                             is Loading -> ViewState.Loading
                             is Success -> ViewState.Success(
                                 gameDetailsUiMapper.mapViewState(
                                     pair.result,
-                                    authRepository.currentUserId,
+                                    authRepository.userId,
                                     it.getOrNull()?.selectedFilters ?: persistentListOf()
                                 )
                             )
@@ -83,7 +83,7 @@ class GamesDetailViewModel(
                         },
                         filters = selectedFilters,
                         playerIsHost = currentState.playerIsHost,
-                        userId = authRepository.currentUserId
+                        userId = authRepository.userId
                     )
                 )
             }

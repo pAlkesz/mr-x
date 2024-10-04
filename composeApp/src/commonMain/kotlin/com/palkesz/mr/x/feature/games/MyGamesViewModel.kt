@@ -2,8 +2,8 @@ package com.palkesz.mr.x.feature.games
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.game.GameRepository
-import com.palkesz.mr.x.core.data.user.AuthRepository
 import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.usecase.game.CreateGameUseCase
 import com.palkesz.mr.x.core.usecase.game.GetMyGamesUseCase
@@ -48,7 +48,7 @@ class MyGamesViewModelImpl(
         viewModelScope.launch {
             getMyGamesUseCase.run().collect { result ->
                 when (result) {
-                    is Error -> _viewState.update { ViewState.Failure }
+                    is Error -> _viewState.update { ViewState.Failure() }
                     is Loading -> _viewState.update { ViewState.Loading }
                     is Success -> _viewState.update {
                         ViewState.Success(
@@ -57,7 +57,7 @@ class MyGamesViewModelImpl(
                             }.map { game ->
                                 GameItem(
                                     initial = game.lastName.first().uppercaseChar(),
-                                    name = if (game.hostId == authRepository.currentUserId ||
+                                    name = if (game.hostId == authRepository.userId ||
                                         game.status == GameStatus.FINISHED
                                     )
                                         "${game.firstName} ${game.lastName}".trim()
@@ -65,7 +65,7 @@ class MyGamesViewModelImpl(
                                         null,
                                     uuid = game.uuid,
                                     status = game.status,
-                                    isHost = game.hostId == authRepository.currentUserId
+                                    isHost = game.hostId == authRepository.userId
                                 )
                             }.toPersistentList())
                         )
@@ -108,7 +108,7 @@ class MyGamesViewModelImpl(
                 }.mapNotNull { game ->
                     GameItem(
                         initial = game.lastName.first().uppercaseChar(),
-                        name = if (game.hostId == authRepository.currentUserId ||
+                        name = if (game.hostId == authRepository.userId ||
                             game.status == GameStatus.FINISHED
                         )
                             "${game.firstName} ${game.lastName}".trim()
@@ -116,7 +116,7 @@ class MyGamesViewModelImpl(
                             null,
                         uuid = game.uuid,
                         status = game.status,
-                        isHost = game.hostId == authRepository.currentUserId
+                        isHost = game.hostId == authRepository.userId
                     ).takeIf { it.isFilteredOut(selectedFilters) }
                 }.toPersistentList()
             )

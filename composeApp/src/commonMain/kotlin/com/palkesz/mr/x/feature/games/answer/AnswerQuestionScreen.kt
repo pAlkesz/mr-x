@@ -18,10 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import com.palkesz.mr.x.core.ui.components.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
 import com.palkesz.mr.x.core.ui.components.FirstAndLastNameTexFields
-import com.palkesz.mr.x.core.util.di.koinViewModel
+import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.feature.app.LocalAppScope
 import com.palkesz.mr.x.feature.app.LocalAppState
@@ -33,6 +32,7 @@ import mrx.composeapp.generated.resources.answer_question
 import mrx.composeapp.generated.resources.answer_screen_label
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AnswerQuestionScreen(
@@ -76,7 +76,6 @@ fun AnswerQuestionScreenContent(
         appState.apply {
             setScreenTitle(getString(Res.string.answer_question))
             showTopAppBar()
-            hideBottomAppBar()
         }
     }
     val keyboardController = LocalSoftwareKeyboardController.current

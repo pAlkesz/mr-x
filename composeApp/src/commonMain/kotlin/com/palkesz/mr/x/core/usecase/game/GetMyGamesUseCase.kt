@@ -1,7 +1,7 @@
 package com.palkesz.mr.x.core.usecase.game
 
+import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.game.GameRepository
-import com.palkesz.mr.x.core.data.user.AuthRepository
 import com.palkesz.mr.x.core.model.game.Game
 import com.palkesz.mr.x.core.util.extensions.flatMapResult
 import com.palkesz.mr.x.core.util.extensions.prepend
@@ -19,7 +19,7 @@ class GetMyGamesUseCase(
 ) {
 
     fun run(): Flow<Result<List<Game>>> =
-        authRepository.currentUserId?.let { userId ->
+        authRepository.userId?.let { userId ->
             gameRepository.getPlayerGames(playerId = userId).flatMapResult { games ->
                 gameRepository.playerGames.mapNotNull {
                     Success(it)

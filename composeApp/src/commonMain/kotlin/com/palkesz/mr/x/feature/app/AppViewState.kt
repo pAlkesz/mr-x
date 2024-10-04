@@ -1,10 +1,19 @@
 package com.palkesz.mr.x.feature.app
 
-import dev.theolm.rinku.DeepLink
+import androidx.compose.runtime.Immutable
 
-data class AppViewState(val event: AppEvent? = null, val deepLink: DeepLink? = null)
+@Immutable
+data class AppViewState(val isLoggedIn: Boolean, val event: AppEvent? = null)
 
+@Immutable
 sealed interface AppEvent {
-	data class ErrorOccurred(val message: String) : AppEvent
-	data class DeepLinkReceived(val gameId: String) : AppEvent
+
+    data class ShowSnackbar(val message: String) : AppEvent
+
+    data class NavigateToMyGames(val gameId: String) : AppEvent
+
+    data object NavigateToHome : AppEvent
+
+    data object NavigateToAddUsername : AppEvent
+
 }

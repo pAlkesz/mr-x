@@ -1,7 +1,7 @@
 package com.palkesz.mr.x.core.usecase.game
 
+import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.game.GameRepository
-import com.palkesz.mr.x.core.data.user.AuthRepository
 import com.palkesz.mr.x.core.model.game.Game
 import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.util.coroutines.CoroutineHelper
@@ -14,7 +14,7 @@ class CreateGameUseCase(
     private val authRepository: AuthRepository
 ) {
     fun createGame(firstName: String, lastName: String) {
-        authRepository.currentUserId?.let {
+        authRepository.userId?.let {
             CoroutineHelper.ioScope.launch {
                 gameRepository.uploadGame(
                     Game(

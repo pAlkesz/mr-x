@@ -104,7 +104,7 @@ class SpecifyQuestionViewModelImpl(
 				getGameAndQuestionUseCase.run(gameId, questionId)
 					.collect { result ->
 						when (result) {
-							is Error -> _viewState.update { ViewState.Failure }
+							is Error -> _viewState.update { ViewState.Failure() }
 							is Loading -> _viewState.update { ViewState.Loading }
 							is Success -> {
 								_viewState.update {

@@ -1,7 +1,7 @@
 package com.palkesz.mr.x.core.usecase.game.question
 
+import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.game.QuestionRepository
-import com.palkesz.mr.x.core.data.user.AuthRepository
 import com.palkesz.mr.x.core.model.game.Answer
 import com.palkesz.mr.x.core.model.game.Status
 import com.palkesz.mr.x.core.util.coroutines.CoroutineHelper
@@ -16,7 +16,7 @@ class AnswerQuestionUseCase(
 ) {
     fun run(questionId: String, firstName: String, lastName: String, isHost: Boolean) {
         safeLet(
-            p1 = authRepository.currentUserId,
+            p1 = authRepository.userId,
             p2 = questionRepository.playerQuestions.value.find { question ->
                 question.uuid == questionId
             }) { userId, question ->

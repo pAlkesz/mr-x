@@ -23,12 +23,11 @@ import com.palkesz.mr.x.core.ui.components.BaseTextField
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
 import com.palkesz.mr.x.core.ui.components.FirstAndLastNameTexFields
 import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
-import com.palkesz.mr.x.core.util.di.koinViewModel
 import com.palkesz.mr.x.feature.app.LocalAppScope
 import com.palkesz.mr.x.feature.app.LocalAppState
 import com.palkesz.mr.x.feature.app.LocalNavController
 import com.palkesz.mr.x.feature.app.LocalSnackBarHostState
-import com.palkesz.mr.x.feature.games.GameScreenRoute
+import com.palkesz.mr.x.feature.games.GameGraphRoute
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.ask_question
@@ -38,6 +37,7 @@ import mrx.composeapp.generated.resources.normal_question
 import mrx.composeapp.generated.resources.question
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun NormalQuestionScreen(
@@ -75,7 +75,7 @@ fun NormalQuestionScreenContent(
         appState.apply {
             setScreenTitle(getString(Res.string.normal_question))
             showTopAppBar()
-            hideBottomAppBar()
+
         }
     }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -163,7 +163,7 @@ fun HandleEvent(
             LocalAppScope.current?.launch {
                 snackbarHostState.showSnackbar(message = getString(event.message))
             }
-            navController?.popBackStack(GameScreenRoute.InGame.createRoute(event.gameId), false)
+            navController?.popBackStack(GameGraphRoute.InGame.createRoute(event.gameId), false)
         }
 
         null -> return

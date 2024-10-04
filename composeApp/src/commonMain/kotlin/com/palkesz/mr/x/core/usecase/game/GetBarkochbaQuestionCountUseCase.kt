@@ -1,7 +1,7 @@
 package com.palkesz.mr.x.core.usecase.game
 
+import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.game.QuestionRepository
-import com.palkesz.mr.x.core.data.user.AuthRepository
 import com.palkesz.mr.x.core.model.game.Status
 import com.palkesz.mr.x.core.util.extensions.mapResult
 
@@ -12,7 +12,7 @@ class GetBarkochbaQuestionCountUseCase(
     fun run(gameId: String) =
         questionRepository.getQuestionsOfGame(gameId).mapResult {
             it.count { question ->
-                question.askerId == authRepository.currentUserId
+                question.askerId == authRepository.userId
                         && question.status == Status.CORRECT_ANSWER
             }
         }

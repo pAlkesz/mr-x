@@ -1,6 +1,6 @@
 package com.palkesz.mr.x.core.data.game
 
-import com.palkesz.mr.x.core.data.user.AuthRepository
+import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.model.game.Game
 import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.util.coroutines.CoroutineHelper
@@ -16,10 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -115,32 +112,26 @@ class GameRepositoryImpl(
         }
     }
 
-    private fun observePlayerGamesChanges() =
-        CoroutineHelper.ioScope.launch {
-            authRepository.currentUser.flatMapLatest { user ->
-                try {
-                    user?.userId?.let { userId ->
-                        playerGamesQuery(userId).snapshots.map { snapshot ->
-                            val (removedGames, addedOrModifiedGames) =
-                                snapshot.documentChanges.partition { change ->
-                                    change.type == ChangeType.REMOVED
-                                }
-                            _playerGames.update { games ->
-                                (addedOrModifiedGames.map {
-                                    it.document.data(Game.serializer())
-                                } + games).distinctBy(Game::uuid)
-                                    .subtract(removedGames.map {
-                                        it.document.data(Game.serializer())
-                                    }.toSet()).toList()
-                            }
-                        }
-                    } ?: flowOf()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    flowOf()
+    private fun observePlayerGamesChanges() {
+        authRepository.userId?.let { userId ->
+            CoroutineHelper.ioScope.launch {
+                playerGamesQuery(userId).snapshots.map { snapshot ->
+                    snapshot.documentChanges.partition { change ->
+                        change.type == ChangeType.REMOVED
+                    }
+                }.collect { (removedGames, addedOrModifiedGames) ->
+                    _playerGames.update { games ->
+                        (addedOrModifiedGames.map {
+                            it.document.data(Game.serializer())
+                        } + games).distinctBy(Game::uuid)
+                            .subtract(removedGames.map {
+                                it.document.data(Game.serializer())
+                            }.toSet()).toList()
+                    }
                 }
-            }.collect()
+            }
         }
+    }
 
     private fun playerGamesQuery(playerId: String) = firestore.collection(COLLECTION_NAME).where {
         any(

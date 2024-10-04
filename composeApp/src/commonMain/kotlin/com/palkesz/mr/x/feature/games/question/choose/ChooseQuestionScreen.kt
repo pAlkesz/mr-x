@@ -17,12 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
-import com.palkesz.mr.x.core.util.di.koinViewModel
 import com.palkesz.mr.x.feature.app.LocalAppScope
 import com.palkesz.mr.x.feature.app.LocalAppState
 import com.palkesz.mr.x.feature.app.LocalNavController
 import com.palkesz.mr.x.feature.app.LocalSnackBarHostState
-import com.palkesz.mr.x.feature.games.GameScreenRoute
+import com.palkesz.mr.x.feature.games.GameGraphRoute
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.ask_question
@@ -31,6 +30,7 @@ import mrx.composeapp.generated.resources.barkochba_question_count
 import mrx.composeapp.generated.resources.normal_question
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ChooseQuestionScreen(
@@ -64,7 +64,6 @@ fun ChooseQuestionScreenContent(
         appState.apply {
             setScreenTitle(getString(Res.string.ask_question))
             showTopAppBar()
-            hideBottomAppBar()
         }
     }
 
@@ -125,11 +124,11 @@ fun HandleEvent(
     val navController = LocalNavController.current
     when (event) {
         is ChooseQuestionEvent.BarkochbaQuestionClicked -> navController?.navigate(
-            GameScreenRoute.BarkochbaQuestion.createRoute(event.gameId)
+            GameGraphRoute.BarkochbaQuestion.createRoute(event.gameId)
         )
 
         is ChooseQuestionEvent.NormalQuestionClicked -> navController?.navigate(
-            GameScreenRoute.NormalQuestion.createRoute(event.gameId)
+            GameGraphRoute.NormalQuestion.createRoute(event.gameId)
         )
 
         null -> return
@@ -137,7 +136,7 @@ fun HandleEvent(
             LocalAppScope.current?.launch {
                 snackbarHostState.showSnackbar(message = getString(event.message))
             }
-            navController?.popBackStack(GameScreenRoute.InGame.createRoute(event.gameId), false)
+            navController?.popBackStack(GameGraphRoute.InGame.createRoute(event.gameId), false)
         }
     }
     onEventHandled()

@@ -12,42 +12,49 @@ import androidx.compose.ui.Modifier
 import com.palkesz.mr.x.core.ui.components.BaseCard
 import com.palkesz.mr.x.feature.app.LocalAppState
 import com.palkesz.mr.x.feature.app.LocalNavController
-import mrx.composeapp.generated.resources.*
+import mrx.composeapp.generated.resources.Res
+import mrx.composeapp.generated.resources.create_game
+import mrx.composeapp.generated.resources.create_game_descr
+import mrx.composeapp.generated.resources.home
+import mrx.composeapp.generated.resources.join_game
+import mrx.composeapp.generated.resources.join_game_descr
+import mrx.composeapp.generated.resources.rules_button_label
+import mrx.composeapp.generated.resources.rules_card_description
+import mrx.composeapp.generated.resources.rules_title
 import org.jetbrains.compose.resources.getString
 
 @Composable
 fun HomeScreen() {
-	val appState = LocalAppState.current
-	val navController = LocalNavController.current
-	LaunchedEffect(Unit) {
-		appState.apply {
-			hideTopAppBar()
-			showBottomAppBar()
-			setScreenTitle(getString(Res.string.home))
-		}
-	}
-	Column(
-		modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-		horizontalAlignment = Alignment.CenterHorizontally
-	) {
-		BaseCard(
-			modifier = Modifier.fillMaxWidth(),
-			onClick = { navController?.navigate(HomeScreenRoute.CreateGame.route) },
-			title = Res.string.create_game,
-			description = Res.string.create_game_descr,
-			buttonLabel = Res.string.create_game
-		)
-		BaseCard(
-			onClick = { navController?.navigate(HomeScreenRoute.JoinGame.route) },
-			title = Res.string.join_game,
-			description = Res.string.join_game_descr,
-			buttonLabel = Res.string.join_game
-		)
-		BaseCard(
-			onClick = { navController?.navigate(HomeScreenRoute.Rules.route) },
-			title = Res.string.rules_title,
-			description = Res.string.rules_card_description,
-			buttonLabel = Res.string.rules_button_label
-		)
-	}
+    val appState = LocalAppState.current
+    val navController = LocalNavController.current
+    LaunchedEffect(Unit) {
+        appState.apply {
+            showBottomAppBar()
+            setScreenTitle(getString(Res.string.home))
+        }
+    }
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        BaseCard(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { navController?.navigate(HomeGraphRoute.CreateGame.route) },
+            title = Res.string.create_game,
+            description = Res.string.create_game_descr,
+            buttonLabel = Res.string.create_game,
+        )
+        BaseCard(
+            onClick = { navController?.navigate(HomeGraphRoute.JoinGame.route) },
+            title = Res.string.join_game,
+            description = Res.string.join_game_descr,
+            buttonLabel = Res.string.join_game,
+        )
+        BaseCard(
+            onClick = { navController?.navigate(HomeGraphRoute.Rules.route) },
+            title = Res.string.rules_title,
+            description = Res.string.rules_card_description,
+            buttonLabel = Res.string.rules_button_label,
+        )
+    }
 }
