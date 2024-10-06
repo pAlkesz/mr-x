@@ -3,13 +3,14 @@ package com.palkesz.mr.x.feature.authentication.username
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.auth.AuthRepositoryImpl.Companion.AUTH_TAG
+import com.palkesz.mr.x.core.usecase.auth.UpdateUsernameUseCase
 import com.palkesz.mr.x.core.util.extensions.validateAsUsername
 import com.palkesz.mr.x.core.util.networking.DataLoader
 import com.palkesz.mr.x.core.util.networking.RefreshTrigger
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.core.util.networking.map
+import com.plusmobileapps.konnectivity.Konnectivity
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,7 +30,8 @@ interface AddUsernameViewModel {
 
 @Stable
 class AddUsernameViewModelImpl(
-    private val authRepository: AuthRepository,
+    private val uploadUsernameUseCase: UpdateUsernameUseCase,
+    konnectivity: Konnectivity,
 ) : ViewModel(), AddUsernameViewModel {
 
     private val dataLoader = DataLoader<Unit>()
@@ -53,12 +55,14 @@ class AddUsernameViewModelImpl(
             saveUsernameResult,
             username,
             isUsernameValid,
-            event
-        ) { result, username, isUsernameValid, event ->
+            konnectivity.isConnectedState,
+            event,
+        ) { result, username, isUsernameValid, isConnected, event ->
             result.map {
                 AddUserNameViewState(
                     username = username,
                     isUserNameValid = isUsernameValid,
+                    isSaveButtonEnabled = isConnected,
                     event = event,
                 )
             }
@@ -82,11 +86,10 @@ class AddUsernameViewModelImpl(
         isUsernameValid.update { false }
         Result.success(Unit)
     } else {
-        authRepository.updateUsername(name = username.value.trim()).also {
+        uploadUsernameUseCase.run(username = username.value.trim()).also {
             Napier.d(tag = AUTH_TAG) { "Updating username: $it" }
         }.onSuccess {
             event.update { AddUserNameEvent.NavigateToHome }
         }
     }
-
 }

@@ -82,6 +82,7 @@ kotlin {
             api(libs.rinqu)
             implementation(libs.rinqu.compose.ext)
             implementation(libs.aakira.napier)
+            implementation(libs.plusmobileapps.konnectivity)
         }
     }
 }

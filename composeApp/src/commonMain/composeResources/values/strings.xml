@@ -125,8 +125,6 @@
     <string name="no_name_found_placeholder">No name found</string>
     <string name="no_user_error_message">No user found</string>
     <string name="slow_connection_label">Slow connection</string>
-    <string name="sending_login_link_loading_label">Sending login link via email</string>
-    <string name="sending_login_link_error_label">Login link could not be sent</string>
     <string name="sending_login_link_button_label">Send link</string>
     <string name="login_link_sent_title">Sign in link has been sent to this address: %1$s</string>
     <string name="login_link_sent_subtitle">Please check your email inbox and click on the sign in link to sign in.</string>
@@ -134,4 +132,5 @@
     <string name="add_username_title">Enter your username</string>
     <string name="invalid_username_label">Please enter a username without whitespaces between 5 and 50 characters</string>
     <string name="login_success_message">Welcome to the Mr. X app</string>
+    <string name="offline_bar_label">You are offline. Check your connection</string>
 </resources>

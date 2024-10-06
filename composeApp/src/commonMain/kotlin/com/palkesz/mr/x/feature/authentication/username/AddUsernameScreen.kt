@@ -56,6 +56,7 @@ fun AddUsernameScreenContent(
             title = stringResource(Res.string.add_username_title),
             errorMessage = stringResource(Res.string.invalid_username_label),
             buttonText = stringResource(Res.string.save_button_label),
+            isButtonEnabled = state.isSaveButtonEnabled,
             inputLabel = stringResource(Res.string.username_field_label),
             onValueChanged = onUsernameChanged,
             onButtonClicked = onSaveClicked,

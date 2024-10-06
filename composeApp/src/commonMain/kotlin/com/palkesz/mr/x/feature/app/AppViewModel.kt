@@ -4,16 +4,16 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.palkesz.mr.x.core.data.auth.AuthRepository
-import com.palkesz.mr.x.core.data.auth.AuthRepositoryImpl.Companion.AUTH_TAG
-import com.palkesz.mr.x.core.usecase.auth.SignInWithLinkUseCase
 import com.palkesz.mr.x.core.usecase.game.JoinGameWithGameIdUseCase
 import com.palkesz.mr.x.feature.network.NetworkErrorRepository
+import com.plusmobileapps.konnectivity.Konnectivity
 import dev.theolm.rinku.DeepLink
 import dev.theolm.rinku.getParameter
-import io.github.aakira.napier.Napier
+import dev.theolm.rinku.listenForDeepLinks
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.builtins.serializer
@@ -21,7 +21,6 @@ import kotlinx.serialization.builtins.serializer
 interface AppViewModel {
     val viewState: StateFlow<AppViewState>
 
-    fun onDeepLinkReceived(link: DeepLink)
     fun onEventHandled()
 }
 
@@ -29,15 +28,26 @@ interface AppViewModel {
 class AppViewModelImpl(
     private val networkErrorRepository: NetworkErrorRepository,
     private val authRepository: AuthRepository,
-    private val singInWithLinkUseCase: SignInWithLinkUseCase,
     private val joinGameWithGameIdUseCase: JoinGameWithGameIdUseCase,
+    private val konnectivity: Konnectivity,
 ) : ViewModel(), AppViewModel {
 
-    private val _viewState = MutableStateFlow(AppViewState(isLoggedIn = authRepository.isLoggedIn))
+    private val _viewState = MutableStateFlow(
+        AppViewState(
+            isLoggedIn = authRepository.isLoggedIn,
+            isOfflineBarVisible = !konnectivity.isConnected,
+        )
+    )
     override val viewState = _viewState.asStateFlow()
 
     init {
         observeErrorChanges()
+        observeConnectivity()
+        observeDeepLinks()
+    }
+
+    override fun onEventHandled() {
+        _viewState.update { it.copy(event = null) }
     }
 
     private fun observeErrorChanges() {
@@ -50,48 +60,42 @@ class AppViewModelImpl(
         }
     }
 
-    override fun onEventHandled() {
-        _viewState.update { it.copy(event = null) }
-    }
-
-    override fun onDeepLinkReceived(link: DeepLink) {
-        if (authRepository.isSignInLink(link = link)) {
-            handleSignInLink(link = link)
-        } else {
-            val gameId =
-                if (link.schema == MRX_APP) {
-                    link.getParameter(
-                        GAME_PARAM,
-                        String.serializer(),
-                    )
-                } else {
-                    link.pathSegments.last()
-                }
-            joinGameWithGameIdUseCase.run(gameId)
-            _viewState.update {
-                it.copy(event = AppEvent.NavigateToMyGames(gameId))
+    private fun observeConnectivity() {
+        viewModelScope.launch {
+            konnectivity.isConnectedState.collect { isConnected ->
+                _viewState.update { it.copy(isOfflineBarVisible = !isConnected) }
             }
         }
     }
 
-    private fun handleSignInLink(link: DeepLink) {
-        if (authRepository.isLoggedIn) {
+    private fun observeDeepLinks() {
+        viewModelScope.launch {
+            authRepository.loggedIn.collectLatest { isLoggedIn ->
+                if (isLoggedIn) {
+                    listenForDeepLinks { link ->
+                        onDeepLinkReceived(link = link)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onDeepLinkReceived(link: DeepLink) {
+        if (authRepository.isSignInLink(link = link)) {
             return
         }
-        viewModelScope.launch {
-            singInWithLinkUseCase.run(link = link).onSuccess {
-                _viewState.update { state ->
-                    state.copy(
-                        event = if (authRepository.username == null) {
-                            AppEvent.NavigateToAddUsername
-                        } else {
-                            AppEvent.NavigateToHome
-                        }
-                    )
-                }
-            }.also {
-                Napier.d(tag = AUTH_TAG) { "Signing in with link: $it" }
+        val gameId =
+            if (link.schema == MRX_APP) {
+                link.getParameter(
+                    GAME_PARAM,
+                    String.serializer(),
+                )
+            } else {
+                link.pathSegments.last()
             }
+        joinGameWithGameIdUseCase.run(gameId)
+        _viewState.update {
+            it.copy(event = AppEvent.NavigateToMyGames(gameId))
         }
     }
 

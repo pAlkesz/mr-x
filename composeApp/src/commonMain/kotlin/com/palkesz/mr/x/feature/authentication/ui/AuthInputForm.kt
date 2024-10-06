@@ -37,6 +37,7 @@ fun AuthInputForm(
     value: String,
     title: String,
     isValueValid: Boolean,
+    isButtonEnabled: Boolean,
     errorMessage: String,
     buttonText: String,
     inputLabel: String,
@@ -72,7 +73,7 @@ fun AuthInputForm(
         Spacer(modifier = Modifier.weight(1f))
         PrimaryButton(
             onClick = onButtonClicked,
-            enabled = isValueValid,
+            enabled = isValueValid && isButtonEnabled,
             text = buttonText,
         )
     }

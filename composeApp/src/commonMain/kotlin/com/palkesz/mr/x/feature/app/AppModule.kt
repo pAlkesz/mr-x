@@ -8,12 +8,14 @@ import com.palkesz.mr.x.feature.games.showQrCode.showQrCodeModule
 import com.palkesz.mr.x.feature.home.createGame.createGameModule
 import com.palkesz.mr.x.feature.home.scanQrCode.scanQrCodeModule
 import com.palkesz.mr.x.feature.network.networkErrorModule
+import com.plusmobileapps.konnectivity.Konnectivity
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val appModule = module {
     viewModelOf(::AppViewModelImpl) bind AppViewModel::class
+    single { Konnectivity() }
     includes(
         networkErrorModule,
         createGameModule,

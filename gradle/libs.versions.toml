@@ -30,6 +30,7 @@ kotlinxSerializationJson = "1.7.1"
 qrKit = "1.0.4"
 rinq = "0.5.0"
 napier = "2.7.1"
+konnectivity = "0.1-alpha01"
 
 [libraries]
 # AndroidX
@@ -68,6 +69,7 @@ qr-kit = { group = "network.chaintech", name = "qr-kit", version.ref = "qrKit" }
 rinqu = { group = "dev.theolm", name = "rinku", version.ref = "rinq" }
 rinqu-compose-ext = { group = "dev.theolm", name = "rinku-compose-ext", version.ref = "rinq" }
 aakira-napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
+plusmobileapps-konnectivity = { group = "com.plusmobileapps", name = "konnectivity", version.ref = "konnectivity" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

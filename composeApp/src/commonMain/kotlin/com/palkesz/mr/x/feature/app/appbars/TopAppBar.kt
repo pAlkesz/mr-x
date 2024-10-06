@@ -1,24 +1,36 @@
-package com.palkesz.mr.x.core.ui.components
+package com.palkesz.mr.x.feature.app.appbars
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.palkesz.mr.x.core.ui.components.ChangeableText
 import com.palkesz.mr.x.core.ui.modifiers.debouncedClickable
 import com.palkesz.mr.x.feature.app.LocalAppState
 import com.palkesz.mr.x.feature.app.LocalNavController
 
 @Composable
-fun MrXTopAppBar() {
+fun AnimatedTopAppBar() {
+    val appState = LocalAppState.current
+    AnimatedVisibility(
+        visible = appState.currentAppData.isTopAppBarVisible,
+        enter = slideInVertically(initialOffsetY = { -it }),
+        exit = slideOutVertically(targetOffsetY = { -it }),
+    ) {
+        MrXTopAppBar()
+    }
+}
+
+@Composable
+private fun MrXTopAppBar() {
     val appState = LocalAppState.current
     val navController = LocalNavController.current
     TopAppBar(
@@ -33,17 +45,8 @@ fun MrXTopAppBar() {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = null,
-                modifier = Modifier
-                    .minimumInteractiveComponentSize()
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .debouncedClickable {
-                        navController?.navigateUp()
-                    }
+                modifier = Modifier.size(40.dp).debouncedClickable { navController?.navigateUp() },
             )
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
     )
 }

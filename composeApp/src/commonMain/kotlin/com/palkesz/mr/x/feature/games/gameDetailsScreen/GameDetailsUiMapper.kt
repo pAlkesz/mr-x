@@ -12,9 +12,9 @@ class GameDetailsUiMapper {
 		pair: Pair<GameWithHost, List<Question>>,
 		userId: String?,
 		filters: ImmutableList<QuestionItemFilter>
-	) = if (pair.first.host.userId == userId) {
+	) = if (pair.first.host.id == userId) {
 		GameDetailsViewState(
-			hostName = pair.first.host.userName,
+			hostName = pair.first.host.name,
 			defaultTitle = pair.first.game.lastName.first().toString(),
 			optionalHiddenTitle = "${pair.first.game.firstName} ${pair.first.game.lastName}".trim(),
 			playerIsHost = true,
@@ -30,7 +30,7 @@ class GameDetailsUiMapper {
 	}
 	else {
 		GameDetailsViewState(
-			hostName = pair.first.host.userName,
+			hostName = pair.first.host.name,
 			defaultTitle = pair.first.game.lastName.first().toString(),
 			optionalHiddenTitle = null,
 			playerIsHost = false,

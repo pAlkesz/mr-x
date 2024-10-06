@@ -7,11 +7,14 @@ import dev.gitlive.firebase.auth.AuthResult
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.theolm.rinku.DeepLink
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 interface AuthRepository {
     val userId: String?
     val username: String?
     val isLoggedIn: Boolean
+    val loggedIn: Flow<Boolean>
 
     suspend fun sendSignInLinkToEmail(email: String): Result<Unit>
     suspend fun signInWithEmailLink(email: String, link: String): Result<AuthResult>
@@ -31,6 +34,9 @@ class AuthRepositoryImpl(
 
     override val isLoggedIn: Boolean
         get() = auth.currentUser != null
+
+    override val loggedIn: Flow<Boolean>
+        get() = auth.authStateChanged.map { it != null }
 
     override suspend fun sendSignInLinkToEmail(email: String): Result<Unit> {
         val actionCodeSettings = ActionCodeSettings(

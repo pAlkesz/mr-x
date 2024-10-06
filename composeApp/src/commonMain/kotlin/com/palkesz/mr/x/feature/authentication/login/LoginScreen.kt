@@ -14,17 +14,20 @@ import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.feature.app.AppStateEffect
+import com.palkesz.mr.x.feature.app.LocalNavController
+import com.palkesz.mr.x.feature.app.ShowSnackbar
+import com.palkesz.mr.x.feature.authentication.AuthGraphRoute
 import com.palkesz.mr.x.feature.authentication.ui.AuthInputForm
 import com.palkesz.mr.x.feature.authentication.ui.ColumnWithMrxIcon
+import com.palkesz.mr.x.feature.home.HomeGraphRoute
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.email_field_label
 import mrx.composeapp.generated.resources.invalid_email_label
 import mrx.composeapp.generated.resources.login_link_sent_subtitle
 import mrx.composeapp.generated.resources.login_link_sent_title
+import mrx.composeapp.generated.resources.login_success_message
 import mrx.composeapp.generated.resources.login_title
 import mrx.composeapp.generated.resources.sending_login_link_button_label
-import mrx.composeapp.generated.resources.sending_login_link_error_label
-import mrx.composeapp.generated.resources.sending_login_link_loading_label
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -35,6 +38,7 @@ fun LoginScreen(viewModel: LoginViewModel = koinViewModel<LoginViewModelImpl>())
         viewState = viewState,
         onEmailChanged = viewModel::onEmailChanged,
         onSendLinkClicked = viewModel::onSendLinkClicked,
+        onEventHandled = viewModel::onEventHandled
     )
 }
 
@@ -43,16 +47,13 @@ private fun LoginScreenContent(
     viewState: ViewState<LoginViewState>,
     onEmailChanged: (String) -> Unit,
     onSendLinkClicked: () -> Unit,
+    onEventHandled: () -> Unit,
 ) {
     AppStateEffect { appState ->
         appState.hideAppBars()
     }
-    ContentWithBackgroundLoadingIndicator(
-        state = viewState,
-        onRetry = onSendLinkClicked,
-        loadingLabel = stringResource(Res.string.sending_login_link_loading_label),
-        errorLabel = stringResource(resource = Res.string.sending_login_link_error_label)
-    ) { state ->
+    ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onSendLinkClicked) { state ->
+        HandleEvent(event = state.event, onEventHandled = onEventHandled)
         CrossFade(
             modifier = Modifier.fillMaxSize().padding(16.dp),
             condition = state.isLinkSent,
@@ -68,6 +69,7 @@ private fun LoginScreenContent(
                     errorMessage = stringResource(Res.string.invalid_email_label),
                     inputLabel = stringResource(Res.string.email_field_label),
                     buttonText = stringResource(Res.string.sending_login_link_button_label),
+                    isButtonEnabled = state.isSendButtonEnabled,
                     onValueChanged = onEmailChanged,
                     onButtonClicked = onSendLinkClicked,
                 )
@@ -89,5 +91,22 @@ private fun EmailLinkSentForm(modifier: Modifier = Modifier, email: String) {
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
         )
+    }
+}
+
+@Composable
+private fun HandleEvent(event: LoginEvent?, onEventHandled: () -> Unit) {
+    event?.let {
+        when (event) {
+            is LoginEvent.NavigateToHome -> {
+                ShowSnackbar(message = stringResource(Res.string.login_success_message))
+                LocalNavController.current?.navigate(HomeGraphRoute.HomePage.route)
+            }
+
+            is LoginEvent.NavigateToAddUsername -> {
+                LocalNavController.current?.navigate(AuthGraphRoute.AddUsername.route)
+            }
+        }
+        onEventHandled()
     }
 }

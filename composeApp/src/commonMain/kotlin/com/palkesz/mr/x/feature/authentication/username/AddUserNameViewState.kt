@@ -6,6 +6,7 @@ import androidx.compose.runtime.Immutable
 data class AddUserNameViewState(
     val username: String,
     val isUserNameValid: Boolean,
+    val isSaveButtonEnabled: Boolean,
     val event: AddUserNameEvent? = null
 )
 

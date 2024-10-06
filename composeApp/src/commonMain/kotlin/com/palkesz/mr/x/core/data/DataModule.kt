@@ -28,7 +28,7 @@ val dataModule = module {
     singleOf(::AuthRepositoryImpl) bind AuthRepository::class
     singleOf(::MrXDataStoreImpl) bind MrxDataStore::class
     includes(dataStoreModule)
-    single<UserRepository> { UserRepositoryImpl(get(), get()) }
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
     single<GameRepository> { GameRepositoryImpl(get(), get(), get()) }
     single<QuestionRepository> { QuestionRepositoryImpl(get(), get(), get()) }
 }
