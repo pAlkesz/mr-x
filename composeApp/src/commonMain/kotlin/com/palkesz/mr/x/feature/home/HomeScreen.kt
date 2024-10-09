@@ -6,33 +6,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.palkesz.mr.x.core.ui.components.BaseCard
-import com.palkesz.mr.x.feature.app.LocalAppState
-import com.palkesz.mr.x.feature.app.LocalNavController
+import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.create_game
 import mrx.composeapp.generated.resources.create_game_descr
-import mrx.composeapp.generated.resources.home
 import mrx.composeapp.generated.resources.join_game
 import mrx.composeapp.generated.resources.join_game_descr
 import mrx.composeapp.generated.resources.rules_button_label
 import mrx.composeapp.generated.resources.rules_card_description
 import mrx.composeapp.generated.resources.rules_title
-import org.jetbrains.compose.resources.getString
 
 @Composable
 fun HomeScreen() {
-    val appState = LocalAppState.current
     val navController = LocalNavController.current
-    LaunchedEffect(Unit) {
-        appState.apply {
-            showBottomAppBar()
-            setScreenTitle(getString(Res.string.home))
-        }
-    }
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,

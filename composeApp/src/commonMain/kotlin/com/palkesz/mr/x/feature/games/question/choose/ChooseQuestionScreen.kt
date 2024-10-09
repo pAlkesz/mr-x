@@ -17,10 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
-import com.palkesz.mr.x.feature.app.LocalAppScope
-import com.palkesz.mr.x.feature.app.LocalAppState
-import com.palkesz.mr.x.feature.app.LocalNavController
-import com.palkesz.mr.x.feature.app.LocalSnackBarHostState
+import com.palkesz.mr.x.core.ui.providers.LocalAppScope
+import com.palkesz.mr.x.core.ui.providers.LocalAppState
+import com.palkesz.mr.x.core.ui.providers.LocalNavController
+import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.feature.games.GameGraphRoute
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
@@ -63,7 +63,6 @@ fun ChooseQuestionScreenContent(
         setGameId(gameId)
         appState.apply {
             setScreenTitle(getString(Res.string.ask_question))
-            showTopAppBar()
         }
     }
 

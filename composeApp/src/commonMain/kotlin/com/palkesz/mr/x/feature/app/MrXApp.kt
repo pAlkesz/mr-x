@@ -1,8 +1,6 @@
 package com.palkesz.mr.x.feature.app
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -11,15 +9,19 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.palkesz.mr.x.core.ui.components.MrXBottomAppBar
-import com.palkesz.mr.x.feature.app.appbars.AnimatedTopAppBar
+import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
+import com.palkesz.mr.x.core.ui.helpers.showSnackbar
+import com.palkesz.mr.x.core.ui.providers.LocalAppScope
+import com.palkesz.mr.x.core.ui.providers.LocalAppState
+import com.palkesz.mr.x.core.ui.providers.LocalNavController
+import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
+import com.palkesz.mr.x.feature.app.appbars.MrXBottomAppBar
+import com.palkesz.mr.x.feature.app.appbars.MrXTopAppBar
 import com.palkesz.mr.x.feature.app.appbars.OfflineAppBar
 import com.palkesz.mr.x.feature.authentication.AuthGraphRoute
 import com.palkesz.mr.x.feature.authentication.authGraphNavigation
@@ -29,7 +31,7 @@ import com.palkesz.mr.x.feature.home.HomeGraphRoute
 import com.palkesz.mr.x.feature.home.homeGraphNavigation
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.login_success_message
-import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.getString
 import org.koin.compose.viewmodel.koinViewModel
 
 object MrXGraph {
@@ -37,10 +39,6 @@ object MrXGraph {
     const val AUTH = "auth_graph"
     const val HOME = "home_graph"
     const val GAMES = "games_graph"
-}
-
-val LocalNavController = compositionLocalOf<NavHostController?> {
-    null
 }
 
 @Composable
@@ -70,16 +68,8 @@ private fun MrXAppContent(
         Scaffold(
             modifier = Modifier.imePadding(),
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-            topBar = { AnimatedTopAppBar() },
-            bottomBar = {
-                AnimatedVisibility(
-                    appState.currentAppData.isBottomAppBarVisible,
-                    enter = slideInVertically(initialOffsetY = { it }),
-                    exit = slideOutVertically(targetOffsetY = { it }),
-                ) {
-                    MrXBottomAppBar()
-                }
-            },
+            topBar = { MrXTopAppBar() },
+            bottomBar = { MrXBottomAppBar() },
         ) { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding)) {
                 AnimatedVisibility(visible = state.isOfflineBarVisible) {
@@ -101,23 +91,30 @@ private fun MrXAppContent(
 
 @Composable
 private fun HandleEvent(event: AppEvent?, onEventHandled: () -> Unit) {
-    event?.let {
+    HandleEventEffect(key1 = event) { appScope, snackbarHostState, navController ->
         when (event) {
+            null -> return@HandleEventEffect
             is AppEvent.ShowSnackbar -> {
-                ShowSnackbar(message = event.message)
+                appScope?.showSnackbar(
+                    snackbarHostState = snackbarHostState,
+                    message = event.message,
+                )
             }
 
             is AppEvent.NavigateToHome -> {
-                ShowSnackbar(message = stringResource(Res.string.login_success_message))
-                LocalNavController.current?.navigate(HomeGraphRoute.HomePage.route)
+                appScope?.showSnackbar(
+                    snackbarHostState = snackbarHostState,
+                    message = getString(Res.string.login_success_message),
+                )
+                navController?.navigate(HomeGraphRoute.HomePage.route)
             }
 
             is AppEvent.NavigateToMyGames -> {
-                LocalNavController.current?.navigate(GameGraphRoute.MyGamesPage.route)
+                navController?.navigate(GameGraphRoute.MyGamesPage.route)
             }
 
             is AppEvent.NavigateToAddUsername -> {
-                LocalNavController.current?.navigate(AuthGraphRoute.AddUsername.route)
+                navController?.navigate(AuthGraphRoute.AddUsername.route)
             }
         }
         onEventHandled()

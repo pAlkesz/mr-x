@@ -12,10 +12,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
+import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
+import com.palkesz.mr.x.core.ui.helpers.showSnackbar
 import com.palkesz.mr.x.core.util.networking.ViewState
-import com.palkesz.mr.x.feature.app.AppStateEffect
-import com.palkesz.mr.x.feature.app.LocalNavController
-import com.palkesz.mr.x.feature.app.ShowSnackbar
 import com.palkesz.mr.x.feature.authentication.AuthGraphRoute
 import com.palkesz.mr.x.feature.authentication.ui.AuthInputForm
 import com.palkesz.mr.x.feature.authentication.ui.ColumnWithMrxIcon
@@ -28,6 +27,7 @@ import mrx.composeapp.generated.resources.login_link_sent_title
 import mrx.composeapp.generated.resources.login_success_message
 import mrx.composeapp.generated.resources.login_title
 import mrx.composeapp.generated.resources.sending_login_link_button_label
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -49,9 +49,6 @@ private fun LoginScreenContent(
     onSendLinkClicked: () -> Unit,
     onEventHandled: () -> Unit,
 ) {
-    AppStateEffect { appState ->
-        appState.hideAppBars()
-    }
     ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onSendLinkClicked) { state ->
         HandleEvent(event = state.event, onEventHandled = onEventHandled)
         CrossFade(
@@ -96,15 +93,19 @@ private fun EmailLinkSentForm(modifier: Modifier = Modifier, email: String) {
 
 @Composable
 private fun HandleEvent(event: LoginEvent?, onEventHandled: () -> Unit) {
-    event?.let {
+    HandleEventEffect(key1 = event) { appScope, snackbarHostState, navController ->
         when (event) {
+            null -> return@HandleEventEffect
             is LoginEvent.NavigateToHome -> {
-                ShowSnackbar(message = stringResource(Res.string.login_success_message))
-                LocalNavController.current?.navigate(HomeGraphRoute.HomePage.route)
+                appScope?.showSnackbar(
+                    snackbarHostState = snackbarHostState,
+                    message = getString(Res.string.login_success_message),
+                )
+                navController?.navigate(HomeGraphRoute.HomePage.route)
             }
 
             is LoginEvent.NavigateToAddUsername -> {
-                LocalNavController.current?.navigate(AuthGraphRoute.AddUsername.route)
+                navController?.navigate(AuthGraphRoute.AddUsername.route)
             }
         }
         onEventHandled()

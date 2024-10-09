@@ -23,10 +23,10 @@ import com.palkesz.mr.x.core.ui.components.BaseTextField
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
 import com.palkesz.mr.x.core.ui.components.FirstAndLastNameTexFields
 import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
-import com.palkesz.mr.x.feature.app.LocalAppScope
-import com.palkesz.mr.x.feature.app.LocalAppState
-import com.palkesz.mr.x.feature.app.LocalNavController
-import com.palkesz.mr.x.feature.app.LocalSnackBarHostState
+import com.palkesz.mr.x.core.ui.providers.LocalAppScope
+import com.palkesz.mr.x.core.ui.providers.LocalAppState
+import com.palkesz.mr.x.core.ui.providers.LocalNavController
+import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.feature.games.GameGraphRoute
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
@@ -74,8 +74,6 @@ fun NormalQuestionScreenContent(
         setGameId(gameId)
         appState.apply {
             setScreenTitle(getString(Res.string.normal_question))
-            showTopAppBar()
-
         }
     }
     val keyboardController = LocalSoftwareKeyboardController.current

@@ -15,10 +15,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.palkesz.mr.x.core.ui.components.AnimatedNullability
+import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
+import com.palkesz.mr.x.core.ui.providers.LocalAppState
 import com.palkesz.mr.x.core.ui.theme.onSecondaryContainerLight
 import com.palkesz.mr.x.core.ui.theme.secondaryContainerLight
-import com.palkesz.mr.x.feature.app.LocalAppState
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.rules_1
 import mrx.composeapp.generated.resources.rules_1_descr
@@ -40,7 +40,6 @@ fun RulesScreen() {
     val appState = LocalAppState.current
     LaunchedEffect(Unit) {
         appState.apply {
-            showTopAppBar()
             setScreenTitle(getString(Res.string.rules_title))
         }
     }

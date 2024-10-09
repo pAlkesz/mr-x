@@ -35,17 +35,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.model.game.GameStatus
-import com.palkesz.mr.x.core.ui.components.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.AwaitedEnterTransition
 import com.palkesz.mr.x.core.ui.components.AwaitedExitTransition
 import com.palkesz.mr.x.core.ui.components.CustomRoundedCornerShape
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
 import com.palkesz.mr.x.core.ui.components.FilterDropdownMenu
 import com.palkesz.mr.x.core.ui.components.LazyAnimatedColumn
+import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.modifiers.conditional
 import com.palkesz.mr.x.core.ui.modifiers.fadingEdge
+import com.palkesz.mr.x.core.ui.providers.LocalAppState
+import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.theme.MrXTheme
 import com.palkesz.mr.x.core.ui.theme.errorContainer
 import com.palkesz.mr.x.core.ui.theme.errorContainerLight
@@ -57,8 +59,6 @@ import com.palkesz.mr.x.core.ui.theme.surfaceLight
 import com.palkesz.mr.x.core.ui.theme.tertiaryContainerLight
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.core.util.networking.getOrNull
-import com.palkesz.mr.x.feature.app.LocalAppState
-import com.palkesz.mr.x.feature.app.LocalNavController
 import com.palkesz.mr.x.feature.games.GameGraphRoute
 import kotlinx.collections.immutable.toPersistentList
 import mrx.composeapp.generated.resources.Res
@@ -136,9 +136,6 @@ fun GameDetailsScreenContent(
     val appState = LocalAppState.current
     LaunchedEffect(Unit) {
         setGameId(gameId)
-        appState.apply {
-            showTopAppBar()
-        }
     }
 
     LaunchedEffect(viewState.getOrNull()?.defaultTitle) {

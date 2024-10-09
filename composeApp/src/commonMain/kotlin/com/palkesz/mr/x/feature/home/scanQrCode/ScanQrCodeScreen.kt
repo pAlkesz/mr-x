@@ -14,10 +14,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.palkesz.mr.x.core.ui.providers.LocalAppScope
+import com.palkesz.mr.x.core.ui.providers.LocalAppState
+import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.core.ui.theme.MrXTheme
-import com.palkesz.mr.x.feature.app.LocalAppScope
-import com.palkesz.mr.x.feature.app.LocalAppState
-import com.palkesz.mr.x.feature.app.LocalSnackBarHostState
 import dev.theolm.rinku.Rinku
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
@@ -48,8 +48,6 @@ fun ScanQrCodeScreenContent(
 
     LaunchedEffect(Unit) {
         appState.apply {
-            showTopAppBar()
-
             setScreenTitle(getString(Res.string.scan_qr_code))
         }
     }

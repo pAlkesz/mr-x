@@ -21,11 +21,11 @@ import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
 import com.palkesz.mr.x.core.ui.components.FirstAndLastNameTexFields
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
+import com.palkesz.mr.x.core.ui.providers.LocalAppScope
+import com.palkesz.mr.x.core.ui.providers.LocalAppState
+import com.palkesz.mr.x.core.ui.providers.LocalNavController
+import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.core.util.networking.ViewState
-import com.palkesz.mr.x.feature.app.LocalAppScope
-import com.palkesz.mr.x.feature.app.LocalAppState
-import com.palkesz.mr.x.feature.app.LocalNavController
-import com.palkesz.mr.x.feature.app.LocalSnackBarHostState
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.answer_question
@@ -75,7 +75,6 @@ fun AnswerQuestionScreenContent(
         setNavArguments(questionId, gameId, isHost)
         appState.apply {
             setScreenTitle(getString(Res.string.answer_question))
-            showTopAppBar()
         }
     }
     val keyboardController = LocalSoftwareKeyboardController.current

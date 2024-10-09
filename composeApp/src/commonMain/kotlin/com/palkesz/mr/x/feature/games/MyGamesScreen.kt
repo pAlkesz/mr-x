@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,17 +33,14 @@ import com.palkesz.mr.x.core.ui.components.LazyAnimatedColumn
 import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.modifiers.fadingEdge
+import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.util.networking.ViewState
-import com.palkesz.mr.x.feature.app.LocalAppState
-import com.palkesz.mr.x.feature.app.LocalNavController
 import kotlinx.collections.immutable.toPersistentList
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.empty_games_list
 import mrx.composeapp.generated.resources.empty_games_with_filters
 import mrx.composeapp.generated.resources.enter_game
 import mrx.composeapp.generated.resources.mr_x
-import mrx.composeapp.generated.resources.my_games
-import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -72,15 +68,6 @@ fun MyGamesScreenContent(
     onEventHandled: () -> Unit,
     onShowQrCodeClicked: (String) -> Unit
 ) {
-    val appState = LocalAppState.current
-
-    LaunchedEffect(Unit) {
-        appState.apply {
-            showBottomAppBar()
-            setScreenTitle(getString(Res.string.my_games))
-        }
-    }
-
     ContentWithBackgroundLoadingIndicator(
         state = viewState,
         onRetry = onRetry
