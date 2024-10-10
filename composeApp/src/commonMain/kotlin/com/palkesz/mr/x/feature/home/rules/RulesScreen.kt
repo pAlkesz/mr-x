@@ -11,12 +11,10 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
-import com.palkesz.mr.x.core.ui.providers.LocalAppState
 import com.palkesz.mr.x.core.ui.theme.onSecondaryContainerLight
 import com.palkesz.mr.x.core.ui.theme.secondaryContainerLight
 import mrx.composeapp.generated.resources.Res
@@ -31,19 +29,10 @@ import mrx.composeapp.generated.resources.rules_4_descr
 import mrx.composeapp.generated.resources.rules_5
 import mrx.composeapp.generated.resources.rules_5_descr
 import mrx.composeapp.generated.resources.rules_opening
-import mrx.composeapp.generated.resources.rules_title
-import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun RulesScreen() {
-    val appState = LocalAppState.current
-    LaunchedEffect(Unit) {
-        appState.apply {
-            setScreenTitle(getString(Res.string.rules_title))
-        }
-    }
-
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         RuleDescription(
             modifier = Modifier.padding(top = 12.dp),

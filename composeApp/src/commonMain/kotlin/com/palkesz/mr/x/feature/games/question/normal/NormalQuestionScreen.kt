@@ -24,7 +24,6 @@ import com.palkesz.mr.x.core.ui.components.DebouncedButton
 import com.palkesz.mr.x.core.ui.components.FirstAndLastNameTexFields
 import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
 import com.palkesz.mr.x.core.ui.providers.LocalAppScope
-import com.palkesz.mr.x.core.ui.providers.LocalAppState
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.feature.games.GameGraphRoute
@@ -33,7 +32,6 @@ import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.ask_question
 import mrx.composeapp.generated.resources.enter_question
 import mrx.composeapp.generated.resources.expected_answer
-import mrx.composeapp.generated.resources.normal_question
 import mrx.composeapp.generated.resources.question
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
@@ -69,12 +67,8 @@ fun NormalQuestionScreenContent(
     onLastNameChanged: (String) -> Unit,
     onAskQuestionClicked: () -> Unit
 ) {
-    val appState = LocalAppState.current
     LaunchedEffect(Unit) {
         setGameId(gameId)
-        appState.apply {
-            setScreenTitle(getString(Res.string.normal_question))
-        }
     }
     val keyboardController = LocalSoftwareKeyboardController.current
 

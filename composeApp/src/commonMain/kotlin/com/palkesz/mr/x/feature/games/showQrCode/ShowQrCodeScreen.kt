@@ -16,11 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
-import com.palkesz.mr.x.core.ui.providers.LocalAppState
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.share_link
-import mrx.composeapp.generated.resources.show_qr_code
-import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import qrgenerator.QRCodeImage
@@ -47,12 +44,8 @@ fun ShowQrCodeScreenContent(
     setGameId: (String) -> Unit,
     onShareButtonClicked: () -> Unit,
 ) {
-    val appState = LocalAppState.current
     LaunchedEffect(Unit) {
         setGameId(gameId)
-        appState.apply {
-            setScreenTitle(getString(Res.string.show_qr_code))
-        }
     }
 
     AnimatedNullability(viewState.gameUrl) { url ->

@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">Mr. X</string>
     <string name="back_button">Back</string>
-    <string name="my_games">My Games</string>
-    <string name="home">Home</string>
-    <string name="create_game">Create Game</string>
-    <string name="join_game">Join Game</string>
+    <string name="create_game_title">Create game</string>
+    <string name="create_game_button_label">Create</string>
+    <string name="home_screen_title">Create And Join Games</string>
+    <string name="join_game_title">Join game</string>
+    <string name="join_game_button_label">Join</string>
     <string name="enter_game">Enter Game</string>
-    <string name="rules">Rules</string>
+    <string name="tutorial_title">How to play the game</string>
     <string name="game">Game</string>
     <string name="start">Start Destination</string>
     <string name="all_games">All Games</string>
@@ -21,8 +22,8 @@
     <string name="share_link">Share game link</string>
     <string name="upload_failed">Name upload failed</string>
     <string name="upload_success">User uploaded successfully</string>
-    <string name="create_game_descr">Create your own Mr. X lobby! Invite friends, be Mr. X, and get ready for an exciting game. Start your adventure now!</string>
-    <string name="join_game_descr">Join a Mr. X lobby! Play with friends, be the detectives, and dive into the thrilling chase. The adventure awaits!</string>
+    <string name="create_game_description">Create your own Mr. X lobby! Invite friends, be Mr. X, and get ready for an exciting game. Start your adventure now!</string>
+    <string name="join_game_description">Join a Mr. X lobby! Play with friends, be the detectives, and dive into the thrilling chase. The adventure awaits!</string>
     <string name="game_created_success">Game created successfully with code %1$s</string>
     <string name="first_name">First name (optional)</string>
     <string name="enter_first_name">Enter first name</string>
@@ -89,8 +90,8 @@
     <string name="retry_button_label">Retry</string>
     <string name="game_over">Game Over!</string>
     <string name="rules_title">How to play</string>
-    <string name="rules_card_description">Learn how to play the game. How to be Mr. X or a detective</string>
-    <string name="rules_button_label">Tutorial</string>
+    <string name="tutorial_description">Find out what it takes to play the game successfully.</string>
+    <string name="tutorial_button_label">Tutorial</string>
     <string name="rules_opening">This game can be played by any number of participants. One player is Mr. X, and the others try to guess who he/she is.</string>
     <string name="rules_1">1. Starting the Game</string>
     <string name="rules_1_descr">Mr. X initiates the game by entering the name of a well-known person (e.g., Bruce Willis), thus becoming Mr. W. Mr. X then shares the game code with others, who can join using the code.</string>

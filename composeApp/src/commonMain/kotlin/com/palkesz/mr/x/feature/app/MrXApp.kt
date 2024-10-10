@@ -17,11 +17,9 @@ import androidx.navigation.compose.rememberNavController
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.ui.helpers.showSnackbar
 import com.palkesz.mr.x.core.ui.providers.LocalAppScope
-import com.palkesz.mr.x.core.ui.providers.LocalAppState
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.feature.app.appbars.MrXBottomAppBar
-import com.palkesz.mr.x.feature.app.appbars.MrXTopAppBar
 import com.palkesz.mr.x.feature.app.appbars.OfflineAppBar
 import com.palkesz.mr.x.feature.authentication.AuthGraphRoute
 import com.palkesz.mr.x.feature.authentication.authGraphNavigation
@@ -55,11 +53,9 @@ private fun MrXAppContent(
     state: AppViewState,
     onEventHandled: () -> Unit,
 ) {
-    val appState = LocalAppState.current
     val snackbarHostState = LocalSnackBarHostState.current
     val navController = rememberNavController()
     CompositionLocalProvider(
-        LocalAppState provides appState,
         LocalSnackBarHostState provides snackbarHostState,
         LocalNavController provides navController,
         LocalAppScope provides rememberCoroutineScope(),
@@ -68,7 +64,6 @@ private fun MrXAppContent(
         Scaffold(
             modifier = Modifier.imePadding(),
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-            topBar = { MrXTopAppBar() },
             bottomBar = { MrXBottomAppBar() },
         ) { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding)) {

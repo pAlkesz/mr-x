@@ -10,7 +10,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -20,13 +19,12 @@ import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
 import com.palkesz.mr.x.core.ui.components.FirstAndLastNameTexFields
 import com.palkesz.mr.x.core.ui.providers.LocalAppScope
-import com.palkesz.mr.x.core.ui.providers.LocalAppState
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.feature.games.GameGraphRoute
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
-import mrx.composeapp.generated.resources.create_game
+import mrx.composeapp.generated.resources.create_game_title
 import mrx.composeapp.generated.resources.creation_in_progress
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
@@ -52,12 +50,6 @@ fun CreateGameScreenContent(
     onLastNameChanged: (String) -> Unit,
     onCreateGameClicked: () -> Unit,
 ) {
-    val appState = LocalAppState.current
-    LaunchedEffect(Unit) {
-        appState.apply {
-            setScreenTitle(getString(Res.string.create_game))
-        }
-    }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     HandleEvent(
@@ -96,7 +88,7 @@ fun CreateGameScreenContent(
             modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp, horizontal = 12.dp),
         ) {
             Text(
-                text = stringResource(Res.string.create_game),
+                text = stringResource(Res.string.create_game_title),
                 style = MaterialTheme.typography.headlineMedium,
             )
         }

@@ -46,7 +46,6 @@ import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.modifiers.conditional
 import com.palkesz.mr.x.core.ui.modifiers.fadingEdge
-import com.palkesz.mr.x.core.ui.providers.LocalAppState
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.theme.MrXTheme
 import com.palkesz.mr.x.core.ui.theme.errorContainer
@@ -58,7 +57,6 @@ import com.palkesz.mr.x.core.ui.theme.primaryContainerLight
 import com.palkesz.mr.x.core.ui.theme.surfaceLight
 import com.palkesz.mr.x.core.ui.theme.tertiaryContainerLight
 import com.palkesz.mr.x.core.util.networking.ViewState
-import com.palkesz.mr.x.core.util.networking.getOrNull
 import com.palkesz.mr.x.feature.games.GameGraphRoute
 import kotlinx.collections.immutable.toPersistentList
 import mrx.composeapp.generated.resources.Res
@@ -76,7 +74,6 @@ import mrx.composeapp.generated.resources.host
 import mrx.composeapp.generated.resources.host_answer_template
 import mrx.composeapp.generated.resources.host_guessed_for_host_label
 import mrx.composeapp.generated.resources.host_guessed_label
-import mrx.composeapp.generated.resources.mr_x
 import mrx.composeapp.generated.resources.no
 import mrx.composeapp.generated.resources.no_questions_have_been_asked
 import mrx.composeapp.generated.resources.pass_button_label
@@ -91,7 +88,6 @@ import mrx.composeapp.generated.resources.wrong_answer_label
 import mrx.composeapp.generated.resources.yes
 import mrx.composeapp.generated.resources.yes_or_no_text
 import mrx.composeapp.generated.resources.your_up_label
-import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -133,20 +129,8 @@ fun GameDetailsScreenContent(
     onRetry: () -> Unit,
     onFilterSelected: (QuestionItemFilter) -> Unit
 ) {
-    val appState = LocalAppState.current
     LaunchedEffect(Unit) {
         setGameId(gameId)
-    }
-
-    LaunchedEffect(viewState.getOrNull()?.defaultTitle) {
-        appState.apply {
-            viewState.getOrNull()?.let { viewState ->
-                setScreenTitle(
-                    title = getString(Res.string.mr_x, viewState.defaultTitle),
-                    optionalHiddenTitle = viewState.optionalHiddenTitle
-                )
-            }
-        }
     }
 
     ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onRetry) { data ->

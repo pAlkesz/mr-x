@@ -18,13 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
 import com.palkesz.mr.x.core.ui.providers.LocalAppScope
-import com.palkesz.mr.x.core.ui.providers.LocalAppState
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.feature.games.GameGraphRoute
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
-import mrx.composeapp.generated.resources.ask_question
 import mrx.composeapp.generated.resources.barkochba_question
 import mrx.composeapp.generated.resources.barkochba_question_count
 import mrx.composeapp.generated.resources.normal_question
@@ -58,12 +56,8 @@ fun ChooseQuestionScreenContent(
     onBarkochbaQuestionClicked: () -> Unit,
     onEventHandled: () -> Unit
 ) {
-    val appState = LocalAppState.current
     LaunchedEffect(Unit) {
         setGameId(gameId)
-        appState.apply {
-            setScreenTitle(getString(Res.string.ask_question))
-        }
     }
 
     HandleEvent(

@@ -4,7 +4,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -15,14 +14,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.providers.LocalAppScope
-import com.palkesz.mr.x.core.ui.providers.LocalAppState
 import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.core.ui.theme.MrXTheme
 import dev.theolm.rinku.Rinku
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.joining_in_progress
-import mrx.composeapp.generated.resources.scan_qr_code
 import org.jetbrains.compose.resources.getString
 import org.koin.compose.viewmodel.koinViewModel
 import qrscanner.QrScanner
@@ -44,14 +41,6 @@ fun ScanQrCodeScreenContent(
     onCompletion: (String) -> Unit,
     onEventHandled: () -> Unit
 ) {
-    val appState = LocalAppState.current
-
-    LaunchedEffect(Unit) {
-        appState.apply {
-            setScreenTitle(getString(Res.string.scan_qr_code))
-        }
-    }
-
     HandleEvent(
         onEventHandled = onEventHandled,
         event = viewState.event

@@ -5,10 +5,6 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.CoroutineScope
 
-val LocalAppState = compositionLocalOf {
-    AppState()
-}
-
 val LocalNavController = compositionLocalOf<NavHostController?> {
     null
 }

@@ -25,7 +25,6 @@ import com.palkesz.mr.x.core.ui.components.DebouncedButton
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
 import com.palkesz.mr.x.core.ui.providers.LocalAppScope
-import com.palkesz.mr.x.core.ui.providers.LocalAppState
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.core.util.networking.ViewState
@@ -36,7 +35,6 @@ import mrx.composeapp.generated.resources.ask_question
 import mrx.composeapp.generated.resources.enter_question
 import mrx.composeapp.generated.resources.question
 import mrx.composeapp.generated.resources.show_hint_text
-import mrx.composeapp.generated.resources.specify_question
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -72,12 +70,8 @@ fun SpecifyQuestionScreenContent(
     onAskQuestionClicked: () -> Unit,
     onRetry: () -> Unit
 ) {
-    val appState = LocalAppState.current
     LaunchedEffect(Unit) {
         setQuestionId(questionId, gameId)
-        appState.apply {
-            setScreenTitle(getString(Res.string.specify_question))
-        }
     }
     val keyboardController = LocalSoftwareKeyboardController.current
 
