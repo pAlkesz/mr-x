@@ -21,7 +21,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.BaseTextField
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
-import com.palkesz.mr.x.core.ui.components.FirstAndLastNameTexFields
 import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
 import com.palkesz.mr.x.core.ui.providers.LocalAppScope
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
@@ -107,18 +106,18 @@ fun NormalQuestionScreenContent(
             modifier = Modifier.padding(start = 36.dp, top = 12.dp).align(Alignment.Start),
             style = MaterialTheme.typography.headlineSmall
         )
-        FirstAndLastNameTexFields(
-            firstName = viewState.firstName,
-            lastName = viewState.lastName,
-            isFirstNameInvalid = viewState.isFirstNameInvalid,
-            isLastNameInvalid = viewState.isLastNameInvalid,
-            onFirstNameChanged = onFirstNameChanged,
-            onLastNameChanged = onLastNameChanged,
-            onDone = {
-                keyboardController?.hide()
-                onAskQuestionClicked()
-            }
-        )
+        /* FirstAndLastNameTexFields(
+             firstName = viewState.firstName,
+             lastName = viewState.lastName,
+             isFirstNameInvalid = viewState.isFirstNameInvalid,
+             isLastNameInvalid = viewState.isLastNameInvalid,
+             onFirstNameChanged = onFirstNameChanged,
+             onLastNameChanged = onLastNameChanged,
+             onDone = {
+                 keyboardController?.hide()
+                 onAskQuestionClicked()
+             }
+         )*/
         DebouncedButton(
             onClick = {
                 keyboardController?.hide()
@@ -155,7 +154,7 @@ fun HandleEvent(
             LocalAppScope.current?.launch {
                 snackbarHostState.showSnackbar(message = getString(event.message))
             }
-            navController?.popBackStack(GameGraphRoute.InGame.createRoute(event.gameId), false)
+            navController?.popBackStack(GameGraphRoute.Game.createRoute(event.gameId), false)
         }
 
         null -> return

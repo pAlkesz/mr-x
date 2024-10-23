@@ -1,6 +1,6 @@
 package com.palkesz.mr.x.core.usecase.game
 
-import com.palkesz.mr.x.core.data.game.QuestionRepository
+import com.palkesz.mr.x.core.data.question.QuestionRepository
 import com.palkesz.mr.x.core.util.extensions.flatMapResult
 import com.palkesz.mr.x.core.util.extensions.prepend
 import com.palkesz.mr.x.core.util.networking.Success

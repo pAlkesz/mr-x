@@ -3,7 +3,6 @@ package com.palkesz.mr.x.core.usecase.game
 import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.util.coroutines.CoroutineHelper
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class JoinGameWithGameIdUseCase(
@@ -13,7 +12,7 @@ class JoinGameWithGameIdUseCase(
     fun run(gameId: String) {
         authRepository.userId?.let { userId ->
             CoroutineHelper.mainScope.launch {
-                gameRepository.joinGameWithGameId(gameId = gameId, playerId = userId).collect()
+                //gameRepository.joinGameWithGameId(gameId = gameId, playerId = userId).collect()
             }
         }
     }

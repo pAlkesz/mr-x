@@ -1,23 +1,23 @@
 [versions]
-agp = "8.7.0"
+agp = "8.7.1"
 compileSdk = "34"
 minSdk = "24"
 targetSdk = "34"
-kotlin = "2.0.20"
+kotlin = "2.0.21"
 
 # AndroidX
-androidxActivityCompose = "1.9.2"
+androidxActivityCompose = "1.9.3"
 androidxViewModel = "2.8.6"
 androidxDataStore = "1.1.1"
 
 # AndroidX Compose
-composeBom = "2024.09.03"
-composePlugin = "1.6.10"
-composeNavigation = "2.7.0-alpha07"
+composeBom = "2024.10.00"
+composePlugin = "1.7.0"
+composeNavigation = "2.8.0-alpha10"
 composeViewModel = "2.8.2"
 
 # Firebase
-firebaseBom = "33.4.0"
+firebaseBom = "33.5.0"
 firebaseKotlinSdk = "2.1.0"
 googleServices = "4.4.2"
 
@@ -27,7 +27,7 @@ koinBom = "4.0.0"
 # Miscellanious
 kotlinxCollectionsImmutable = "0.3.7"
 kotlinxSerializationJson = "1.7.1"
-qrKit = "1.0.4"
+qrKit = "3.0.1"
 rinq = "0.5.0"
 napier = "2.7.1"
 konnectivity = "0.1-alpha01"

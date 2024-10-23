@@ -1,6 +1,6 @@
 package com.palkesz.mr.x.core.data.user
 
-import com.palkesz.mr.x.core.model.User
+import com.palkesz.mr.x.core.model.user.User
 import dev.gitlive.firebase.firestore.FirebaseFirestore
 
 interface UserRepository {

@@ -1,7 +1,7 @@
 package com.palkesz.mr.x.core.usecase.game
 
-import com.palkesz.mr.x.core.data.game.QuestionRepository
-import com.palkesz.mr.x.core.model.game.Status
+import com.palkesz.mr.x.core.data.question.QuestionRepository
+import com.palkesz.mr.x.core.model.question.Status
 import com.palkesz.mr.x.core.util.coroutines.CoroutineHelper
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

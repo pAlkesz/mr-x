@@ -137,7 +137,7 @@ fun HandleEvent(
             LocalAppScope.current?.launch {
                 snackbarHostState.showSnackbar(message = getString(event.message))
             }
-            navController?.popBackStack(GameGraphRoute.InGame.createRoute(event.uuid), false)
+            navController?.popBackStack(GameGraphRoute.Game.createRoute(event.uuid), false)
         }
 
         null -> return

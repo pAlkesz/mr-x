@@ -78,6 +78,7 @@ class AuthRepositoryImpl(
     companion object {
         const val AUTH_TAG = "AUTH_TAG"
         const val LINK_PARAMETER_KEY = "link"
+        const val NO_USER_ID_FOUND_MESSAGE = "NO_USER_ID_FOUND"
         private const val APP_ID = "com.palkesz.mr.x"
         private const val SIGN_IN_LINK = "https://mrxapp.page.link/signIn"
     }

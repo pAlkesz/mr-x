@@ -93,9 +93,8 @@ private fun EmailLinkSentForm(modifier: Modifier = Modifier, email: String) {
 
 @Composable
 private fun HandleEvent(event: LoginEvent?, onEventHandled: () -> Unit) {
-    HandleEventEffect(key1 = event) { appScope, snackbarHostState, navController ->
-        when (event) {
-            null -> return@HandleEventEffect
+    HandleEventEffect(key1 = event) { loginEvent, appScope, snackbarHostState, navController ->
+        when (loginEvent) {
             is LoginEvent.NavigateToHome -> {
                 appScope?.showSnackbar(
                     snackbarHostState = snackbarHostState,

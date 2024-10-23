@@ -4,8 +4,8 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.palkesz.mr.x.core.data.auth.AuthRepository
+import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.usecase.game.JoinGameWithGameIdUseCase
-import com.palkesz.mr.x.feature.network.NetworkErrorRepository
 import com.plusmobileapps.konnectivity.Konnectivity
 import dev.theolm.rinku.DeepLink
 import dev.theolm.rinku.getParameter
@@ -26,8 +26,8 @@ interface AppViewModel {
 
 @Stable
 class AppViewModelImpl(
-    private val networkErrorRepository: NetworkErrorRepository,
     private val authRepository: AuthRepository,
+    private val gameRepository: GameRepository,
     private val joinGameWithGameIdUseCase: JoinGameWithGameIdUseCase,
     private val konnectivity: Konnectivity,
 ) : ViewModel(), AppViewModel {
@@ -41,23 +41,13 @@ class AppViewModelImpl(
     override val viewState = _viewState.asStateFlow()
 
     init {
-        observeErrorChanges()
         observeConnectivity()
         observeDeepLinks()
+        observeGames()
     }
 
     override fun onEventHandled() {
         _viewState.update { it.copy(event = null) }
-    }
-
-    private fun observeErrorChanges() {
-        viewModelScope.launch {
-            networkErrorRepository.error.collect { error ->
-                error.message?.let { message ->
-                    _viewState.update { it.copy(event = AppEvent.ShowSnackbar(message = message)) }
-                }
-            }
-        }
     }
 
     private fun observeConnectivity() {
@@ -75,6 +65,16 @@ class AppViewModelImpl(
                     listenForDeepLinks { link ->
                         onDeepLinkReceived(link = link)
                     }
+                }
+            }
+        }
+    }
+
+    private fun observeGames() {
+        viewModelScope.launch {
+            authRepository.loggedIn.collectLatest { isLoggedIn ->
+                if (isLoggedIn) {
+                    gameRepository.observeGames()
                 }
             }
         }

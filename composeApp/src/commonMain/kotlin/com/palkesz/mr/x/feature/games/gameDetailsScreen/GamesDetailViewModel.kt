@@ -2,28 +2,19 @@ package com.palkesz.mr.x.feature.games.gameDetailsScreen
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.palkesz.mr.x.core.data.auth.AuthRepository
-import com.palkesz.mr.x.core.data.game.QuestionRepository
+import com.palkesz.mr.x.core.data.question.QuestionRepository
 import com.palkesz.mr.x.core.usecase.game.AnswerBarkochbaQuestionUseCase
 import com.palkesz.mr.x.core.usecase.game.GetGameWithHostUseCase
 import com.palkesz.mr.x.core.usecase.game.GetQuestionsOfGameUseCase
 import com.palkesz.mr.x.core.usecase.game.PassQuestionAsHostUseCase
-import com.palkesz.mr.x.core.usecase.game.question.DeclineHostAnswerUseCase
-import com.palkesz.mr.x.core.util.extensions.combineResultPair
-import com.palkesz.mr.x.core.util.networking.Error
-import com.palkesz.mr.x.core.util.networking.Loading
-import com.palkesz.mr.x.core.util.networking.Success
+import com.palkesz.mr.x.core.usecase.question.DeclineHostAnswerUseCase
 import com.palkesz.mr.x.core.util.networking.ViewState
-import com.palkesz.mr.x.core.util.networking.getOrNull
 import com.palkesz.mr.x.core.util.networking.updateIfSuccess
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 @Stable
 class GamesDetailViewModel(
@@ -43,7 +34,7 @@ class GamesDetailViewModel(
     val viewState: StateFlow<ViewState<GameDetailsViewState>> = _viewState.asStateFlow()
 
     private fun getGame() {
-        gameId?.let {
+        /*gameId?.let {
             viewModelScope.launch {
                 getGameWithHostUseCase.run(it).combineResultPair(
                     getQuestionsOfGameUseCase.run(it)
@@ -63,7 +54,7 @@ class GamesDetailViewModel(
                     }
                 }
             }
-        }
+        }*/
     }
 
     fun onFilterSelected(filter: QuestionItemFilter) {

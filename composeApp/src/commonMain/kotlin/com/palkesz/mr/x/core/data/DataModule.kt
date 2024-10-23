@@ -9,8 +9,8 @@ import com.palkesz.mr.x.core.data.datastore.MrXDataStoreImpl
 import com.palkesz.mr.x.core.data.datastore.MrxDataStore
 import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.data.game.GameRepositoryImpl
-import com.palkesz.mr.x.core.data.game.QuestionRepository
-import com.palkesz.mr.x.core.data.game.QuestionRepositoryImpl
+import com.palkesz.mr.x.core.data.question.QuestionRepository
+import com.palkesz.mr.x.core.data.question.QuestionRepositoryImpl
 import com.palkesz.mr.x.core.data.user.UserRepository
 import com.palkesz.mr.x.core.data.user.UserRepositoryImpl
 import dev.gitlive.firebase.Firebase
@@ -25,12 +25,12 @@ import org.koin.dsl.module
 val dataModule = module {
     single { Firebase.auth }
     single { Firebase.firestore }
+    includes(dataStoreModule)
     singleOf(::AuthRepositoryImpl) bind AuthRepository::class
     singleOf(::MrXDataStoreImpl) bind MrxDataStore::class
-    includes(dataStoreModule)
     singleOf(::UserRepositoryImpl) bind UserRepository::class
-    single<GameRepository> { GameRepositoryImpl(get(), get(), get()) }
-    single<QuestionRepository> { QuestionRepositoryImpl(get(), get(), get()) }
+    singleOf(::GameRepositoryImpl) bind GameRepository::class
+    singleOf(::QuestionRepositoryImpl) bind QuestionRepository::class
 }
 
 expect val dataStoreModule: Module

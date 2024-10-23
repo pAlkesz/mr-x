@@ -1,15 +1,12 @@
 package com.palkesz.mr.x.core.ui.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,12 +17,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import mrx.composeapp.generated.resources.Res
-import mrx.composeapp.generated.resources.enter_first_name
-import mrx.composeapp.generated.resources.enter_last_name
-import mrx.composeapp.generated.resources.first_name
-import mrx.composeapp.generated.resources.last_name
 import mrx.composeapp.generated.resources.spy
-import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
@@ -87,54 +79,3 @@ fun texfieldColors() = TextFieldDefaults.colors(
     focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimaryContainer,
     errorContainerColor = MaterialTheme.colorScheme.errorContainer
 )
-
-@Composable
-fun FirstAndLastNameTexFields(
-    firstName: String,
-    lastName: String,
-    isFirstNameInvalid: Boolean,
-    isLastNameInvalid: Boolean,
-    onFirstNameChanged: (String) -> Unit,
-    onLastNameChanged: (String) -> Unit,
-    onDone: () -> Unit
-) {
-    BaseTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = firstName,
-        onValueChange = {
-            onFirstNameChanged(it)
-        },
-        label = {
-            Text(text = stringResource(Res.string.first_name))
-        },
-        placeholder = {
-            Text(text = stringResource(Res.string.enter_first_name))
-        },
-        imeAction = ImeAction.Next,
-        isError = isFirstNameInvalid,
-        shape = RoundedCornerShape(
-            topStartPercent = 100, topEndPercent = 5,
-            bottomEndPercent = 100, bottomStartPercent = 5
-        )
-    )
-    BaseTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = lastName,
-        onValueChange = {
-            onLastNameChanged(it)
-        },
-        label = {
-            Text(text = stringResource(Res.string.last_name))
-        },
-        placeholder = {
-            Text(text = stringResource(Res.string.enter_last_name))
-        },
-        isError = isLastNameInvalid,
-        imeAction = ImeAction.Done,
-        keyboardActions = KeyboardActions(onDone = { onDone() }),
-        shape = RoundedCornerShape(
-            topStartPercent = 5, topEndPercent = 100,
-            bottomEndPercent = 5, bottomStartPercent = 100
-        )
-    )
-}

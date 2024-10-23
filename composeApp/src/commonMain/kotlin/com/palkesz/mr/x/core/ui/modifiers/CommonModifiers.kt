@@ -1,13 +1,13 @@
 package com.palkesz.mr.x.core.ui.modifiers
 
 import androidx.compose.foundation.clickable
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
@@ -24,19 +24,19 @@ fun Modifier.conditional(condition: Boolean, modifier: Modifier.() -> Modifier) 
     }
 
 fun Modifier.fadingEdge(brush: Brush) = then(
-    graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
-        .drawWithContent {
-            drawContent()
-            drawRect(brush = brush, blendMode = BlendMode.SrcOver)
-        }
+    graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen).drawWithContent {
+        drawContent()
+        drawRect(brush = brush, blendMode = BlendMode.SrcOver)
+    }
 )
 
+@Composable
 fun Modifier.debouncedClickable(
     enabled: Boolean = true,
     onClickLabel: String? = null,
     role: Role? = null,
     onClick: () -> Unit,
-) = then(composed {
+): Modifier {
     var wasClicked by remember { mutableStateOf(false) }
     LaunchedEffect(wasClicked) {
         if (wasClicked) {
@@ -44,10 +44,10 @@ fun Modifier.debouncedClickable(
             wasClicked = false
         }
     }
-    Modifier.clickable(enabled && !wasClicked, onClickLabel, role) {
+    return this then Modifier.clickable(enabled && !wasClicked, onClickLabel, role) {
         wasClicked = true
         onClick()
     }
-})
+}
 
 private const val ON_CLICK_DEBOUNCE_TIME = 400L

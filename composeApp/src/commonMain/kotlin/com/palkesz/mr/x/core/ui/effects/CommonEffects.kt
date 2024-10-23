@@ -10,14 +10,14 @@ import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun HandleEventEffect(
-    key1: Any?,
-    block: suspend CoroutineScope.(CoroutineScope?, SnackbarHostState, NavHostController?) -> Unit,
+fun <T> HandleEventEffect(
+    key1: T?,
+    block: suspend CoroutineScope.(T, CoroutineScope?, SnackbarHostState, NavHostController?) -> Unit,
 ) {
     val snackbarHostState = LocalSnackBarHostState.current
     val appScope = LocalAppScope.current
     val navController = LocalNavController.current
     LaunchedEffect(key1 = key1) {
-        block(appScope, snackbarHostState, navController)
+        key1?.let { block(it, appScope, snackbarHostState, navController) }
     }
 }

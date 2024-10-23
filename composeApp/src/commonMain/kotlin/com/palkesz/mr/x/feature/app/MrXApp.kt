@@ -8,28 +8,22 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
-import com.palkesz.mr.x.core.ui.helpers.showSnackbar
 import com.palkesz.mr.x.core.ui.providers.LocalAppScope
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.feature.app.appbars.MrXBottomAppBar
 import com.palkesz.mr.x.feature.app.appbars.OfflineAppBar
-import com.palkesz.mr.x.feature.authentication.AuthGraphRoute
 import com.palkesz.mr.x.feature.authentication.authGraphNavigation
 import com.palkesz.mr.x.feature.games.GameGraphRoute
-import com.palkesz.mr.x.feature.games.myGamesGraphNavigation
-import com.palkesz.mr.x.feature.home.HomeGraphRoute
+import com.palkesz.mr.x.feature.games.gamesGraphNavigation
 import com.palkesz.mr.x.feature.home.homeGraphNavigation
-import mrx.composeapp.generated.resources.Res
-import mrx.composeapp.generated.resources.login_success_message
-import org.jetbrains.compose.resources.getString
 import org.koin.compose.viewmodel.koinViewModel
 
 object MrXGraph {
@@ -41,7 +35,7 @@ object MrXGraph {
 
 @Composable
 fun MrXApp(viewModel: AppViewModel = koinViewModel<AppViewModelImpl>()) {
-    val viewState by viewModel.viewState.collectAsState()
+    val viewState by viewModel.viewState.collectAsStateWithLifecycle()
     MrXAppContent(
         state = viewState,
         onEventHandled = viewModel::onEventHandled,
@@ -77,7 +71,7 @@ private fun MrXAppContent(
                 ) {
                     authGraphNavigation()
                     homeGraphNavigation()
-                    myGamesGraphNavigation()
+                    gamesGraphNavigation()
                 }
             }
         }
@@ -86,30 +80,10 @@ private fun MrXAppContent(
 
 @Composable
 private fun HandleEvent(event: AppEvent?, onEventHandled: () -> Unit) {
-    HandleEventEffect(key1 = event) { appScope, snackbarHostState, navController ->
-        when (event) {
-            null -> return@HandleEventEffect
-            is AppEvent.ShowSnackbar -> {
-                appScope?.showSnackbar(
-                    snackbarHostState = snackbarHostState,
-                    message = event.message,
-                )
-            }
-
-            is AppEvent.NavigateToHome -> {
-                appScope?.showSnackbar(
-                    snackbarHostState = snackbarHostState,
-                    message = getString(Res.string.login_success_message),
-                )
-                navController?.navigate(HomeGraphRoute.HomePage.route)
-            }
-
+    HandleEventEffect(key1 = event) { appEvent, _, _, navController ->
+        when (appEvent) {
             is AppEvent.NavigateToMyGames -> {
-                navController?.navigate(GameGraphRoute.MyGamesPage.route)
-            }
-
-            is AppEvent.NavigateToAddUsername -> {
-                navController?.navigate(AuthGraphRoute.AddUsername.route)
+                navController?.navigate(GameGraphRoute.Games.route)
             }
         }
         onEventHandled()

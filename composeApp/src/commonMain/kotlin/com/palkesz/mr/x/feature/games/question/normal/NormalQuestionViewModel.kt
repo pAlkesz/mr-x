@@ -1,20 +1,15 @@
 package com.palkesz.mr.x.feature.games.question.normal
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.usecase.game.GetAndObserveGameUseCase
 import com.palkesz.mr.x.core.usecase.game.UploadNormalQuestionUseCase
 import com.palkesz.mr.x.core.util.extensions.validateAsName
-import com.palkesz.mr.x.core.util.networking.onSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.ask_in_progress
-import mrx.composeapp.generated.resources.game_ended_message
 import mrx.composeapp.generated.resources.input_error
 import mrx.composeapp.generated.resources.missing_last_name
 import mrx.composeapp.generated.resources.missing_question
@@ -103,12 +98,12 @@ class NormalQuestionViewModelImpl(
                 }
 
             else -> gameId?.let { gameId ->
-                uploadNormalQuestionUseCase.run(
+                /*uploadNormalQuestionUseCase.run(
                     text = _viewState.value.text,
                     firstName = _viewState.value.firstName,
                     lastName = _viewState.value.lastName,
                     gameId = gameId
-                )
+                )*/
 
                 _viewState.update { currentState ->
                     currentState.copy(
@@ -131,7 +126,7 @@ class NormalQuestionViewModelImpl(
     }
 
     private fun observeGameStatus() {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             gameId?.let { gameId ->
                 getAndObserveGameUseCase.run(gameId).collect { result ->
                     result.onSuccess { game ->
@@ -148,7 +143,7 @@ class NormalQuestionViewModelImpl(
                     }
                 }
             }
-        }
+        }*/
     }
 
 }

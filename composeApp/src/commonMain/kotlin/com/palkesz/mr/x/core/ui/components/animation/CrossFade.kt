@@ -15,7 +15,7 @@ fun CrossFade(
     onConditionFalse: @Composable () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Crossfade(targetState = condition, modifier = modifier, label = "CrossFade") {
+    Crossfade(targetState = condition, modifier = modifier) {
         if (it) {
             onConditionTrue()
         } else {

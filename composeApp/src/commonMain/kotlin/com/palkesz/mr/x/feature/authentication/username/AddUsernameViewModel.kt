@@ -62,7 +62,7 @@ class AddUsernameViewModelImpl(
                 AddUserNameViewState(
                     username = username,
                     isUserNameValid = isUsernameValid,
-                    isSaveButtonEnabled = isConnected,
+                    isSaveButtonEnabled = isConnected && isUsernameValid,
                     event = event,
                 )
             }
@@ -70,6 +70,7 @@ class AddUsernameViewModelImpl(
 
     override fun onUsernameChanged(username: String) {
         this.username.update { username }
+        isUsernameValid.update { true }
     }
 
     override fun onSaveClicked() {

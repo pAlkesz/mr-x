@@ -10,10 +10,3 @@ fun CustomRoundedCornerShape(): Shape {
 		topStartPercent = 100, topEndPercent = 5,
 		bottomEndPercent = 100, bottomStartPercent = 5)
 }
-
-@Composable
-fun CustomRoundedCornerShapeMirrored(): Shape {
-	return RoundedCornerShape(
-		topStartPercent = 5, topEndPercent = 100,
-		bottomEndPercent = 5, bottomStartPercent = 100)
-}

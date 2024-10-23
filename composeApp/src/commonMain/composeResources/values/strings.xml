@@ -24,11 +24,10 @@
     <string name="upload_success">User uploaded successfully</string>
     <string name="create_game_description">Create your own Mr. X lobby! Invite friends, be Mr. X, and get ready for an exciting game. Start your adventure now!</string>
     <string name="join_game_description">Join a Mr. X lobby! Play with friends, be the detectives, and dive into the thrilling chase. The adventure awaits!</string>
-    <string name="game_created_success">Game created successfully with code %1$s</string>
-    <string name="first_name">First name (optional)</string>
-    <string name="enter_first_name">Enter first name</string>
-    <string name="last_name">Last name</string>
-    <string name="enter_last_name">Enter last name</string>
+    <string name="first_name_input_label">First name</string>
+    <string name="first_name_error_message">Please enter a valid first name. The first name cannot be blank.</string>
+    <string name="last_name_input_label">Last name (optional)</string>
+    <string name="last_name_error_message">Please enter a valid last name</string>
     <string name="question">Question</string>
     <string name="enter_question">Enter question</string>
     <string name="expected_answer">Expected answer:</string>
@@ -46,7 +45,8 @@
     <string name="code_error">Input does not match a code</string>
     <string name="incorrect_code_error">There is no game with this code</string>
     <string name="normal_question_not_found_error">Normal question is not found</string>
-    <string name="mr_x">Mr. %1$s</string>
+    <string name="game_title_with_initial">Mr. %1$s</string>
+    <string name="games_screen_title">My Games</string>
     <string name="answer_question">Answer question</string>
     <string name="host">Host: %1$s</string>
     <string name="pass_button_label">Pass</string>
@@ -115,8 +115,7 @@
     <string name="game_filter_finished">Finished</string>
     <string name="game_filter_is_host">You are the host</string>
     <string name="game_filter_is_player">You are a player</string>
-    <string name="empty_games_list">There are no games!</string>
-    <string name="empty_games_with_filters">No games with the selected filters!</string>
+    <string name="no_games_message">You are not part of any game yet. Create or join a game to start playing!</string>
     <string name="email_field_label">Email</string>
     <string name="username_field_label">Username</string>
     <string name="login_button_label">Sign in</string>

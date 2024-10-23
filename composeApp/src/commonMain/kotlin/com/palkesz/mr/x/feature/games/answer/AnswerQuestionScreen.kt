@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
-import com.palkesz.mr.x.core.ui.components.FirstAndLastNameTexFields
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.providers.LocalAppScope
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
@@ -97,7 +96,7 @@ fun AnswerQuestionScreenContent(
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-            FirstAndLastNameTexFields(
+            /*FirstAndLastNameTexFields(
                 firstName = data.firstName,
                 lastName = data.lastName,
                 isFirstNameInvalid = data.isFirstNameInvalid,
@@ -108,7 +107,7 @@ fun AnswerQuestionScreenContent(
                     keyboardController?.hide()
                     onAnswerQuestionClicked()
                 }
-            )
+            )*/
             DebouncedButton(
                 onClick = {
                     keyboardController?.hide()

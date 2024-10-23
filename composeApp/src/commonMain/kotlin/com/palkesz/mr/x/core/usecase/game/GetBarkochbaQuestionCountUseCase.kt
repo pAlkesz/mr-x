@@ -1,8 +1,8 @@
 package com.palkesz.mr.x.core.usecase.game
 
 import com.palkesz.mr.x.core.data.auth.AuthRepository
-import com.palkesz.mr.x.core.data.game.QuestionRepository
-import com.palkesz.mr.x.core.model.game.Status
+import com.palkesz.mr.x.core.data.question.QuestionRepository
+import com.palkesz.mr.x.core.model.question.Status
 import com.palkesz.mr.x.core.util.extensions.mapResult
 
 class GetBarkochbaQuestionCountUseCase(

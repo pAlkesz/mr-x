@@ -2,16 +2,7 @@ package com.palkesz.mr.x.core.usecase.game
 
 import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.game.GameRepository
-import com.palkesz.mr.x.core.data.game.QuestionRepository
-import com.palkesz.mr.x.core.model.game.GameStatus
-import com.palkesz.mr.x.core.model.game.Question
-import com.palkesz.mr.x.core.model.game.Status
-import com.palkesz.mr.x.core.util.coroutines.CoroutineHelper
-import com.palkesz.mr.x.core.util.extensions.trimmedEqualsIgnoreCase
-import dev.gitlive.firebase.firestore.Timestamp
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlin.uuid.Uuid
+import com.palkesz.mr.x.core.data.question.QuestionRepository
 
 class UploadNormalQuestionUseCase(
     private val questionRepository: QuestionRepository,
@@ -19,7 +10,7 @@ class UploadNormalQuestionUseCase(
     private val gameRepository: GameRepository
 ) {
 
-    fun run(text: String, firstName: String, lastName: String, gameId: String) {
+    /*fun run(text: String, firstName: String, lastName: String, gameId: String) {
         authRepository.userId?.let { userId ->
             CoroutineHelper.ioScope.launch {
                 gameRepository.playerGames.value.find {
@@ -55,5 +46,5 @@ class UploadNormalQuestionUseCase(
                 }
             }
         }
-    }
+    }*/
 }

@@ -35,17 +35,14 @@ fun AddUsernameScreen(viewModel: AddUsernameViewModel = koinViewModel<AddUsernam
 }
 
 @Composable
-fun AddUsernameScreenContent(
+private fun AddUsernameScreenContent(
     viewState: ViewState<AddUserNameViewState>,
     onUsernameChanged: (String) -> Unit,
     onSaveClicked: () -> Unit,
     onEventHandled: () -> Unit,
 ) {
     ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onSaveClicked) { state ->
-        HandleEvent(
-            event = state.event,
-            onEventHandled = onEventHandled,
-        )
+        HandleEvent(event = state.event, onEventHandled = onEventHandled)
         AuthInputForm(
             modifier = Modifier.fillMaxSize().padding(16.dp),
             value = state.username,
@@ -66,9 +63,8 @@ private fun HandleEvent(
     event: AddUserNameEvent?,
     onEventHandled: () -> Unit,
 ) {
-    HandleEventEffect(key1 = event) { appScope, snackbarHostState, navController ->
-        when (event) {
-            null -> return@HandleEventEffect
+    HandleEventEffect(key1 = event) { addUserNameEvent, appScope, snackbarHostState, navController ->
+        when (addUserNameEvent) {
             is AddUserNameEvent.NavigateToHome -> {
                 appScope?.showSnackbar(
                     snackbarHostState = snackbarHostState,

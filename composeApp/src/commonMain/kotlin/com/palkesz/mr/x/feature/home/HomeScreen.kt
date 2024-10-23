@@ -41,47 +41,46 @@ import org.jetbrains.compose.resources.stringResource
 fun HomeScreen() {
     val navController = LocalNavController.current
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
-            .verticalScroll(rememberScrollState()),
+        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         CenteredTitleBar(
             title = stringResource(Res.string.home_screen_title),
             navigationIcon = null,
         )
-        HomeScreenCard(
-            modifier = Modifier.padding(bottom = 16.dp),
-            title = stringResource(Res.string.create_game_title),
-            text = stringResource(Res.string.create_game_description),
-            backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-        ) {
-            HomePrimaryButton(
-                text = stringResource(Res.string.create_game_button_label),
-                onClick = { navController?.navigate(HomeGraphRoute.CreateGame.route) },
-            )
-        }
-        HomeScreenCard(
-            modifier = Modifier.padding(bottom = 16.dp),
-            title = stringResource(Res.string.join_game_title),
-            text = stringResource(Res.string.join_game_description),
-            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-        ) {
-            HomePrimaryButton(
-                text = stringResource(Res.string.join_game_button_label),
-                onClick = { navController?.navigate(HomeGraphRoute.JoinGame.route) },
-            )
-        }
-        HomeScreenCard(
-            title = stringResource(Res.string.tutorial_title),
-            text = stringResource(Res.string.tutorial_description),
-            backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
-        ) {
-            HomeSecondaryButton(
-                text = stringResource(Res.string.tutorial_button_label),
-                onClick = { navController?.navigate(HomeGraphRoute.Rules.route) },
-            )
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            HomeScreenCard(
+                modifier = Modifier.padding(bottom = 16.dp),
+                title = stringResource(Res.string.create_game_title),
+                text = stringResource(Res.string.create_game_description),
+                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+            ) {
+                HomePrimaryButton(
+                    text = stringResource(Res.string.create_game_button_label),
+                    onClick = { navController?.navigate(HomeGraphRoute.CreateGame.route) },
+                )
+            }
+            HomeScreenCard(
+                modifier = Modifier.padding(bottom = 16.dp),
+                title = stringResource(Res.string.join_game_title),
+                text = stringResource(Res.string.join_game_description),
+                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+            ) {
+                HomePrimaryButton(
+                    text = stringResource(Res.string.join_game_button_label),
+                    onClick = { navController?.navigate(HomeGraphRoute.JoinGame.route) },
+                )
+            }
+            HomeScreenCard(
+                title = stringResource(Res.string.tutorial_title),
+                text = stringResource(Res.string.tutorial_description),
+                backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
+            ) {
+                HomeSecondaryButton(
+                    text = stringResource(Res.string.tutorial_button_label),
+                    onClick = { navController?.navigate(HomeGraphRoute.Rules.route) },
+                )
+            }
         }
     }
 }
@@ -111,7 +110,7 @@ private fun HomeScreenCard(
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
-                modifier = Modifier.padding(bottom = 16.dp, end = 70.dp)
+                modifier = Modifier.padding(bottom = 16.dp, end = 16.dp)
             )
             button()
         }

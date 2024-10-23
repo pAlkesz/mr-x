@@ -1,9 +1,9 @@
 package com.palkesz.mr.x.feature.games.gameDetailsScreen
 
-import com.palkesz.mr.x.core.model.GameWithHost
 import com.palkesz.mr.x.core.model.game.GameStatus
-import com.palkesz.mr.x.core.model.game.Question
-import com.palkesz.mr.x.core.model.game.Status
+import com.palkesz.mr.x.core.model.game.GameWithHost
+import com.palkesz.mr.x.core.model.question.Question
+import com.palkesz.mr.x.core.model.question.Status
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -15,7 +15,7 @@ class GameDetailsUiMapper {
 	) = if (pair.first.host.id == userId) {
 		GameDetailsViewState(
 			hostName = pair.first.host.name,
-			defaultTitle = pair.first.game.lastName.first().toString(),
+			defaultTitle = pair.first.game.lastName?.first().toString(),
 			optionalHiddenTitle = "${pair.first.game.firstName} ${pair.first.game.lastName}".trim(),
 			playerIsHost = true,
 			isAskQuestionButtonVisible = false,
@@ -31,7 +31,7 @@ class GameDetailsUiMapper {
 	else {
 		GameDetailsViewState(
 			hostName = pair.first.host.name,
-			defaultTitle = pair.first.game.lastName.first().toString(),
+			defaultTitle = pair.first.game.lastName?.first().toString(),
 			optionalHiddenTitle = null,
 			playerIsHost = false,
 			isAskQuestionButtonVisible = pair.first.game.status == GameStatus.ONGOING,
@@ -46,10 +46,10 @@ class GameDetailsUiMapper {
 	}
 
 	fun mapQuestions(
-		questions: List<Question>,
-		playerIsHost: Boolean,
-		userId: String?,
-		filters: ImmutableList<QuestionItemFilter>
+        questions: List<Question>,
+        playerIsHost: Boolean,
+        userId: String?,
+        filters: ImmutableList<QuestionItemFilter>
 	) = questions.sortedByDescending {
 		it.lastModifiedTS.seconds
 	}.mapNotNull { question ->

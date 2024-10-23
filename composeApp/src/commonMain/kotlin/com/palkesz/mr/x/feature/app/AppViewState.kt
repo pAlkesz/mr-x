@@ -12,12 +12,6 @@ data class AppViewState(
 @Immutable
 sealed interface AppEvent {
 
-    data class ShowSnackbar(val message: String) : AppEvent
-
     data class NavigateToMyGames(val gameId: String) : AppEvent
-
-    data object NavigateToHome : AppEvent
-
-    data object NavigateToAddUsername : AppEvent
 
 }

@@ -4,15 +4,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.palkesz.mr.x.feature.app.MrXGraph
-import com.palkesz.mr.x.feature.home.createGame.CreateGameScreen
+import com.palkesz.mr.x.feature.home.create.CreateGameScreen
+import com.palkesz.mr.x.feature.home.join.JoinGameScreen
 import com.palkesz.mr.x.feature.home.rules.RulesScreen
-import com.palkesz.mr.x.feature.home.scanQrCode.ScanQrCodeScreen
 
 fun NavGraphBuilder.homeGraphNavigation() {
-    navigation(
-        startDestination = HomeGraphRoute.HomePage.route,
-        route = MrXGraph.HOME,
-    ) {
+    navigation(startDestination = HomeGraphRoute.HomePage.route, route = MrXGraph.HOME) {
         composable(route = HomeGraphRoute.HomePage.route) {
             HomeScreen()
         }
@@ -20,7 +17,7 @@ fun NavGraphBuilder.homeGraphNavigation() {
             CreateGameScreen()
         }
         composable(route = HomeGraphRoute.JoinGame.route) {
-            ScanQrCodeScreen()
+            JoinGameScreen()
         }
         composable(route = HomeGraphRoute.Rules.route) {
             RulesScreen()

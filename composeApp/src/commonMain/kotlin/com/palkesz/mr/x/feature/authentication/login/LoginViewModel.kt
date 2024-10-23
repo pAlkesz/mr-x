@@ -84,7 +84,7 @@ class LoginViewModelImpl(
                     email = email,
                     isEmailValid = isEmailValid,
                     isLinkSent = isLinkSent,
-                    isSendButtonEnabled = isConnected,
+                    isSendButtonEnabled = isConnected && isEmailValid,
                     event = event,
                 )
             }

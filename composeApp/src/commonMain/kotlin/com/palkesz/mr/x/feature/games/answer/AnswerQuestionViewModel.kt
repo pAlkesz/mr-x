@@ -1,26 +1,17 @@
 package com.palkesz.mr.x.feature.games.answer
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.usecase.game.GetGameAndQuestionUseCase
-import com.palkesz.mr.x.core.usecase.game.question.AnswerQuestionUseCase
-import com.palkesz.mr.x.core.util.extensions.safeLet
+import com.palkesz.mr.x.core.usecase.question.AnswerQuestionUseCase
 import com.palkesz.mr.x.core.util.extensions.validateAsName
-import com.palkesz.mr.x.core.util.networking.Error
-import com.palkesz.mr.x.core.util.networking.Loading
-import com.palkesz.mr.x.core.util.networking.Success
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.core.util.networking.getOrNull
 import com.palkesz.mr.x.core.util.networking.updateIfSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.answer_in_progress
-import mrx.composeapp.generated.resources.game_ended_message
 import mrx.composeapp.generated.resources.input_error
 import mrx.composeapp.generated.resources.missing_last_name
 
@@ -139,7 +130,7 @@ class AnswerQuestionViewModelImpl(
     }
 
     private fun getGameAndQuestion() {
-        safeLet(gameId, questionId) { gameId, questionId ->
+        /*safeLet(gameId, questionId) { gameId, questionId ->
             viewModelScope.launch {
                 getGameAndQuestionUseCase.run(gameId, questionId)
                     .collect { result ->
@@ -164,5 +155,6 @@ class AnswerQuestionViewModelImpl(
                     }
             }
         }
+    }*/
     }
 }

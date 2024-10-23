@@ -1,7 +1,7 @@
 package com.palkesz.mr.x.feature.games.question.specify
 
-import com.palkesz.mr.x.core.usecase.game.question.AcceptHostAnswerUseCase
-import com.palkesz.mr.x.core.usecase.game.question.GetQuestionUseCase
+import com.palkesz.mr.x.core.usecase.question.AcceptHostAnswerUseCase
+import com.palkesz.mr.x.core.usecase.question.GetQuestionUseCase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 

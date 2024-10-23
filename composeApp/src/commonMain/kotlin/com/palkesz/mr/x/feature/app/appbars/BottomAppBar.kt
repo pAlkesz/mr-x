@@ -52,7 +52,7 @@ fun MrXBottomAppBar() {
     ) {
         NavigationBar(
             modifier = Modifier.fillMaxWidth().height(72.dp),
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = Color.Transparent,
         ) {
             Row(
                 modifier = Modifier.fillMaxSize(),
@@ -66,7 +66,7 @@ fun MrXBottomAppBar() {
                 )
                 NavigationBarItem(
                     currentDestination = currentDestination,
-                    route = GameGraphRoute.MyGamesPage.route,
+                    route = GameGraphRoute.Games.route,
                     icon = vectorResource(Res.drawable.ic_game_controller),
                 )
             }
@@ -100,8 +100,8 @@ private fun NavigationBarItem(
     Box(
         modifier = Modifier
             .size(48.dp)
-            .background(color = backgroundColor, shape = CircleShape)
-            .debouncedClickable(enabled = !isSelected) { navController?.navigate(route) },
+            .debouncedClickable(enabled = !isSelected) { navController?.navigate(route) }
+            .background(color = backgroundColor, shape = CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Icon(
@@ -114,4 +114,4 @@ private fun NavigationBarItem(
 }
 
 private val bottomBarNavigationRoutes =
-    listOf(HomeGraphRoute.HomePage.route, GameGraphRoute.MyGamesPage.route)
+    listOf(HomeGraphRoute.HomePage.route, GameGraphRoute.Games.route)

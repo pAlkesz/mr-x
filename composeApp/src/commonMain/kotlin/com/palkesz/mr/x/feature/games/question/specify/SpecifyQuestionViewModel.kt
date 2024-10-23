@@ -1,25 +1,17 @@
 package com.palkesz.mr.x.feature.games.question.specify
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.usecase.game.GetGameAndQuestionUseCase
-import com.palkesz.mr.x.core.usecase.game.question.AcceptHostAnswerUseCase
+import com.palkesz.mr.x.core.usecase.question.AcceptHostAnswerUseCase
 import com.palkesz.mr.x.core.util.extensions.safeLet
-import com.palkesz.mr.x.core.util.networking.Error
-import com.palkesz.mr.x.core.util.networking.Loading
-import com.palkesz.mr.x.core.util.networking.Success
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.core.util.networking.getOrNull
 import com.palkesz.mr.x.core.util.networking.updateIfSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.ask_in_progress
-import mrx.composeapp.generated.resources.game_ended_message
 import mrx.composeapp.generated.resources.missing_question
 
 interface SpecifyQuestionViewModel {
@@ -100,7 +92,7 @@ class SpecifyQuestionViewModelImpl(
 
 	private fun getGameAndQuestion() {
 		safeLet(gameId, questionId) { gameId, questionId ->
-			viewModelScope.launch {
+			/*viewModelScope.launch {
 				getGameAndQuestionUseCase.run(gameId, questionId)
 					.collect { result ->
 						when (result) {
@@ -129,7 +121,7 @@ class SpecifyQuestionViewModelImpl(
 							}
 						}
 					}
-			}
+			}*/
 		}
 	}
 

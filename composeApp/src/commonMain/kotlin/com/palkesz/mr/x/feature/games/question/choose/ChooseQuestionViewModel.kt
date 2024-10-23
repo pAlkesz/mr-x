@@ -2,7 +2,6 @@ package com.palkesz.mr.x.feature.games.question.choose
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.usecase.game.GetAndObserveGameUseCase
 import com.palkesz.mr.x.core.usecase.game.GetBarkochbaQuestionCountUseCase
 import com.palkesz.mr.x.core.util.networking.onSuccess
@@ -11,8 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import mrx.composeapp.generated.resources.Res
-import mrx.composeapp.generated.resources.game_ended_message
 
 interface ChooseQuestionViewModel {
 
@@ -77,7 +74,7 @@ class ChooseQuestionViewModelImpl(
     }
 
     private fun observeGameStatus() {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             gameId?.let { gameId ->
                 getAndObserveGameUseCase.run(gameId).collect { result ->
                     result.onSuccess { game ->
@@ -94,6 +91,6 @@ class ChooseQuestionViewModelImpl(
                     }
                 }
             }
-        }
+        }*/
     }
 }

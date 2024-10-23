@@ -2,7 +2,7 @@ package com.palkesz.mr.x.feature.games.answer
 
 import com.palkesz.mr.x.core.usecase.game.GetAndObserveGameUseCase
 import com.palkesz.mr.x.core.usecase.game.GetGameAndQuestionUseCase
-import com.palkesz.mr.x.core.usecase.game.question.AnswerQuestionUseCase
+import com.palkesz.mr.x.core.usecase.question.AnswerQuestionUseCase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
