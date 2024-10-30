@@ -6,7 +6,7 @@ import androidx.navigation.compose.navigation
 import com.palkesz.mr.x.feature.app.MrXGraph
 import com.palkesz.mr.x.feature.home.create.CreateGameScreen
 import com.palkesz.mr.x.feature.home.join.JoinGameScreen
-import com.palkesz.mr.x.feature.home.rules.RulesScreen
+import com.palkesz.mr.x.feature.home.tutorial.TutorialScreen
 
 fun NavGraphBuilder.homeGraphNavigation() {
     navigation(startDestination = HomeGraphRoute.HomePage.route, route = MrXGraph.HOME) {
@@ -19,8 +19,8 @@ fun NavGraphBuilder.homeGraphNavigation() {
         composable(route = HomeGraphRoute.JoinGame.route) {
             JoinGameScreen()
         }
-        composable(route = HomeGraphRoute.Rules.route) {
-            RulesScreen()
+        composable(route = HomeGraphRoute.Tutorial.route) {
+            TutorialScreen()
         }
     }
 }
@@ -33,5 +33,5 @@ sealed class HomeGraphRoute(val route: String) {
 
     data object JoinGame : HomeGraphRoute("JOIN_GAME")
 
-    data object Rules : HomeGraphRoute("RULES")
+    data object Tutorial : HomeGraphRoute("TUTORIAL")
 }

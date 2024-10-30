@@ -78,7 +78,7 @@ fun HomeScreen() {
             ) {
                 HomeSecondaryButton(
                     text = stringResource(Res.string.tutorial_button_label),
-                    onClick = { navController?.navigate(HomeGraphRoute.Rules.route) },
+                    onClick = { navController?.navigate(HomeGraphRoute.Tutorial.route) },
                 )
             }
         }

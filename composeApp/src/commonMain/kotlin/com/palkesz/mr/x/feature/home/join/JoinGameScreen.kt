@@ -12,12 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.ContentDrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
@@ -46,7 +40,6 @@ private fun JoinGameScreenContent(
 ) {
     HandleEvent(event = viewState.event, onEventHandled = onEventHandled)
     Box(modifier = Modifier.fillMaxSize()) {
-        val scannerColor = MaterialTheme.colorScheme.primaryContainer
         QrScanner(
             modifier = Modifier,
             cameraLens = CameraLens.Back,
@@ -55,11 +48,12 @@ private fun JoinGameScreenContent(
             openImagePicker = false,
             onFailure = {},
             imagePickerHandler = {},
-            customOverlay = { customOverlay(scannerColor) }
+            overlayBorderColor = MaterialTheme.colorScheme.primary
         )
         FloatingActionButton(
             modifier = Modifier.align(Alignment.TopStart).padding(16.dp),
-            onClick = onBackPressed
+            onClick = onBackPressed,
+            containerColor = MaterialTheme.colorScheme.primary,
         ) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
         }
@@ -80,18 +74,4 @@ private fun HandleEvent(event: JoinGameEvent?, onEventHandled: () -> Unit) {
         }
         onEventHandled()
     }
-}
-
-private fun ContentDrawScope.customOverlay(borderColor: Color) {
-    drawContent()
-    val scanAreaSize = size.width * 0.65f
-    val left = (size.width - scanAreaSize) / 2
-    val top = (size.height - scanAreaSize) / 2
-    drawRoundRect(
-        color = borderColor,
-        cornerRadius = CornerRadius(x = 10.dp.toPx()),
-        topLeft = Offset(left, top),
-        size = Size(scanAreaSize, scanAreaSize),
-        style = Stroke(width = 6.dp.toPx()),
-    )
 }

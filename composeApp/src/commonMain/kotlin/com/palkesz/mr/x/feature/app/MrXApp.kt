@@ -43,21 +43,16 @@ fun MrXApp(viewModel: AppViewModel = koinViewModel<AppViewModelImpl>()) {
 }
 
 @Composable
-private fun MrXAppContent(
-    state: AppViewState,
-    onEventHandled: () -> Unit,
-) {
-    val snackbarHostState = LocalSnackBarHostState.current
+private fun MrXAppContent(state: AppViewState, onEventHandled: () -> Unit) {
     val navController = rememberNavController()
     CompositionLocalProvider(
-        LocalSnackBarHostState provides snackbarHostState,
         LocalNavController provides navController,
-        LocalAppScope provides rememberCoroutineScope(),
+        LocalAppScope provides rememberCoroutineScope()
     ) {
         HandleEvent(onEventHandled = onEventHandled, event = state.event)
         Scaffold(
             modifier = Modifier.imePadding(),
-            snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+            snackbarHost = { SnackbarHost(hostState = LocalSnackBarHostState.current) },
             bottomBar = { MrXBottomAppBar() },
         ) { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding)) {
