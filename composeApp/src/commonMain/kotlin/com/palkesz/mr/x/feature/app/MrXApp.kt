@@ -21,17 +21,11 @@ import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.feature.app.appbars.MrXBottomAppBar
 import com.palkesz.mr.x.feature.app.appbars.OfflineAppBar
 import com.palkesz.mr.x.feature.authentication.authGraphNavigation
-import com.palkesz.mr.x.feature.games.GameGraphRoute
+import com.palkesz.mr.x.feature.games.GameGraph
 import com.palkesz.mr.x.feature.games.gamesGraphNavigation
 import com.palkesz.mr.x.feature.home.homeGraphNavigation
 import org.koin.compose.viewmodel.koinViewModel
 
-object MrXGraph {
-    const val ROOT = "root_graph"
-    const val AUTH = "auth_graph"
-    const val HOME = "home_graph"
-    const val GAMES = "games_graph"
-}
 
 @Composable
 fun MrXApp(viewModel: AppViewModel = koinViewModel<AppViewModelImpl>()) {
@@ -61,8 +55,7 @@ private fun MrXAppContent(state: AppViewState, onEventHandled: () -> Unit) {
                 }
                 NavHost(
                     navController = navController,
-                    startDestination = if (state.isLoggedIn) MrXGraph.HOME else MrXGraph.AUTH,
-                    route = MrXGraph.ROOT,
+                    startDestination = if (state.isLoggedIn) MrXGraph.Home else MrXGraph.Auth,
                 ) {
                     authGraphNavigation()
                     homeGraphNavigation()
@@ -78,7 +71,7 @@ private fun HandleEvent(event: AppEvent?, onEventHandled: () -> Unit) {
     HandleEventEffect(key1 = event) { appEvent, _, _, navController ->
         when (appEvent) {
             is AppEvent.NavigateToMyGames -> {
-                navController?.navigate(GameGraphRoute.Games.route)
+                navController?.navigate(GameGraph.Games)
             }
         }
         onEventHandled()

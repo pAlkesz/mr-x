@@ -1,5 +1,6 @@
 package com.palkesz.mr.x.feature.games
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.palkesz.mr.x.core.data.game.GameRepository
@@ -25,6 +26,7 @@ interface GamesViewModel {
     fun onRetry()
 }
 
+@Stable
 class GamesViewModelImpl(
     private val fetchGamesUseCase: FetchGamesUseCase,
     private val gameRepository: GameRepository,

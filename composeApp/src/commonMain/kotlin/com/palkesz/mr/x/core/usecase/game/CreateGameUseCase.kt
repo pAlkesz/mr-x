@@ -22,7 +22,7 @@ class CreateGameUseCase(
                     lastName = lastName,
                     hostId = userId,
                     status = GameStatus.ONGOING,
-                    lastModifiedTimeStamp = Timestamp.now(),
+                    lastModifiedTimestamp = Timestamp.now(),
                 )
             )
         } ?: Result.failure(exception = Throwable(NO_USER_ID_FOUND_MESSAGE))

@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.game.GameRepository
+import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
+import com.palkesz.mr.x.core.data.question.QuestionRepository
 import com.palkesz.mr.x.core.usecase.game.JoinGameWithGameIdUseCase
 import com.plusmobileapps.konnectivity.Konnectivity
 import dev.theolm.rinku.DeepLink
@@ -28,6 +30,8 @@ interface AppViewModel {
 class AppViewModelImpl(
     private val authRepository: AuthRepository,
     private val gameRepository: GameRepository,
+    private val questionRepository: QuestionRepository,
+    private val barkochbaQuestionRepository: BarkochbaQuestionRepository,
     private val joinGameWithGameIdUseCase: JoinGameWithGameIdUseCase,
     private val konnectivity: Konnectivity,
 ) : ViewModel(), AppViewModel {
@@ -44,6 +48,8 @@ class AppViewModelImpl(
         observeConnectivity()
         observeDeepLinks()
         observeGames()
+        observeQuestions()
+        observeBarkochbaQuestions()
     }
 
     override fun onEventHandled() {
@@ -75,6 +81,26 @@ class AppViewModelImpl(
             authRepository.loggedIn.collectLatest { isLoggedIn ->
                 if (isLoggedIn) {
                     gameRepository.observeGames()
+                }
+            }
+        }
+    }
+
+    private fun observeQuestions() {
+        viewModelScope.launch {
+            authRepository.loggedIn.collectLatest { isLoggedIn ->
+                if (isLoggedIn) {
+                    questionRepository.observeQuestions()
+                }
+            }
+        }
+    }
+
+    private fun observeBarkochbaQuestions() {
+        viewModelScope.launch {
+            authRepository.loggedIn.collectLatest { isLoggedIn ->
+                if (isLoggedIn) {
+                    barkochbaQuestionRepository.observeQuestions()
                 }
             }
         }

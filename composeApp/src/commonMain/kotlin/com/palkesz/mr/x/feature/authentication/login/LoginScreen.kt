@@ -15,10 +15,10 @@ import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroun
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.ui.helpers.showSnackbar
 import com.palkesz.mr.x.core.util.networking.ViewState
-import com.palkesz.mr.x.feature.authentication.AuthGraphRoute
+import com.palkesz.mr.x.feature.authentication.AuthGraph
 import com.palkesz.mr.x.feature.authentication.ui.AuthInputForm
 import com.palkesz.mr.x.feature.authentication.ui.ColumnWithMrxIcon
-import com.palkesz.mr.x.feature.home.HomeGraphRoute
+import com.palkesz.mr.x.feature.home.HomeGraph
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.email_field_label
 import mrx.composeapp.generated.resources.invalid_email_label
@@ -100,11 +100,11 @@ private fun HandleEvent(event: LoginEvent?, onEventHandled: () -> Unit) {
                     snackbarHostState = snackbarHostState,
                     message = getString(Res.string.login_success_message),
                 )
-                navController?.navigate(HomeGraphRoute.HomePage.route)
+                navController?.navigate(HomeGraph.Home)
             }
 
             is LoginEvent.NavigateToAddUsername -> {
-                navController?.navigate(AuthGraphRoute.AddUsername.route)
+                navController?.navigate(AuthGraph.AddUsername)
             }
         }
         onEventHandled()

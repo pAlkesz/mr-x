@@ -2,18 +2,13 @@ package com.palkesz.mr.x.feature.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.palkesz.mr.x.core.ui.components.text.CenteredTitleBar
+import com.palkesz.mr.x.core.ui.components.button.PrimaryCardButton
+import com.palkesz.mr.x.core.ui.components.button.SecondaryCardButton
+import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.create_game_button_label
@@ -55,9 +52,9 @@ fun HomeScreen() {
                 text = stringResource(Res.string.create_game_description),
                 backgroundColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
-                HomePrimaryButton(
+                PrimaryCardButton(
                     text = stringResource(Res.string.create_game_button_label),
-                    onClick = { navController?.navigate(HomeGraphRoute.CreateGame.route) },
+                    onClick = { navController?.navigate(HomeGraph.CreateGame) },
                 )
             }
             HomeScreenCard(
@@ -66,9 +63,9 @@ fun HomeScreen() {
                 text = stringResource(Res.string.join_game_description),
                 backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
             ) {
-                HomePrimaryButton(
+                PrimaryCardButton(
                     text = stringResource(Res.string.join_game_button_label),
-                    onClick = { navController?.navigate(HomeGraphRoute.JoinGame.route) },
+                    onClick = { navController?.navigate(HomeGraph.JoinGame) },
                 )
             }
             HomeScreenCard(
@@ -76,9 +73,9 @@ fun HomeScreen() {
                 text = stringResource(Res.string.tutorial_description),
                 backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
             ) {
-                HomeSecondaryButton(
+                SecondaryCardButton(
                     text = stringResource(Res.string.tutorial_button_label),
-                    onClick = { navController?.navigate(HomeGraphRoute.Tutorial.route) },
+                    onClick = { navController?.navigate(HomeGraph.Tutorial) },
                 )
             }
         }
@@ -100,7 +97,7 @@ private fun HomeScreenCard(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                modifier = Modifier.padding(bottom = 16.dp),
+                modifier = Modifier.padding(bottom = 8.dp),
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontSize = 18.sp,
@@ -115,44 +112,4 @@ private fun HomeScreenCard(
             button()
         }
     }
-}
-
-@Composable
-private fun HomePrimaryButton(
-    modifier: Modifier = Modifier,
-    text: String,
-    onClick: () -> Unit,
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier.widthIn(max = 488.dp).fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
-        content = {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-            )
-        }
-    )
-}
-
-@Composable
-private fun HomeSecondaryButton(
-    modifier: Modifier = Modifier,
-    text: String,
-    onClick: () -> Unit,
-) {
-    OutlinedButton(
-        onClick = onClick,
-        modifier = modifier.widthIn(max = 488.dp).fillMaxWidth(),
-        colors = ButtonDefaults.outlinedButtonColors()
-            .copy(contentColor = MaterialTheme.colorScheme.outline),
-        shape = RoundedCornerShape(10.dp),
-        content = {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-            )
-        }
-    )
 }

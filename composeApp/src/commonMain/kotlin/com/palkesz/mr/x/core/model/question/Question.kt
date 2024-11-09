@@ -5,36 +5,27 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Question(
-    val hostAnswer: Answer? = null,
-    val playerAnswer: Answer? = null,
-    val barkochbaText: String = "",
-    val barkochbaAnswer: Boolean? = null,
-    val askerId: String,
+    val id: String,
+    val userId: String,
+    val gameId: String,
+    val number: Int,
     val expectedFirstName: String,
     val expectedLastName: String,
-    val gameId: String,
-    val status: Status,
+    val hostAnswer: Answer?,
+    val playerAnswer: Answer?,
+    val status: QuestionStatus,
     val text: String,
-    val uuid: String,
-    val lastModifiedTS: Timestamp
+    val lastModifiedTimestamp: Timestamp,
 )
 
+@Suppress("Unused")
 @Serializable
-data class Answer(
-	val firstName: String = "",
-	val lastName: String = "",
-	val userId: String = ""
-)
-
-@Serializable
-enum class Status {
-	WAITING_FOR_HOST,
-	WAITING_FOR_PLAYERS,
-	WAITING_FOR_OWNER,
-	CORRECT_ANSWER,
-	WRONG_ANSWER,
-	BARKOCHBA_ASKED,
-	BARKOCHBA_ANSWERED,
-	GUESSED_BY_HOST,
-	PLAYER_WON
+enum class QuestionStatus {
+    WAITING_FOR_HOST,
+    WAITING_FOR_PLAYERS,
+    WAITING_FOR_OWNER,
+    GUESSED_BY_PLAYER,
+    MISSED_BY_PLAYER,
+    GUESSED_BY_HOST,
+    PLAYERS_WON,
 }

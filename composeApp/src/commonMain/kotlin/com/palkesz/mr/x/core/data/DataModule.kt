@@ -9,6 +9,8 @@ import com.palkesz.mr.x.core.data.datastore.MrXDataStoreImpl
 import com.palkesz.mr.x.core.data.datastore.MrxDataStore
 import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.data.game.GameRepositoryImpl
+import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
+import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepositoryImpl
 import com.palkesz.mr.x.core.data.question.QuestionRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepositoryImpl
 import com.palkesz.mr.x.core.data.user.UserRepository
@@ -31,6 +33,7 @@ val dataModule = module {
     singleOf(::UserRepositoryImpl) bind UserRepository::class
     singleOf(::GameRepositoryImpl) bind GameRepository::class
     singleOf(::QuestionRepositoryImpl) bind QuestionRepository::class
+    singleOf(::BarkochbaQuestionRepositoryImpl) bind BarkochbaQuestionRepository::class
 }
 
 expect val dataStoreModule: Module

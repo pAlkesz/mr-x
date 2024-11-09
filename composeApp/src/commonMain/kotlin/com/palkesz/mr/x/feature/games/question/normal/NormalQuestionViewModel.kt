@@ -1,7 +1,7 @@
 package com.palkesz.mr.x.feature.games.question.normal
 
 import androidx.lifecycle.ViewModel
-import com.palkesz.mr.x.core.usecase.game.GetAndObserveGameUseCase
+import com.palkesz.mr.x.core.usecase.game.FetchGameResultUseCase
 import com.palkesz.mr.x.core.usecase.game.UploadNormalQuestionUseCase
 import com.palkesz.mr.x.core.util.extensions.validateAsName
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +28,7 @@ interface NormalQuestionViewModel {
 
 class NormalQuestionViewModelImpl(
     private val uploadNormalQuestionUseCase: UploadNormalQuestionUseCase,
-    private val getAndObserveGameUseCase: GetAndObserveGameUseCase
+    private val getAndObserveGameUseCase: FetchGameResultUseCase
 ) : ViewModel(), NormalQuestionViewModel {
 
     private var gameId: String? = null

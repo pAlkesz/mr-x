@@ -5,10 +5,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.graphics.Color
 
 val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -86,32 +82,8 @@ val darkScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
-data class MrXExtraColors(
-    val waitingSurfaceColor: Color = waitingContainerColor,
-    val onWaitingSurfaceColor: Color = onWaitingColor,
-    val warningSurfaceColor: Color = errorContainer,
-    val onWarningSurfaceColor: Color = onErrorContainerLight,
-    val okSurfaceColor: Color = correctContainer,
-    val onOkSurfaceColor: Color = onCorrectContainer,
-    val qrCodeColor: Color = grayColor
-)
-
-val LocalMrXColorScheme = staticCompositionLocalOf { MrXExtraColors() }
-
-object MrXTheme {
-    val extraColors: MrXExtraColors
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalMrXColorScheme.current
-}
-
 @Composable
-fun MrXTheme(
-    colorScheme: MrXExtraColors = MrXTheme.extraColors,
-    content: @Composable () -> Unit
-) {
+fun MrXTheme(content: @Composable () -> Unit) {
     val materialColorScheme = if (isSystemInDarkTheme()) darkScheme else lightScheme
-    CompositionLocalProvider(LocalMrXColorScheme provides colorScheme) {
-        MaterialTheme(colorScheme = materialColorScheme, content = content)
-    }
+    MaterialTheme(colorScheme = materialColorScheme, content = content)
 }

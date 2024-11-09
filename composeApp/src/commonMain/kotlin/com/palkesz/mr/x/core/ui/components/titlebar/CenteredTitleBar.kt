@@ -1,4 +1,4 @@
-package com.palkesz.mr.x.core.ui.components.text
+package com.palkesz.mr.x.core.ui.components.titlebar
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
@@ -9,6 +9,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
@@ -36,12 +37,13 @@ fun CenteredTitleBar(
 }
 
 @Composable
-private fun NavigationIcon(
+fun NavigationIcon(
+    modifier: Modifier = Modifier,
     iconVector: ImageVector? = Icons.AutoMirrored.Filled.ArrowBack,
     navigationAction: (NavHostController?) -> Unit = {},
 ) {
     val navController = LocalNavController.current
-    AnimatedNullability(item = iconVector) {
+    AnimatedNullability(item = iconVector, modifier = modifier) {
         IconButton(
             onClick = { navigationAction(navController) },
             content = { Icon(imageVector = it, contentDescription = null) },

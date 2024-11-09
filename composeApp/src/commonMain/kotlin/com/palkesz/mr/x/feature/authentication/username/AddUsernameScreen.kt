@@ -12,7 +12,7 @@ import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.ui.helpers.showSnackbar
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.feature.authentication.ui.AuthInputForm
-import com.palkesz.mr.x.feature.home.HomeGraphRoute
+import com.palkesz.mr.x.feature.home.HomeGraph
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.add_username_title
 import mrx.composeapp.generated.resources.invalid_username_label
@@ -70,7 +70,7 @@ private fun HandleEvent(
                     snackbarHostState = snackbarHostState,
                     message = getString(Res.string.login_success_message),
                 )
-                navController?.navigate(HomeGraphRoute.HomePage.route)
+                navController?.navigate(HomeGraph.Home)
             }
         }
         onEventHandled()

@@ -4,7 +4,7 @@ import com.palkesz.mr.x.core.data.user.UserRepository
 
 class GetGameWithHostUseCase(
     private val userRepository: UserRepository,
-    private val getAndObserveGameUseCase: GetAndObserveGameUseCase
+    private val getAndObserveGameUseCase: FetchGameResultUseCase
 ) {
 
     /*fun run(gameId: String) = getAndObserveGameUseCase.run(gameId).mapResult { game ->

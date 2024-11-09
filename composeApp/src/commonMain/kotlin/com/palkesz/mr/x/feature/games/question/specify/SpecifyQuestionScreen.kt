@@ -20,7 +20,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.BaseTextField
-import com.palkesz.mr.x.core.ui.components.ChangeableText
 import com.palkesz.mr.x.core.ui.components.DebouncedButton
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
@@ -28,13 +27,10 @@ import com.palkesz.mr.x.core.ui.providers.LocalAppScope
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.core.util.networking.ViewState
-import com.palkesz.mr.x.feature.games.GameGraphRoute
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
-import mrx.composeapp.generated.resources.ask_question
 import mrx.composeapp.generated.resources.enter_question
 import mrx.composeapp.generated.resources.question
-import mrx.composeapp.generated.resources.show_hint_text
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -121,17 +117,7 @@ fun SpecifyQuestionScreenContent(
                 ),
                 modifier = Modifier.fillMaxWidth().padding(all = 12.dp)
             ) {
-                Text(
-                    text = stringResource(Res.string.ask_question),
-                    style = MaterialTheme.typography.headlineMedium
-                )
             }
-            ChangeableText(
-                defaultText = stringResource(Res.string.show_hint_text),
-                hiddenText = data.expectedAnswer,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(24.dp)
-            )
         }
     }
 }
@@ -154,7 +140,7 @@ fun HandleEvent(
             LocalAppScope.current?.launch {
                 snackbarHostState.showSnackbar(message = getString(event.message))
             }
-            navController?.popBackStack(GameGraphRoute.Game.createRoute(event.gameId), false)
+            //navController?.popBackStack(GameGraphRoute.Game.createRoute(event.gameId), false)
         }
 
         null -> return

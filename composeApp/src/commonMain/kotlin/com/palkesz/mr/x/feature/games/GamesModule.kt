@@ -2,8 +2,8 @@ package com.palkesz.mr.x.feature.games
 
 import com.palkesz.mr.x.core.usecase.game.FetchGamesUseCase
 import com.palkesz.mr.x.feature.games.answer.answerQuestionModule
+import com.palkesz.mr.x.feature.games.game.gameModule
 import com.palkesz.mr.x.feature.games.question.barkochba.barkochbaQuestionModule
-import com.palkesz.mr.x.feature.games.question.choose.chooseQuestionModule
 import com.palkesz.mr.x.feature.games.question.normal.normalQuestionModule
 import com.palkesz.mr.x.feature.games.question.specify.specifyQuestionModule
 import org.koin.core.module.dsl.factoryOf
@@ -16,8 +16,8 @@ val gamesModule = module {
     factoryOf(::GamesUiMapper)
     viewModelOf(::GamesViewModelImpl) bind GamesViewModel::class
     includes(
+        gameModule,
         normalQuestionModule,
-        chooseQuestionModule,
         barkochbaQuestionModule,
         answerQuestionModule,
         specifyQuestionModule,

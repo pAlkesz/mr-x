@@ -1,39 +1,28 @@
 package com.palkesz.mr.x.feature.games
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.palkesz.mr.x.feature.app.MrXGraph
-import com.palkesz.mr.x.feature.games.answer.AnswerQuestionScreen
-import com.palkesz.mr.x.feature.games.gameDetailsScreen.GameDetailsScreen
-import com.palkesz.mr.x.feature.games.question.barkochba.BarkochbaQuestionScreen
-import com.palkesz.mr.x.feature.games.question.choose.ChooseQuestionScreen
-import com.palkesz.mr.x.feature.games.question.normal.NormalQuestionScreen
-import com.palkesz.mr.x.feature.games.question.specify.SpecifyQuestionScreen
-import com.palkesz.mr.x.feature.games.showQrCode.ShowQrCodeScreen
+import com.palkesz.mr.x.feature.games.game.GameScreen
+import com.palkesz.mr.x.feature.games.game.GameViewModelImpl
+import kotlinx.serialization.Serializable
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parameterSetOf
 
 fun NavGraphBuilder.gamesGraphNavigation() {
-    navigation(startDestination = GameGraphRoute.Games.route, route = MrXGraph.GAMES) {
-        composable(route = GameGraphRoute.Games.route) {
+    navigation(startDestination = GameGraph.Games, route = MrXGraph.Games::class) {
+        composable<GameGraph.Games> {
             GamesScreen()
         }
-        composable(
-            route = GameGraphRoute.Game.route.plus("/{$GAME_ID}"),
-            arguments =
-            listOf(
-                navArgument(
-                    name = GAME_ID,
-                    builder = {
-                        type = NavType.StringType
-                    },
-                ),
-            ),
-        ) { backStackEntry ->
-            GameDetailsScreen(gameId = backStackEntry.arguments?.getString(GAME_ID).toString())
+        composable<GameGraph.Game> { backStackEntry ->
+            val game = backStackEntry.toRoute<GameGraph.Game>()
+            GameScreen(viewModel = koinViewModel<GameViewModelImpl>(parameters = {
+                parameterSetOf(game.id)
+            }))
         }
-        composable(
+        /*composable(
             route = GameGraphRoute.ChooseQuestion.route.plus("/{$GAME_ID}"),
             arguments =
             listOf(
@@ -149,50 +138,46 @@ fun NavGraphBuilder.gamesGraphNavigation() {
             ),
         ) { backStackEntry ->
             ShowQrCodeScreen(gameId = backStackEntry.arguments?.getString(GAME_ID).toString())
-        }
+        }*/
     }
 }
 
-sealed class GameGraphRoute(val route: String) {
+sealed interface GameGraph {
 
-    data object Games : GameGraphRoute("GAMES")
+    @Serializable
+    data object Games : GameGraph
 
-    data object Game : GameGraphRoute("GAME") {
-        fun createRoute(gameId: String) = "$route/$gameId"
-    }
+    @Serializable
+    data class Game(val id: String) : GameGraph
 
-    data object GameQRCode : GameGraphRoute("SHOW_QR_CODE") {
-        fun createRoute(gameId: String) = "$route/$gameId"
-    }
+    /* data object GameQRCode : GameGraphRoute("SHOW_QR_CODE") {
+         fun createRoute(gameId: String) = "$route/$gameId"
+     }
 
-    data object ChooseQuestion : GameGraphRoute("CHOOSE_QUESTION") {
-        fun createRoute(gameId: String) = "$route/$gameId"
-    }
+     data object ChooseQuestion : GameGraphRoute("CHOOSE_QUESTION") {
+         fun createRoute(gameId: String) = "$route/$gameId"
+     }
 
-    data object NormalQuestion : GameGraphRoute("NORMAL_QUESTION") {
-        fun createRoute(gameId: String) = "$route/$gameId"
-    }
+     data object NormalQuestion : GameGraphRoute("NORMAL_QUESTION") {
+         fun createRoute(gameId: String) = "$route/$gameId"
+     }
 
-    data object BarkochbaQuestion : GameGraphRoute("BARKOCHBA_QUESTION") {
-        fun createRoute(gameId: String) = "$route/$gameId"
-    }
+     data object BarkochbaQuestion : GameGraphRoute("BARKOCHBA_QUESTION") {
+         fun createRoute(gameId: String) = "$route/$gameId"
+     }
 
-    data object SpecifyQuestion : GameGraphRoute("SPECIFY_QUESTION") {
-        fun createRoute(
-            questionId: String,
-            gameId: String,
-        ) = "$route/$questionId/$gameId"
-    }
+     data object SpecifyQuestion : GameGraphRoute("SPECIFY_QUESTION") {
+         fun createRoute(
+             questionId: String,
+             gameId: String,
+         ) = "$route/$questionId/$gameId"
+     }
 
-    data object AnswerQuestion : GameGraphRoute("ANSWER_QUESTION") {
-        fun createRoute(
-            questionId: String,
-            gameId: String,
-            isHost: Boolean,
-        ) = "$route/$questionId/$gameId/$isHost"
-    }
+     data object AnswerQuestion : GameGraphRoute("ANSWER_QUESTION") {
+         fun createRoute(
+             questionId: String,
+             gameId: String,
+             isHost: Boolean,
+         ) = "$route/$questionId/$gameId/$isHost"
+     }*/
 }
-
-const val GAME_ID = "gameId"
-const val QUESTION_ID = "questionId"
-const val IS_HOST = "isHost"

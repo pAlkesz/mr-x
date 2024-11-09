@@ -8,7 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,10 +25,8 @@ import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
 import com.palkesz.mr.x.core.ui.providers.LocalAppScope
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
-import com.palkesz.mr.x.feature.games.GameGraphRoute
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
-import mrx.composeapp.generated.resources.ask_question
 import mrx.composeapp.generated.resources.enter_question
 import mrx.composeapp.generated.resources.question
 import org.jetbrains.compose.resources.getString
@@ -111,10 +108,6 @@ fun BarkochbaQuestionScreenContent(
             ),
             modifier = Modifier.fillMaxWidth().padding(all = 12.dp)
         ) {
-            Text(
-                text = stringResource(Res.string.ask_question),
-                style = MaterialTheme.typography.headlineMedium
-            )
         }
     }
 }
@@ -137,7 +130,6 @@ fun HandleEvent(
             LocalAppScope.current?.launch {
                 snackbarHostState.showSnackbar(message = getString(event.message))
             }
-            navController?.popBackStack(GameGraphRoute.Game.createRoute(event.uuid), false)
         }
 
         null -> return

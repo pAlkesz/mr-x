@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
-import com.palkesz.mr.x.feature.home.HomeGraphRoute
+import com.palkesz.mr.x.feature.home.HomeGraph
 import org.koin.compose.viewmodel.koinViewModel
 import qrscanner.CameraLens
 import qrscanner.QrScanner
@@ -69,7 +69,7 @@ private fun HandleEvent(event: JoinGameEvent?, onEventHandled: () -> Unit) {
             }
 
             is JoinGameEvent.NavigateToHome -> {
-                navController?.navigate(HomeGraphRoute.HomePage.route)
+                navController?.navigate(HomeGraph.Home)
             }
         }
         onEventHandled()

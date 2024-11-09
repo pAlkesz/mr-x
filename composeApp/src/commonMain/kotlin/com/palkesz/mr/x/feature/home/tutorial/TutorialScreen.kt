@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.palkesz.mr.x.core.ui.components.text.CenteredTitleBar
+import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.ic_flag_check
 import mrx.composeapp.generated.resources.ic_mystery

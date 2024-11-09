@@ -2,20 +2,13 @@ package com.palkesz.mr.x.core.usecase.question
 
 import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepository
-import com.palkesz.mr.x.core.model.question.Answer
-import com.palkesz.mr.x.core.model.question.Status
-import com.palkesz.mr.x.core.util.coroutines.CoroutineHelper
-import com.palkesz.mr.x.core.util.extensions.safeLet
-import com.palkesz.mr.x.core.util.extensions.trimmedEqualsIgnoreCase
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 class AnswerQuestionUseCase(
     private val questionRepository: QuestionRepository,
     private val authRepository: AuthRepository
 ) {
     fun run(questionId: String, firstName: String, lastName: String, isHost: Boolean) {
-        safeLet(
+        /*safeLet(
             p1 = authRepository.userId,
             p2 = questionRepository.playerQuestions.value.find { question ->
                 question.uuid == questionId
@@ -59,6 +52,6 @@ class AnswerQuestionUseCase(
                     ).collect()
                 }
             }
-        }
+        }*/
     }
 }

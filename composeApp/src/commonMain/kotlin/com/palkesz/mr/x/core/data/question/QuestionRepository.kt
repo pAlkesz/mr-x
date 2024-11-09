@@ -1,41 +1,34 @@
 package com.palkesz.mr.x.core.data.question
 
 import com.palkesz.mr.x.core.data.game.GameRepository
+import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.model.question.Answer
 import com.palkesz.mr.x.core.model.question.Question
-import com.palkesz.mr.x.core.model.question.Status
-import com.palkesz.mr.x.core.util.networking.Error
-import com.palkesz.mr.x.core.util.networking.Loading
-import com.palkesz.mr.x.core.util.networking.Result
-import com.palkesz.mr.x.core.util.networking.Success
+import com.palkesz.mr.x.core.model.question.QuestionStatus
+import com.palkesz.mr.x.core.util.extensions.map
+import dev.gitlive.firebase.firestore.ChangeType
+import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.Timestamp
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
-import mrx.composeapp.generated.resources.Res
-import mrx.composeapp.generated.resources.normal_question_not_found_error
-import org.jetbrains.compose.resources.getString
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 
 interface QuestionRepository {
+    val questions: StateFlow<List<Question>>
 
-    val playerQuestions: StateFlow<List<Question>>
-
-    fun getQuestionsOfGame(gameId: String): Flow<Result<List<Question>>>
-    fun uploadQuestion(question: Question): Flow<Result<Unit>>
-    fun uploadBarkochbaQuestion(askerId: String, gameId: String, text: String): Flow<Result<Unit>>
-    fun uploadHostAnswer(uuid: String, answer: Answer, status: Status): Flow<Result<Unit>>
-    fun uploadPlayerAnswer(uuid: String, answer: Answer, status: Status): Flow<Result<Unit>>
-    fun updateStatus(uuid: String, status: Status): Flow<Result<Unit>>
-    fun updateQuestionText(uuid: String, text: String): Flow<Result<Unit>>
-    fun getQuestion(uuid: String): Flow<Result<Question>>
-    fun updateBarkochbaQuestion(
-        answer: Boolean,
-        questionId: String,
-        status: Status
-    ): Flow<Result<Unit>>
+    suspend fun fetchQuestions(gameId: String): Result<List<Question>>
+    suspend fun fetchQuestion(id: String): Result<Question>
+    suspend fun createQuestion(question: Question): Result<Unit>
+    suspend fun updateHostAnswer(id: String, answer: Answer, status: QuestionStatus): Result<Unit>
+    suspend fun uploadPlayerAnswer(id: String, answer: Answer, status: QuestionStatus): Result<Unit>
+    suspend fun updateStatus(id: String, status: QuestionStatus): Result<Unit>
+    suspend fun updateText(id: String, text: String): Result<Unit>
+    suspend fun observeQuestions()
 }
 
 class QuestionRepositoryImpl(
@@ -43,194 +36,138 @@ class QuestionRepositoryImpl(
     private val gameRepository: GameRepository,
 ) : QuestionRepository {
 
-    private val _playerQuestions = MutableStateFlow(emptyList<Question>())
-    override val playerQuestions = _playerQuestions.asStateFlow()
+    private val _questions = MutableStateFlow(emptyList<Question>())
+    override val questions = _questions.asStateFlow()
 
-    init {
-        //observePlayerQuestionChanges()
-    }
-
-    override fun getQuestionsOfGame(gameId: String) = flow<Result<List<Question>>> {
-        if (_playerQuestions.value.isNotEmpty()) {
-            emit(Success(_playerQuestions.value.filter { it.gameId == gameId }))
-            return@flow
+    override suspend fun fetchQuestions(gameId: String): Result<List<Question>> {
+        val gameQuestions = questions.value.filter { it.gameId == gameId }
+        if (gameQuestions.isNotEmpty()) {
+            return Result.success(gameQuestions)
         }
-        emit(Loading())
-        try {
-            val questions = firestore.collection(COLLECTION_NAME).where {
-                GAME_FIELD equalTo gameId
-            }.get().documents.map {
+        return try {
+            val questions = firestore.collection(QUESTIONS_COLLECTION_NAME).where {
+                GAME_ID_FIELD_KEY equalTo gameId
+            }.orderBy(
+                field = LAST_MODIFIED_FIELD_KEY,
+                direction = Direction.DESCENDING,
+            ).limit(QUESTIONS_FETCH_LIMIT).get().documents.map {
                 it.data(Question.serializer())
             }
-            emit(Success(questions))
-        } catch (e: Exception) {
-            emit(Error(e))
-        }
-    }
-
-    override fun uploadQuestion(question: Question) = flow<Result<Unit>> {
-        emit(Loading())
-        try {
-            firestore.collection(COLLECTION_NAME).document(question.uuid).set(question)
-            emit(Success(Unit))
-        } catch (e: Exception) {
-            emit(Error(e))
-        }
-    }
-
-    override fun uploadBarkochbaQuestion(askerId: String, gameId: String, text: String) =
-        flow<Result<Unit>> {
-            emit(Loading())
-            try {
-                val questionId = _playerQuestions.value.find {
-                    it.gameId == gameId && it.askerId == askerId && it.status == Status.CORRECT_ANSWER
-                }?.uuid
-                if (questionId == null) {
-                    emit(Error(IllegalStateException(getString(Res.string.normal_question_not_found_error))))
-                } else {
-                    firestore.collection(COLLECTION_NAME).document(questionId).update(
-                        Pair(STATUS_FIELD, Status.BARKOCHBA_ASKED),
-                        Pair(BARKOCHBA_TEXT_FIELD, text),
-                        Pair(TIMESTAMP_FIELD, Timestamp.now()),
-                    )
-                    emit(Success(Unit))
-                }
-            } catch (e: Exception) {
-                emit(Error(e))
+            _questions.update { cachedQuestions ->
+                (questions + cachedQuestions).distinctBy { it.id }
+                    .sortedByDescending { it.lastModifiedTimestamp.seconds }
             }
-        }
-
-    override fun uploadHostAnswer(uuid: String, answer: Answer, status: Status) =
-        flow<Result<Unit>> {
-            emit(Loading())
-            try {
-                firestore.collection(COLLECTION_NAME).document(uuid).update(
-                    Pair(HOST_ANSWER_FIELD, answer),
-                    Pair(STATUS_FIELD, status),
-                    Pair(TIMESTAMP_FIELD, Timestamp.now())
-                )
-                emit(Success(Unit))
-            } catch (e: Exception) {
-                emit(Error(e))
-            }
-        }
-
-    override fun uploadPlayerAnswer(uuid: String, answer: Answer, status: Status) =
-        flow<Result<Unit>> {
-            emit(Loading())
-            try {
-                firestore.collection(COLLECTION_NAME).document(uuid).update(
-                    Pair(PLAYER_ANSWER_FIELD, answer),
-                    Pair(STATUS_FIELD, status),
-                    Pair(TIMESTAMP_FIELD, Timestamp.now())
-                )
-                emit(Success(Unit))
-            } catch (e: Exception) {
-                emit(Error(e))
-            }
-        }
-
-    override fun updateStatus(uuid: String, status: Status) = flow<Result<Unit>> {
-        emit(Loading())
-        try {
-            firestore.collection(COLLECTION_NAME).document(uuid).update(
-                Pair(STATUS_FIELD, status),
-                Pair(TIMESTAMP_FIELD, Timestamp.now())
-            )
-            emit(Success(Unit))
-        } catch (e: Exception) {
-            emit(Error(e))
+            Result.success(questions)
+        } catch (exception: Exception) {
+            Result.failure(exception = exception)
         }
     }
 
-    override fun updateQuestionText(uuid: String, text: String) = flow<Result<Unit>> {
-        emit(Loading())
-        try {
-            firestore.collection(COLLECTION_NAME).document(uuid).update(
-                Pair(QUESTION_TEXT_FIELD, text),
-                Pair(STATUS_FIELD, Status.WAITING_FOR_HOST),
-                Pair(TIMESTAMP_FIELD, Timestamp.now())
-            )
-            emit(Success(Unit))
-        } catch (e: Exception) {
-            emit(Error(e))
+    override suspend fun fetchQuestion(id: String): Result<Question> {
+        questions.value.find { it.id == id }?.let {
+            return Result.success(it)
         }
-    }
-
-    override fun getQuestion(uuid: String) = flow<Result<Question>> {
-        _playerQuestions.value.find { it.uuid == uuid }?.let {
-            emit(Success(it))
-            return@flow
-        }
-        emit(Loading())
-        try {
-            val res = firestore.collection(COLLECTION_NAME).document(uuid).get()
+        return try {
+            val question = firestore.collection(QUESTIONS_COLLECTION_NAME).document(id).get()
                 .data(Question.serializer())
-            emit(Success(res))
-        } catch (e: Exception) {
-            emit(Error(e))
+            _questions.update { cachedQuestions ->
+                (listOf(question) + cachedQuestions).distinctBy { it.id }
+                    .sortedByDescending { it.lastModifiedTimestamp.seconds }
+            }
+            Result.success(question)
+        } catch (exception: Exception) {
+            Result.failure(exception = exception)
         }
     }
 
-    override fun updateBarkochbaQuestion(answer: Boolean, questionId: String, status: Status) =
-        flow<Result<Unit>> {
-            emit(Loading())
-            try {
-                firestore.collection(COLLECTION_NAME).document(questionId).update(
-                    Pair(BARKOCHBA_ANSWER_FIELD, answer),
-                    Pair(STATUS_FIELD, status),
-                    Pair(TIMESTAMP_FIELD, Timestamp.now())
-                )
-                emit(Success(Unit))
-            } catch (e: Exception) {
-                emit(Error(e))
-            }
+    override suspend fun createQuestion(question: Question) = try {
+        firestore.collection(QUESTIONS_COLLECTION_NAME).document(question.id).set(question)
+        Result.success(Unit)
+    } catch (exception: Exception) {
+        Result.failure(exception = exception)
+    }
+
+    override suspend fun updateHostAnswer(id: String, answer: Answer, status: QuestionStatus) =
+        try {
+            firestore.collection(QUESTIONS_COLLECTION_NAME).document(id).update(
+                Pair(HOST_ANSWER_FIELD_KEY, answer),
+                Pair(STATUS_FIELD_KEY, status),
+                Pair(LAST_MODIFIED_FIELD_KEY, Timestamp.now())
+            )
+            Result.success(Unit)
+        } catch (exception: Exception) {
+            Result.failure(exception = exception)
         }
 
-    /*private fun observePlayerQuestionChanges() {
-        CoroutineHelper.ioScope.launch {
-            try {
-                playerQuestionsQuerySnapshots().collect { snapshot ->
-                    val (removed, addedOrModified) =
-                        snapshot.documentChanges.partition { change ->
-                            change.type == ChangeType.REMOVED
-                        }
-                    _playerQuestions.update { questions ->
-                        (addedOrModified.map {
-                            it.document.data(Question.serializer())
-                        } + questions).distinctBy(Question::uuid)
-                            .subtract(removed.map {
-                                it.document.data(Question.serializer())
-                            }.toSet()).toList()
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+    override suspend fun uploadPlayerAnswer(id: String, answer: Answer, status: QuestionStatus) =
+        try {
+            firestore.collection(QUESTIONS_COLLECTION_NAME).document(id).update(
+                Pair(PLAYER_ANSWER_FIELD_KEY, answer),
+                Pair(STATUS_FIELD_KEY, status),
+                Pair(LAST_MODIFIED_FIELD_KEY, Timestamp.now())
+            )
+            Result.success(Unit)
+        } catch (exception: Exception) {
+            Result.failure(exception = exception)
+        }
+
+    override suspend fun updateStatus(id: String, status: QuestionStatus) = try {
+        firestore.collection(QUESTIONS_COLLECTION_NAME).document(id).update(
+            Pair(STATUS_FIELD_KEY, status),
+            Pair(LAST_MODIFIED_FIELD_KEY, Timestamp.now())
+        )
+        Result.success(Unit)
+    } catch (exception: Exception) {
+        Result.failure(exception = exception)
+    }
+
+    override suspend fun updateText(id: String, text: String) = try {
+        firestore.collection(QUESTIONS_COLLECTION_NAME).document(id).update(
+            Pair(TEXT_FIELD_KEY, text),
+            Pair(STATUS_FIELD_KEY, QuestionStatus.WAITING_FOR_HOST),
+            Pair(LAST_MODIFIED_FIELD_KEY, Timestamp.now())
+        )
+        Result.success(Unit)
+    } catch (exception: Exception) {
+        Result.failure(exception = exception)
+    }
+
+    override suspend fun observeQuestions() {
+        getQuestionSnapshotFlow().map { snapshot ->
+            snapshot.documentChanges.partition { change ->
+                change.type == ChangeType.REMOVED
+            }.map { it.document.data(Question.serializer()) }
+        }.collect { (removedQuestions, addedOrModifiedQuestions) ->
+            _questions.update { questions ->
+                (addedOrModifiedQuestions + questions).distinctBy { question -> question.id }
+                    .subtract(removedQuestions.toSet())
+                    .sortedByDescending { it.lastModifiedTimestamp.seconds }.toList()
             }
         }
-    }*/
+    }
 
-    /*private fun playerQuestionsQuerySnapshots() =
-        gameRepository.playerGames.flatMapLatest { games ->
-            if (games.isEmpty()) {
-                flowOf()
-            }
-            else {
-                firestore.collection(COLLECTION_NAME).where {
-                    GAME_FIELD inArray games.map { it.uuid }
-                }.snapshots
-            }
-        }*/
+    private fun getQuestionSnapshotFlow() = gameRepository.games.flatMapLatest { games ->
+        val activeGames = games.filter { it.status == GameStatus.ONGOING }
+        if (activeGames.isEmpty()) {
+            flowOf()
+        } else {
+            firestore.collection(QUESTIONS_COLLECTION_NAME).where {
+                GAME_ID_FIELD_KEY inArray activeGames.map { it.id }
+            }.orderBy(
+                field = LAST_MODIFIED_FIELD_KEY,
+                direction = Direction.DESCENDING,
+            ).limit(QUESTIONS_FETCH_LIMIT).snapshots
+        }
+    }
 
     companion object {
-        const val COLLECTION_NAME = "questions"
-        const val STATUS_FIELD = "status"
-        const val GAME_FIELD = "gameId"
-        const val BARKOCHBA_TEXT_FIELD = "barkochbaText"
-        const val TIMESTAMP_FIELD = "lastModifiedTS"
-        const val HOST_ANSWER_FIELD = "hostAnswer"
-        const val PLAYER_ANSWER_FIELD = "playerAnswer"
-        const val QUESTION_TEXT_FIELD = "text"
-        const val BARKOCHBA_ANSWER_FIELD = "barkochbaAnswer"
+        private const val QUESTIONS_COLLECTION_NAME = "questions"
+        private const val GAME_ID_FIELD_KEY = "gameId"
+        private const val HOST_ANSWER_FIELD_KEY = "hostAnswer"
+        private const val PLAYER_ANSWER_FIELD_KEY = "playerAnswer"
+        private const val TEXT_FIELD_KEY = "text"
+        private const val STATUS_FIELD_KEY = "status"
+        private const val LAST_MODIFIED_FIELD_KEY = "lastModifiedTimestamp"
+        private const val QUESTIONS_FETCH_LIMIT = 300
     }
 }

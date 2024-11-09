@@ -31,7 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
-import com.palkesz.mr.x.core.ui.components.text.CenteredTitleBar
+import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.util.networking.ViewState
 import mrx.composeapp.generated.resources.Res
@@ -57,7 +57,7 @@ fun GamesScreen(viewModel: GamesViewModel = koinViewModel<GamesViewModelImpl>())
 }
 
 @Composable
-fun GamesScreenContent(
+private fun GamesScreenContent(
     viewState: ViewState<GamesViewState>,
     onRetry: () -> Unit,
     onGameClicked: (String) -> Unit,
@@ -157,7 +157,7 @@ private fun HandleEvent(event: GamesEvent?, onEventHandled: () -> Unit) {
     HandleEventEffect(event) { gameEvent, _, _, navController ->
         when (gameEvent) {
             is GamesEvent.NavigateToGame -> {
-                navController?.navigate(GameGraphRoute.Game.createRoute(gameEvent.id))
+                navController?.navigate(GameGraph.Game(gameEvent.id))
             }
         }
         onEventHandled()

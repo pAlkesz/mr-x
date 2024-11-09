@@ -2,6 +2,7 @@ package com.palkesz.mr.x.core.util.extensions
 
 import com.palkesz.mr.x.core.data.auth.AuthRepositoryImpl.Companion.LINK_PARAMETER_KEY
 import com.palkesz.mr.x.core.model.game.Game
+import com.palkesz.mr.x.core.model.question.Answer
 import com.palkesz.mr.x.core.util.platform.isAndroid
 import dev.theolm.rinku.DeepLink
 
@@ -17,3 +18,5 @@ inline fun <T, R> Pair<List<T>, List<T>>.map(transform: (T) -> R) =
     first.map(transform) to second.map(transform)
 
 fun Game.getInitial() = lastName?.firstOrNull() ?: firstName.firstOrNull()
+
+fun Answer.getName() = "$firstName $lastName"

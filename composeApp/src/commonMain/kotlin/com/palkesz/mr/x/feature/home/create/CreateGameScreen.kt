@@ -15,10 +15,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
 import com.palkesz.mr.x.core.ui.components.input.PrimaryTextField
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
-import com.palkesz.mr.x.core.ui.components.text.CenteredTitleBar
+import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.util.networking.ViewState
-import com.palkesz.mr.x.feature.games.GameGraphRoute
+import com.palkesz.mr.x.feature.games.GameGraph
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.create_game_button_label
 import mrx.composeapp.generated.resources.create_game_title
@@ -95,7 +95,7 @@ private fun HandleEvent(event: CreateGameEvent?, onEventHandled: () -> Unit) {
     HandleEventEffect(event) { createGameEvent, _, _, navController ->
         when (createGameEvent) {
             is CreateGameEvent.NavigateToGames -> {
-                navController?.navigate(GameGraphRoute.Games.route)
+                navController?.navigate(GameGraph.Games)
             }
         }
         onEventHandled()

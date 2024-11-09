@@ -6,23 +6,25 @@ import androidx.navigation.compose.navigation
 import com.palkesz.mr.x.feature.app.MrXGraph
 import com.palkesz.mr.x.feature.authentication.login.LoginScreen
 import com.palkesz.mr.x.feature.authentication.username.AddUsernameScreen
+import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.authGraphNavigation() {
-    navigation(startDestination = AuthGraphRoute.Login.route, route = MrXGraph.AUTH) {
-        composable(route = AuthGraphRoute.Login.route) {
+    navigation(startDestination = AuthGraph.Login, route = MrXGraph.Auth::class) {
+        composable<AuthGraph.Login> {
             LoginScreen()
         }
-        composable(route = AuthGraphRoute.AddUsername.route) {
+        composable<AuthGraph.AddUsername> {
             AddUsernameScreen()
         }
     }
 }
 
-sealed class AuthGraphRoute(
-    val route: String,
-) {
-    data object Login : AuthGraphRoute("LOGIN")
+sealed interface AuthGraph {
 
-    data object AddUsername : AuthGraphRoute("ADDUSERNAME")
+    @Serializable
+    data object Login : AuthGraph
+
+    @Serializable
+    data object AddUsername : AuthGraph
 
 }

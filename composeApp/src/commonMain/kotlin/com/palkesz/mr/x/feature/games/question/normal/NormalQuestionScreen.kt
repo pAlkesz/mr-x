@@ -25,10 +25,8 @@ import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
 import com.palkesz.mr.x.core.ui.providers.LocalAppScope
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
-import com.palkesz.mr.x.feature.games.GameGraphRoute
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
-import mrx.composeapp.generated.resources.ask_question
 import mrx.composeapp.generated.resources.enter_question
 import mrx.composeapp.generated.resources.expected_answer
 import mrx.composeapp.generated.resources.question
@@ -128,10 +126,10 @@ fun NormalQuestionScreenContent(
             ),
             modifier = Modifier.fillMaxWidth().padding(all = 12.dp)
         ) {
-            Text(
+            /*Text(
                 text = stringResource(Res.string.ask_question),
                 style = MaterialTheme.typography.headlineMedium
-            )
+            )*/
         }
     }
 }
@@ -154,7 +152,7 @@ fun HandleEvent(
             LocalAppScope.current?.launch {
                 snackbarHostState.showSnackbar(message = getString(event.message))
             }
-            navController?.popBackStack(GameGraphRoute.Game.createRoute(event.gameId), false)
+            /*navController?.popBackStack(GameGraphRoute.Game.createRoute(event.gameId), false)*/
         }
 
         null -> return

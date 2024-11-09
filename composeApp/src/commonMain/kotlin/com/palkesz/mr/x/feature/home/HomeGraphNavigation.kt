@@ -7,31 +7,37 @@ import com.palkesz.mr.x.feature.app.MrXGraph
 import com.palkesz.mr.x.feature.home.create.CreateGameScreen
 import com.palkesz.mr.x.feature.home.join.JoinGameScreen
 import com.palkesz.mr.x.feature.home.tutorial.TutorialScreen
+import kotlinx.serialization.Serializable
 
 fun NavGraphBuilder.homeGraphNavigation() {
-    navigation(startDestination = HomeGraphRoute.HomePage.route, route = MrXGraph.HOME) {
-        composable(route = HomeGraphRoute.HomePage.route) {
+    navigation(startDestination = HomeGraph.Home, route = MrXGraph.Home::class) {
+        composable<HomeGraph.Home> {
             HomeScreen()
         }
-        composable(route = HomeGraphRoute.CreateGame.route) {
+        composable<HomeGraph.CreateGame> {
             CreateGameScreen()
         }
-        composable(route = HomeGraphRoute.JoinGame.route) {
+        composable<HomeGraph.JoinGame> {
             JoinGameScreen()
         }
-        composable(route = HomeGraphRoute.Tutorial.route) {
+        composable<HomeGraph.Tutorial> {
             TutorialScreen()
         }
     }
 }
 
-sealed class HomeGraphRoute(val route: String) {
+sealed interface HomeGraph {
 
-    data object HomePage : HomeGraphRoute("HOME_PAGE")
+    @Serializable
+    data object Home : HomeGraph
 
-    data object CreateGame : HomeGraphRoute("CREATE_GAME")
+    @Serializable
+    data object CreateGame : HomeGraph
 
-    data object JoinGame : HomeGraphRoute("JOIN_GAME")
+    @Serializable
+    data object JoinGame : HomeGraph
 
-    data object Tutorial : HomeGraphRoute("TUTORIAL")
+    @Serializable
+    data object Tutorial : HomeGraph
+
 }

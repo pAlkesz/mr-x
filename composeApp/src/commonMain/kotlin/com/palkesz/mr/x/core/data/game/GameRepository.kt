@@ -56,6 +56,10 @@ class GameRepositoryImpl(
             val game = firestore.collection(GAMES_COLLECTION_KEY).where {
                 ID_FIELD_KEY equalTo id
             }.limit(1).get().documents.map { it.data(Game.serializer()) }.first()
+            _games.update { cachedGames ->
+                (listOf(game) + cachedGames).distinctBy { it.id }
+                    .sortedByDescending { it.lastModifiedTimestamp.seconds }
+            }
             Result.success(game)
         } catch (exception: Exception) {
             Result.failure(exception = exception)
@@ -97,9 +101,9 @@ class GameRepositoryImpl(
                 }.map { it.document.data(Game.serializer()) }
             }.collect { (removedGames, addedOrModifiedGames) ->
                 _games.update { games ->
-                    (addedOrModifiedGames + games).distinctBy { game ->
-                        game.id
-                    }.subtract(removedGames.toSet()).toList()
+                    (addedOrModifiedGames + games).distinctBy { game -> game.id }
+                        .subtract(removedGames.toSet())
+                        .sortedByDescending { it.lastModifiedTimestamp.seconds }.toList()
                 }
             }
         }
@@ -115,7 +119,7 @@ class GameRepositoryImpl(
         private const val HOST_FIELD_KEY = "hostId"
         private const val PLAYERS_FIELD_KEY = "players"
         private const val STATUS_FIELD_KEY = "status"
-        private const val LAST_MODIFIED_FIELD_KEY = "lastModifiedTimeStamp"
+        private const val LAST_MODIFIED_FIELD_KEY = "lastModifiedTimestamp"
         private const val GAMES_FETCH_LIMIT = 50
     }
 }

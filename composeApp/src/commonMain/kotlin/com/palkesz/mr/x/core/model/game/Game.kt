@@ -10,7 +10,7 @@ data class Game(
     val lastName: String?,
     val hostId: String,
     val status: GameStatus,
-    val lastModifiedTimeStamp: Timestamp,
+    val lastModifiedTimestamp: Timestamp,
 )
 
 @Suppress("Unused")

@@ -24,12 +24,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.palkesz.mr.x.core.ui.modifiers.debouncedClickable
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
-import com.palkesz.mr.x.feature.games.GameGraphRoute
-import com.palkesz.mr.x.feature.home.HomeGraphRoute
+import com.palkesz.mr.x.feature.games.GameGraph
+import com.palkesz.mr.x.feature.home.HomeGraph
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.ic_game_controller
 import mrx.composeapp.generated.resources.ic_home
@@ -42,7 +43,7 @@ fun MrXBottomAppBar() {
     val currentDestination = navBackStackEntry?.destination
 
     val bottomBarDestination = bottomBarNavigationRoutes.any {
-        currentDestination?.route?.contains(it) ?: false
+        currentDestination?.hasRoute(it::class) ?: false
     }
 
     AnimatedVisibility(
@@ -61,12 +62,12 @@ fun MrXBottomAppBar() {
             ) {
                 NavigationBarItem(
                     currentDestination = currentDestination,
-                    route = HomeGraphRoute.HomePage.route,
+                    route = HomeGraph.Home,
                     icon = vectorResource(Res.drawable.ic_home),
                 )
                 NavigationBarItem(
                     currentDestination = currentDestination,
-                    route = GameGraphRoute.Games.route,
+                    route = GameGraph.Games,
                     icon = vectorResource(Res.drawable.ic_game_controller),
                 )
             }
@@ -75,14 +76,9 @@ fun MrXBottomAppBar() {
 }
 
 @Composable
-private fun NavigationBarItem(
-    currentDestination: NavDestination?,
-    route: String,
-    icon: ImageVector,
-) {
+private fun NavigationBarItem(currentDestination: NavDestination?, route: Any, icon: ImageVector) {
     val navController = LocalNavController.current
-    val isSelected =
-        currentDestination?.hierarchy?.any { (it.route?.contains(route) ?: false) } == true
+    val isSelected = currentDestination?.hierarchy?.any { it.hasRoute(route::class) } == true
     val backgroundColor by animateColorAsState(
         if (isSelected) {
             MaterialTheme.colorScheme.primary
@@ -113,5 +109,4 @@ private fun NavigationBarItem(
     }
 }
 
-private val bottomBarNavigationRoutes =
-    listOf(HomeGraphRoute.HomePage.route, GameGraphRoute.Games.route)
+private val bottomBarNavigationRoutes = listOf(HomeGraph.Home, GameGraph.Games)

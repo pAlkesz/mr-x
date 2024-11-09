@@ -5,5 +5,5 @@ import com.palkesz.mr.x.core.data.question.QuestionRepository
 class GetQuestionUseCase(
 	private val questionRepository: QuestionRepository
 ) {
-	fun run(questionId: String) = questionRepository.getQuestion(questionId)
+	//fun run(questionId: String) = questionRepository.getQuestion(questionId)
 }

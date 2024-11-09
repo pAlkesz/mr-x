@@ -1,7 +1,7 @@
 package com.palkesz.mr.x.feature.games.question.barkochba
 
 import androidx.lifecycle.ViewModel
-import com.palkesz.mr.x.core.usecase.game.GetAndObserveGameUseCase
+import com.palkesz.mr.x.core.usecase.game.FetchGameResultUseCase
 import com.palkesz.mr.x.core.usecase.game.UploadBarkochbaQuestionUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +23,7 @@ interface BarkochbaQuestionViewModel {
 
 class BarkochbaQuestionViewModelImpl(
     private val uploadBarkochbaQuestionUseCase: UploadBarkochbaQuestionUseCase,
-    private val getAndObserveGameUseCase: GetAndObserveGameUseCase
+    private val getAndObserveGameUseCase: FetchGameResultUseCase
 ) : ViewModel(), BarkochbaQuestionViewModel {
 
     private var gameId: String? = null

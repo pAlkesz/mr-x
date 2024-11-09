@@ -4,7 +4,7 @@ import com.palkesz.mr.x.core.data.question.QuestionRepository
 
 class GetGameAndQuestionUseCase(
     private val questionRepository: QuestionRepository,
-    private val getAndObserveGameUseCase: GetAndObserveGameUseCase
+    private val getAndObserveGameUseCase: FetchGameResultUseCase
 ) {
 
     /*fun run(gameId: String, questionId: String) = getAndObserveGameUseCase.run(gameId)
