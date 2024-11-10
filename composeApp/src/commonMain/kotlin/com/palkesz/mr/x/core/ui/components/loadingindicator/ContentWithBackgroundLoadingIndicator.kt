@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.modifiers.debouncedClickable
@@ -47,7 +47,7 @@ fun <T> ContentWithBackgroundLoadingIndicator(
         onLoading = {
             LoadingIndicator(
                 modifier = Modifier.padding(16.dp).fillMaxSize(),
-                label = loadingLabel
+                label = loadingLabel,
             )
         },
         onSuccess = content,
@@ -55,7 +55,7 @@ fun <T> ContentWithBackgroundLoadingIndicator(
             ErrorIndicator(
                 modifier = Modifier.padding(16.dp).fillMaxSize(),
                 label = errorLabel,
-                onRetry = onRetry
+                onRetry = onRetry,
             )
         })
 }
@@ -73,13 +73,13 @@ fun <T> ContentWithBackgroundLoadingIndicator(
         onError = {
             ErrorIndicator(
                 modifier = Modifier.padding(16.dp).fillMaxSize(),
-                onRetry = onRetry
+                onRetry = onRetry,
             )
         })
 }
 
 @Composable
-fun LoadingIndicator(modifier: Modifier = Modifier, label: String? = null) {
+private fun LoadingIndicator(modifier: Modifier = Modifier, label: String? = null) {
     var showSlowConnection by remember { mutableStateOf(false) }
     LaunchedEffect(key1 = Unit) {
         delay(DELAY_FOR_BAD_CONNECTION_TEXT)
@@ -99,7 +99,11 @@ fun LoadingIndicator(modifier: Modifier = Modifier, label: String? = null) {
 }
 
 @Composable
-fun ErrorIndicator(modifier: Modifier = Modifier, label: String? = null, onRetry: () -> Unit) {
+private fun ErrorIndicator(
+    modifier: Modifier = Modifier,
+    label: String? = null,
+    onRetry: () -> Unit,
+) {
     CenteredColumn(modifier = modifier) {
         Image(
             modifier = Modifier.padding(bottom = 8.dp),
@@ -111,12 +115,12 @@ fun ErrorIndicator(modifier: Modifier = Modifier, label: String? = null, onRetry
             text = label ?: stringResource(Res.string.network_error_label),
             style = MaterialTheme.typography.bodyLarge,
         )
-        Text(
+        OutlinedButton(
+            onClick = onRetry,
             modifier = Modifier.padding(vertical = 4.dp).debouncedClickable { onRetry() },
-            text = stringResource(Res.string.retry_button_label),
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.primary
-        )
+        ) {
+            Text(text = stringResource(Res.string.retry_button_label))
+        }
     }
 }
 

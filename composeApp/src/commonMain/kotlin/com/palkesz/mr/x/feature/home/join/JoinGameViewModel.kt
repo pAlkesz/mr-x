@@ -2,37 +2,85 @@ package com.palkesz.mr.x.feature.home.join
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.palkesz.mr.x.core.usecase.game.JoinGameUseCase
+import com.palkesz.mr.x.core.util.BUSINESS_TAG
+import com.palkesz.mr.x.core.util.networking.DataLoader
+import com.palkesz.mr.x.core.util.networking.RefreshTrigger
+import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.core.util.networking.map
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 interface JoinGameViewModel {
-    val viewState: StateFlow<JoinGameViewState>
+    val viewState: StateFlow<ViewState<JoinGameViewState>>
 
     fun onQrCodeScanned(url: String)
     fun onBackPressed()
+    fun onRetry()
     fun onEventHandled()
 }
 
 @Stable
-class JoinGameViewModelImpl : ViewModel(), JoinGameViewModel {
+class JoinGameViewModelImpl(
+    private val joinGameUseCase: JoinGameUseCase,
+) : ViewModel(), JoinGameViewModel {
 
-    private val _viewState = MutableStateFlow(JoinGameViewState())
-    override val viewState = _viewState.asStateFlow()
+    private val dataLoader = DataLoader<Unit>()
+
+    private val refreshTrigger = RefreshTrigger()
+
+    private val event = MutableStateFlow<JoinGameEvent?>(null)
+
+    private var gameId: String? = null
+
+    private val joinGameResult = dataLoader.loadAndObserveDataAsState(
+        coroutineScope = viewModelScope,
+        refreshTrigger = refreshTrigger,
+        initialData = ViewState.Success(Unit),
+        fetchData = { joinGame() },
+    )
+
+    override val viewState = combine(joinGameResult, event) { result, event ->
+        result.map { JoinGameViewState(event = event) }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        ViewState.Success(JoinGameViewState()),
+    )
 
     override fun onQrCodeScanned(url: String) {
-        //TODO
-        /*_viewState.update { state ->
-            //state.copy(event = QrCodeScannedEvent.QrCodeScanned(gameUrl))
-        }*/
+        gameId = url.split('=').lastOrNull()
+        Napier.d(tag = BUSINESS_TAG) { "Qr code scanned: $gameId" }
+        viewModelScope.launch {
+            refreshTrigger.refresh()
+        }
     }
 
     override fun onBackPressed() {
-        _viewState.update { it.copy(event = JoinGameEvent.NavigateToHome) }
+        event.update { JoinGameEvent.NavigateToHome }
+    }
+
+    override fun onRetry() {
+        viewModelScope.launch {
+            refreshTrigger.refresh()
+        }
     }
 
     override fun onEventHandled() {
-        _viewState.update { it.copy(event = null) }
+        event.update { null }
     }
+
+    private suspend fun joinGame() = gameId?.let {
+        joinGameUseCase.run(gameId = it).onSuccess {
+            event.update { JoinGameEvent.NavigateToGames }
+        }
+    } ?: Result.success(Unit)
+
 }

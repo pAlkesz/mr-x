@@ -48,7 +48,8 @@ class AddUsernameViewModelImpl(
         coroutineScope = viewModelScope,
         refreshTrigger = refreshTrigger,
         initialData = ViewState.Success(Unit),
-        fetchData = { saveUsername() })
+        fetchData = { saveUsername() },
+    )
 
     override val viewState =
         combine(

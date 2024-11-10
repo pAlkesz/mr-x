@@ -3,6 +3,7 @@ package com.palkesz.mr.x.feature.games
 import com.palkesz.mr.x.core.usecase.game.FetchGamesUseCase
 import com.palkesz.mr.x.feature.games.answer.answerQuestionModule
 import com.palkesz.mr.x.feature.games.game.gameModule
+import com.palkesz.mr.x.feature.games.qrcode.qrCodeModule
 import com.palkesz.mr.x.feature.games.question.barkochba.barkochbaQuestionModule
 import com.palkesz.mr.x.feature.games.question.normal.normalQuestionModule
 import com.palkesz.mr.x.feature.games.question.specify.specifyQuestionModule
@@ -17,6 +18,7 @@ val gamesModule = module {
     viewModelOf(::GamesViewModelImpl) bind GamesViewModel::class
     includes(
         gameModule,
+        qrCodeModule,
         normalQuestionModule,
         barkochbaQuestionModule,
         answerQuestionModule,

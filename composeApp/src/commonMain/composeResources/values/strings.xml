@@ -19,7 +19,7 @@
     <string name="provide_name">Create user</string>
     <string name="ok">Ok</string>
     <string name="retry">Retry</string>
-    <string name="share_link">Share game link</string>
+    <string name="share_button_label">Share</string>
     <string name="upload_failed">Name upload failed</string>
     <string name="upload_success">User uploaded successfully</string>
     <string name="create_game_description">Create your own Mr. X lobby! Invite friends, be Mr. X, and get ready for an exciting game. Start your adventure now!</string>
@@ -129,4 +129,5 @@
     <string name="offline_bar_label">You are offline. Check your connection</string>
     <string name="normal_question_tab_title">Normal</string>
     <string name="barkochba_question_tab_title">Barkochba</string>
+    <string name="qrcode_screen_title">Share game link</string>
 </resources>

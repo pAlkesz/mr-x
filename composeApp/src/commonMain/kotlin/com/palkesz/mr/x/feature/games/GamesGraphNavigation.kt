@@ -7,6 +7,8 @@ import androidx.navigation.toRoute
 import com.palkesz.mr.x.feature.app.MrXGraph
 import com.palkesz.mr.x.feature.games.game.GameScreen
 import com.palkesz.mr.x.feature.games.game.GameViewModelImpl
+import com.palkesz.mr.x.feature.games.qrcode.QrCodeScreen
+import com.palkesz.mr.x.feature.games.qrcode.QrCodeViewModelImpl
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parameterSetOf
@@ -20,6 +22,12 @@ fun NavGraphBuilder.gamesGraphNavigation() {
             val game = backStackEntry.toRoute<GameGraph.Game>()
             GameScreen(viewModel = koinViewModel<GameViewModelImpl>(parameters = {
                 parameterSetOf(game.id)
+            }))
+        }
+        composable<GameGraph.QrCode> { backStackEntry ->
+            val qrCode = backStackEntry.toRoute<GameGraph.QrCode>()
+            QrCodeScreen(viewModel = koinViewModel<QrCodeViewModelImpl>(parameters = {
+                parameterSetOf(qrCode.id)
             }))
         }
         /*composable(
@@ -123,61 +131,45 @@ fun NavGraphBuilder.gamesGraphNavigation() {
                 isHost = backStackEntry.arguments?.getBoolean(IS_HOST) ?: false,
             )
         }
-        composable(
-            route =
-            GameGraphRoute.GameQRCode.route
-                .plus("/{$GAME_ID}"),
-            arguments =
-            listOf(
-                navArgument(
-                    name = GAME_ID,
-                    builder = {
-                        type = NavType.StringType
-                    },
-                ),
-            ),
-        ) { backStackEntry ->
-            ShowQrCodeScreen(gameId = backStackEntry.arguments?.getString(GAME_ID).toString())
-        }*/
+        */
     }
 }
 
 sealed interface GameGraph {
 
     @Serializable
-    data object Games : GameGraph
+    data class Games(val newGameId: String? = null) : GameGraph
 
     @Serializable
     data class Game(val id: String) : GameGraph
 
-    /* data object GameQRCode : GameGraphRoute("SHOW_QR_CODE") {
-         fun createRoute(gameId: String) = "$route/$gameId"
-     }
+    @Serializable
+    data class QrCode(val id: String) : GameGraph
 
-     data object ChooseQuestion : GameGraphRoute("CHOOSE_QUESTION") {
-         fun createRoute(gameId: String) = "$route/$gameId"
-     }
+    /* data object ChooseQuestion : GameGraphRoute("CHOOSE_QUESTION") {
+        fun createRoute(gameId: String) = "$route/$gameId"
+    }
 
-     data object NormalQuestion : GameGraphRoute("NORMAL_QUESTION") {
-         fun createRoute(gameId: String) = "$route/$gameId"
-     }
+    data object NormalQuestion : GameGraphRoute("NORMAL_QUESTION") {
+        fun createRoute(gameId: String) = "$route/$gameId"
+    }
 
-     data object BarkochbaQuestion : GameGraphRoute("BARKOCHBA_QUESTION") {
-         fun createRoute(gameId: String) = "$route/$gameId"
-     }
+    data object BarkochbaQuestion : GameGraphRoute("BARKOCHBA_QUESTION") {
+        fun createRoute(gameId: String) = "$route/$gameId"
+    }
 
-     data object SpecifyQuestion : GameGraphRoute("SPECIFY_QUESTION") {
-         fun createRoute(
-             questionId: String,
-             gameId: String,
-         ) = "$route/$questionId/$gameId"
-     }
+    data object SpecifyQuestion : GameGraphRoute("SPECIFY_QUESTION") {
+        fun createRoute(
+            questionId: String,
+            gameId: String,
+        ) = "$route/$questionId/$gameId"
+    }
 
-     data object AnswerQuestion : GameGraphRoute("ANSWER_QUESTION") {
-         fun createRoute(
-             questionId: String,
-             gameId: String,
-             isHost: Boolean,
-         ) = "$route/$questionId/$gameId/$isHost"
-     }*/
+    data object AnswerQuestion : GameGraphRoute("ANSWER_QUESTION") {
+        fun createRoute(
+            questionId: String,
+            gameId: String,
+            isHost: Boolean,
+        ) = "$route/$questionId/$gameId/$isHost"
+    }*/
 }

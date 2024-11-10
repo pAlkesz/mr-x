@@ -7,18 +7,18 @@ import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepository
-import com.palkesz.mr.x.core.usecase.game.JoinGameWithGameIdUseCase
+import com.palkesz.mr.x.core.usecase.game.JoinGameUseCase
+import com.palkesz.mr.x.core.util.BUSINESS_TAG
 import com.plusmobileapps.konnectivity.Konnectivity
 import dev.theolm.rinku.DeepLink
-import dev.theolm.rinku.getParameter
 import dev.theolm.rinku.listenForDeepLinks
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.serialization.builtins.serializer
 
 interface AppViewModel {
     val viewState: StateFlow<AppViewState>
@@ -32,7 +32,7 @@ class AppViewModelImpl(
     private val gameRepository: GameRepository,
     private val questionRepository: QuestionRepository,
     private val barkochbaQuestionRepository: BarkochbaQuestionRepository,
-    private val joinGameWithGameIdUseCase: JoinGameWithGameIdUseCase,
+    private val joinGameUseCase: JoinGameUseCase,
     private val konnectivity: Konnectivity,
 ) : ViewModel(), AppViewModel {
 
@@ -110,23 +110,18 @@ class AppViewModelImpl(
         if (authRepository.isSignInLink(link = link)) {
             return
         }
-        val gameId =
-            if (link.schema == MRX_APP) {
-                link.getParameter(
-                    GAME_PARAM,
-                    String.serializer(),
-                )
-            } else {
-                link.pathSegments.last()
+        val gameId = link.parameters[GAME_ID_PARAM_NAME] ?: return
+        Napier.d(tag = BUSINESS_TAG) { "Join game link received with game id: $gameId" }
+        viewModelScope.launch {
+            joinGameUseCase.run(gameId = gameId).onSuccess {
+                _viewState.update {
+                    it.copy(event = AppEvent.NavigateToGames(gameId))
+                }
             }
-        joinGameWithGameIdUseCase.run(gameId)
-        _viewState.update {
-            it.copy(event = AppEvent.NavigateToMyGames(gameId))
         }
     }
 
     companion object {
-        const val GAME_PARAM = "game"
-        const val MRX_APP = "mrxapp"
+        private const val GAME_ID_PARAM_NAME = "game_id"
     }
 }

@@ -70,7 +70,7 @@ private fun MrXAppContent(state: AppViewState, onEventHandled: () -> Unit) {
 private fun HandleEvent(event: AppEvent?, onEventHandled: () -> Unit) {
     HandleEventEffect(key1 = event) { appEvent, _, _, navController ->
         when (appEvent) {
-            is AppEvent.NavigateToMyGames -> {
+            is AppEvent.NavigateToGames -> {
                 navController?.navigate(GameGraph.Games)
             }
         }

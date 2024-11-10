@@ -25,7 +25,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
+import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.feature.games.GameGraph
 import com.palkesz.mr.x.feature.games.game.ui.GameTitleBar
 import com.palkesz.mr.x.feature.games.game.ui.QuestionItemCard
 import kotlinx.collections.immutable.ImmutableList
@@ -191,5 +193,16 @@ private fun NormalQuestionPage(
 
 @Composable
 private fun HandleEvent(event: GameEvent?, onEventHandled: () -> Unit) {
-    //TODO
+    HandleEventEffect(key1 = event) { gameEvent, _, _, navController ->
+        when (gameEvent) {
+            is GameEvent.NavigateToQrCode -> {
+                navController?.navigate(GameGraph.QrCode(id = gameEvent.gameId))
+            }
+
+            else -> {
+
+            }
+        }
+        onEventHandled()
+    }
 }

@@ -67,7 +67,7 @@ class GameViewModelImpl(
     }
 
     override fun onQrCodeClicked() {
-        event.update { GameEvent.NavigateToQrCode }
+        event.update { GameEvent.NavigateToQrCode(gameId = gameId) }
     }
 
     override fun onDeclineAsOwnerClicked(questionId: String) {

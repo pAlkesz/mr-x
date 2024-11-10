@@ -34,16 +34,16 @@ fun <T> CrossFade(
     CrossFade(
         targetState = state,
         contentKey = { it::class.simpleName + it.isLoading.toString() }) { viewState ->
-        when (viewState) {
-            is ViewState.Loading -> {
+        when {
+            viewState.isLoading -> {
                 onLoading()
             }
 
-            is ViewState.Failure -> {
+            viewState is ViewState.Failure -> {
                 onError()
             }
 
-            is ViewState.Success -> {
+            viewState is ViewState.Success -> {
                 onSuccess(viewState.data)
             }
         }

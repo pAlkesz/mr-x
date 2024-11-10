@@ -68,7 +68,7 @@ private fun GamesScreenContent(
         Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
             CenteredTitleBar(
                 title = stringResource(Res.string.games_screen_title),
-                navigationIcon = null
+                navigationIcon = null,
             )
             CrossFade(
                 condition = state.games.isEmpty(),
@@ -83,9 +83,9 @@ private fun GamesScreenContent(
                 },
                 onConditionFalse = {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        items(state.games) { item ->
+                        items(state.games, key = { it.id }) { item ->
                             GameCard(
-                                modifier = Modifier.padding(bottom = 16.dp),
+                                modifier = Modifier.animateItem().padding(bottom = 16.dp),
                                 item = item,
                                 onClick = onGameClicked,
                             )
