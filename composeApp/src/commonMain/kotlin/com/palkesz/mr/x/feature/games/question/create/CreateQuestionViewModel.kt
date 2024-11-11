@@ -1,5 +1,6 @@
 package com.palkesz.mr.x.feature.games.question.create
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.palkesz.mr.x.core.data.game.GameRepository
@@ -15,6 +16,7 @@ import com.plusmobileapps.konnectivity.Konnectivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -30,6 +32,7 @@ interface CreateQuestionViewModel {
     fun onEventHandled()
 }
 
+@Stable
 class CreateQuestionViewModelImpl(
     private val gameId: String,
     private val createQuestionUseCase: CreateQuestionUseCase,
@@ -64,7 +67,7 @@ class CreateQuestionViewModelImpl(
 
     override val viewState = combine(
         loadingResult,
-        gameRepository.games.map { games -> games.find { it.id == gameId } },
+        gameRepository.games.map { games -> games.find { it.id == gameId } }.distinctUntilChanged(),
         questionText,
         isQuestionTextValid,
         expectedFirstName,

@@ -58,10 +58,13 @@ private fun CreateQuestionScreenContent(
         onRetry = onCreateClicked,
     ) { state ->
         HandleEvent(event = state.event, onEventHandled = onEventHandled)
-        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+        Column {
             CenteredTitleBar(title = stringResource(Res.string.create_question_screen_title))
             Column(
-                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 PrimaryTextField(

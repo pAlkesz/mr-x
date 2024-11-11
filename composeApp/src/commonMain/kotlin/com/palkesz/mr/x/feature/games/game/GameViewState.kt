@@ -143,6 +143,6 @@ sealed interface GameEvent {
 
     data class NavigateToQrCode(val gameId: String) : GameEvent
 
-    data class NavigateToGuessQuestion(val questionId: String, val isHost: Boolean) : GameEvent
+    data class NavigateToGuessQuestion(val gameId: String, val questionId: String) : GameEvent
 
 }

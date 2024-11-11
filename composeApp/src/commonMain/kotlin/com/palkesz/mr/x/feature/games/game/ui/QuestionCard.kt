@@ -27,13 +27,14 @@ import androidx.compose.ui.unit.sp
 import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.button.PrimaryCardButton
 import com.palkesz.mr.x.core.ui.components.button.SecondaryCardButton
+import com.palkesz.mr.x.core.ui.components.text.buildCorrectHostAnswer
+import com.palkesz.mr.x.core.ui.components.text.buildWrongHostAnswer
 import com.palkesz.mr.x.core.util.extensions.capitalizeFirstChar
 import com.palkesz.mr.x.feature.games.game.QuestionItem
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.accept_button_label
 import mrx.composeapp.generated.resources.answer_button_label
 import mrx.composeapp.generated.resources.decline_button_label
-import mrx.composeapp.generated.resources.host_answer_label
 import mrx.composeapp.generated.resources.ic_crisis_alert
 import mrx.composeapp.generated.resources.ic_hourglass_bottom
 import mrx.composeapp.generated.resources.ic_hourglass_top
@@ -179,8 +180,7 @@ private fun WaitingForPlayersQuestionCard(
         AnimatedNullability(item.hostAnswer) { answer ->
             Text(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                textDecoration = TextDecoration.LineThrough,
-                text = stringResource(Res.string.host_answer_label, answer),
+                text = buildWrongHostAnswer(answer = answer),
                 style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
             )
         }
@@ -206,7 +206,7 @@ private fun GuessAsPlayerQuestionCard(
             Text(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 textDecoration = TextDecoration.LineThrough,
-                text = stringResource(Res.string.host_answer_label, answer),
+                text = buildWrongHostAnswer(answer = answer),
                 style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
             )
         }
@@ -235,7 +235,7 @@ private fun WaitingForOwnerQuestionCard(
         AnimatedNullability(item.hostAnswer) { answer ->
             Text(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                text = stringResource(Res.string.host_answer_label, answer),
+                text = buildWrongHostAnswer(answer = answer),
                 style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
             )
         }
@@ -261,7 +261,7 @@ private fun VerifyAsOwnerQuestionCard(
         AnimatedNullability(item.hostAnswer) { answer ->
             Text(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                text = stringResource(Res.string.host_answer_label, answer),
+                text = buildWrongHostAnswer(answer = answer),
                 style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
             )
         }
@@ -294,7 +294,7 @@ private fun GuessedByPlayerQuestionCard(
             Text(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 textDecoration = TextDecoration.LineThrough,
-                text = stringResource(Res.string.host_answer_label, answer),
+                text = buildWrongHostAnswer(answer = answer),
                 style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
             )
         }
@@ -323,7 +323,7 @@ private fun MissedByPlayerQuestionCard(
             Text(
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 textDecoration = TextDecoration.LineThrough,
-                text = stringResource(Res.string.host_answer_label, answer),
+                text = buildWrongHostAnswer(answer = answer),
                 style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
             )
         }
@@ -351,8 +351,8 @@ private fun GuessedByHostQuestionCard(
     ) {
         Text(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            text = stringResource(Res.string.host_answer_label, item.hostAnswer),
-            style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
+            text = buildCorrectHostAnswer(answer = item.hostAnswer),
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }

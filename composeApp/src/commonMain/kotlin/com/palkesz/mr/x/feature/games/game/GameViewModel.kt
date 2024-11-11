@@ -80,11 +80,11 @@ class GameViewModelImpl(
     }
 
     override fun onGuessAsHostClicked(questionId: String) {
-        event.update { GameEvent.NavigateToGuessQuestion(questionId = questionId, isHost = true) }
+        event.update { GameEvent.NavigateToGuessQuestion(gameId = gameId, questionId = questionId) }
     }
 
     override fun onGuessAsPlayerClicked(questionId: String) {
-        event.update { GameEvent.NavigateToGuessQuestion(questionId = questionId, isHost = false) }
+        event.update { GameEvent.NavigateToGuessQuestion(gameId = gameId, questionId = questionId) }
     }
 
     override fun onPassAsHostClicked(questionId: String) {

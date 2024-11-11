@@ -25,7 +25,7 @@ interface QuestionRepository {
     suspend fun fetchQuestion(id: String): Result<Question>
     suspend fun createQuestion(question: Question): Result<Unit>
     suspend fun updateHostAnswer(id: String, answer: Answer, status: QuestionStatus): Result<Unit>
-    suspend fun uploadPlayerAnswer(id: String, answer: Answer, status: QuestionStatus): Result<Unit>
+    suspend fun updatePlayerAnswer(id: String, answer: Answer, status: QuestionStatus): Result<Unit>
     suspend fun updateStatus(id: String, status: QuestionStatus): Result<Unit>
     suspend fun updateText(id: String, text: String): Result<Unit>
     suspend fun observeQuestions()
@@ -99,7 +99,7 @@ class QuestionRepositoryImpl(
             Result.failure(exception = exception)
         }
 
-    override suspend fun uploadPlayerAnswer(id: String, answer: Answer, status: QuestionStatus) =
+    override suspend fun updatePlayerAnswer(id: String, answer: Answer, status: QuestionStatus) =
         try {
             firestore.collection(QUESTIONS_COLLECTION_NAME).document(id).update(
                 Pair(PLAYER_ANSWER_FIELD_KEY, answer),

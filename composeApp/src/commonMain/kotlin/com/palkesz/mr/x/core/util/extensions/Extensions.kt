@@ -20,3 +20,6 @@ inline fun <T, R> Pair<List<T>, List<T>>.map(transform: (T) -> R) =
 fun Game.getInitial() = lastName?.firstOrNull() ?: firstName.firstOrNull()
 
 fun Answer.getName() = "$firstName $lastName"
+
+fun Answer.isGuessed(firstName: String, lastName: String?) =
+    this.firstName.equalsAsName(firstName) && this.lastName.equalsAsName(lastName)

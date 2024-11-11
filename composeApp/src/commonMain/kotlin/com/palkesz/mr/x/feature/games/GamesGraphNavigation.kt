@@ -11,6 +11,8 @@ import com.palkesz.mr.x.feature.games.qrcode.QrCodeScreen
 import com.palkesz.mr.x.feature.games.qrcode.QrCodeViewModelImpl
 import com.palkesz.mr.x.feature.games.question.create.CreateQuestionScreen
 import com.palkesz.mr.x.feature.games.question.create.CreateQuestionViewModelImpl
+import com.palkesz.mr.x.feature.games.question.guess.GuessQuestionScreen
+import com.palkesz.mr.x.feature.games.question.guess.GuessQuestionViewModelImpl
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parameterSetOf
@@ -36,6 +38,12 @@ fun NavGraphBuilder.gamesGraphNavigation() {
             val createQuestion = backStackEntry.toRoute<GameGraph.CreateQuestion>()
             CreateQuestionScreen(viewModel = koinViewModel<CreateQuestionViewModelImpl>(parameters = {
                 parameterSetOf(createQuestion.gameId)
+            }))
+        }
+        composable<GameGraph.GuessQuestion> { backStackEntry ->
+            val guessQuestion = backStackEntry.toRoute<GameGraph.GuessQuestion>()
+            GuessQuestionScreen(viewModel = koinViewModel<GuessQuestionViewModelImpl>(parameters = {
+                parameterSetOf(guessQuestion.gameId, guessQuestion.questionId)
             }))
         }
         /*
@@ -80,38 +88,6 @@ fun NavGraphBuilder.gamesGraphNavigation() {
                 gameId = backStackEntry.arguments?.getString(GAME_ID).toString(),
             )
         }
-        composable(
-            route =
-            GameGraphRoute.AnswerQuestion.route
-                .plus("/{$QUESTION_ID}/{$GAME_ID}/{$IS_HOST}"),
-            arguments =
-            listOf(
-                navArgument(
-                    name = QUESTION_ID,
-                    builder = {
-                        type = NavType.StringType
-                    },
-                ),
-                navArgument(
-                    name = GAME_ID,
-                    builder = {
-                        type = NavType.StringType
-                    },
-                ),
-                navArgument(
-                    name = IS_HOST,
-                    builder = {
-                        type = NavType.BoolType
-                    },
-                ),
-            ),
-        ) { backStackEntry ->
-            AnswerQuestionScreen(
-                questionId = backStackEntry.arguments?.getString(QUESTION_ID).toString(),
-                gameId = backStackEntry.arguments?.getString(GAME_ID).toString(),
-                isHost = backStackEntry.arguments?.getBoolean(IS_HOST) ?: false,
-            )
-        }
         */
     }
 }
@@ -130,6 +106,9 @@ sealed interface GameGraph {
     @Serializable
     data class CreateQuestion(val gameId: String) : GameGraph
 
+    @Serializable
+    data class GuessQuestion(val gameId: String, val questionId: String) : GameGraph
+
     /*
     data object BarkochbaQuestion : GameGraphRoute("BARKOCHBA_QUESTION") {
         fun createRoute(gameId: String) = "$route/$gameId"
@@ -141,12 +120,5 @@ sealed interface GameGraph {
             gameId: String,
         ) = "$route/$questionId/$gameId"
     }
-
-    data object AnswerQuestion : GameGraphRoute("ANSWER_QUESTION") {
-        fun createRoute(
-            questionId: String,
-            gameId: String,
-            isHost: Boolean,
-        ) = "$route/$questionId/$gameId/$isHost"
     }*/
 }

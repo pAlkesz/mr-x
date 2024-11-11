@@ -203,6 +203,15 @@ private fun HandleEvent(event: GameEvent?, onEventHandled: () -> Unit) {
                 navController?.navigate(GameGraph.CreateQuestion(gameId = gameEvent.gameId))
             }
 
+            is GameEvent.NavigateToGuessQuestion -> {
+                navController?.navigate(
+                    GameGraph.GuessQuestion(
+                        gameId = gameEvent.gameId,
+                        questionId = gameEvent.questionId,
+                    )
+                )
+            }
+
             else -> {
 
             }
