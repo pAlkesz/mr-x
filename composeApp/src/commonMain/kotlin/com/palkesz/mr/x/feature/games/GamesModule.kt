@@ -5,7 +5,7 @@ import com.palkesz.mr.x.feature.games.answer.answerQuestionModule
 import com.palkesz.mr.x.feature.games.game.gameModule
 import com.palkesz.mr.x.feature.games.qrcode.qrCodeModule
 import com.palkesz.mr.x.feature.games.question.barkochba.barkochbaQuestionModule
-import com.palkesz.mr.x.feature.games.question.normal.normalQuestionModule
+import com.palkesz.mr.x.feature.games.question.create.createQuestionModule
 import com.palkesz.mr.x.feature.games.question.specify.specifyQuestionModule
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
@@ -19,7 +19,7 @@ val gamesModule = module {
     includes(
         gameModule,
         qrCodeModule,
-        normalQuestionModule,
+        createQuestionModule,
         barkochbaQuestionModule,
         answerQuestionModule,
         specifyQuestionModule,

@@ -130,4 +130,8 @@
     <string name="normal_question_tab_title">Normal</string>
     <string name="barkochba_question_tab_title">Barkochba</string>
     <string name="qrcode_screen_title">Share game link</string>
+    <string name="question_input_label">Question</string>
+    <string name="question_input_error_message">Please enter a valid question. Question cannot be empty.</string>
+    <string name="create_question_screen_title">Create question</string>
+    <string name="expected_last_name_input_label">Last name</string>
 </resources>

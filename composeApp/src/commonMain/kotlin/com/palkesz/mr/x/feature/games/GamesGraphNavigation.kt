@@ -9,6 +9,8 @@ import com.palkesz.mr.x.feature.games.game.GameScreen
 import com.palkesz.mr.x.feature.games.game.GameViewModelImpl
 import com.palkesz.mr.x.feature.games.qrcode.QrCodeScreen
 import com.palkesz.mr.x.feature.games.qrcode.QrCodeViewModelImpl
+import com.palkesz.mr.x.feature.games.question.create.CreateQuestionScreen
+import com.palkesz.mr.x.feature.games.question.create.CreateQuestionViewModelImpl
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parameterSetOf
@@ -30,34 +32,13 @@ fun NavGraphBuilder.gamesGraphNavigation() {
                 parameterSetOf(qrCode.id)
             }))
         }
-        /*composable(
-            route = GameGraphRoute.ChooseQuestion.route.plus("/{$GAME_ID}"),
-            arguments =
-            listOf(
-                navArgument(
-                    name = GAME_ID,
-                    builder = {
-                        type = NavType.StringType
-                    },
-                ),
-            ),
-        ) { backStackEntry ->
-            ChooseQuestionScreen(gameId = backStackEntry.arguments?.getString(GAME_ID).toString())
+        composable<GameGraph.CreateQuestion> { backStackEntry ->
+            val createQuestion = backStackEntry.toRoute<GameGraph.CreateQuestion>()
+            CreateQuestionScreen(viewModel = koinViewModel<CreateQuestionViewModelImpl>(parameters = {
+                parameterSetOf(createQuestion.gameId)
+            }))
         }
-        composable(
-            route = GameGraphRoute.NormalQuestion.route.plus("/{$GAME_ID}"),
-            arguments =
-            listOf(
-                navArgument(
-                    name = GAME_ID,
-                    builder = {
-                        type = NavType.StringType
-                    },
-                ),
-            ),
-        ) { backStackEntry ->
-            NormalQuestionScreen(gameId = backStackEntry.arguments?.getString(GAME_ID).toString())
-        }
+        /*
         composable(
             route = GameGraphRoute.BarkochbaQuestion.route.plus("/{$GAME_ID}"),
             arguments =
@@ -138,7 +119,7 @@ fun NavGraphBuilder.gamesGraphNavigation() {
 sealed interface GameGraph {
 
     @Serializable
-    data class Games(val newGameId: String? = null) : GameGraph
+    data object Games : GameGraph
 
     @Serializable
     data class Game(val id: String) : GameGraph
@@ -146,14 +127,10 @@ sealed interface GameGraph {
     @Serializable
     data class QrCode(val id: String) : GameGraph
 
-    /* data object ChooseQuestion : GameGraphRoute("CHOOSE_QUESTION") {
-        fun createRoute(gameId: String) = "$route/$gameId"
-    }
+    @Serializable
+    data class CreateQuestion(val gameId: String) : GameGraph
 
-    data object NormalQuestion : GameGraphRoute("NORMAL_QUESTION") {
-        fun createRoute(gameId: String) = "$route/$gameId"
-    }
-
+    /*
     data object BarkochbaQuestion : GameGraphRoute("BARKOCHBA_QUESTION") {
         fun createRoute(gameId: String) = "$route/$gameId"
     }

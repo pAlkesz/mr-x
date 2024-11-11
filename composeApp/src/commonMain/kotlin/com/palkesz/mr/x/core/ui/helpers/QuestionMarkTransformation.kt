@@ -9,7 +9,6 @@ object QuestionMarkTransformation : VisualTransformation {
 
     override fun filter(text: AnnotatedString): TransformedText {
         val transformedText = text.text + "?"
-
         val offsetMapping = object : OffsetMapping {
             override fun originalToTransformed(offset: Int): Int {
                 return offset.coerceIn(0, transformedText.length)
@@ -19,10 +18,6 @@ object QuestionMarkTransformation : VisualTransformation {
                 return offset.coerceIn(0, text.length)
             }
         }
-
-        return TransformedText(
-            AnnotatedString(transformedText),
-            offsetMapping
-        )
+        return TransformedText(AnnotatedString(transformedText), offsetMapping)
     }
 }

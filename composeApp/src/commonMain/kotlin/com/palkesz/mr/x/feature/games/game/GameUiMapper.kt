@@ -12,7 +12,7 @@ class GameUiMapper(
     private val authRepository: AuthRepository,
 ) {
 
-    fun mapViewState(result: GameResult, event: GameEvent?) : GameViewState {
+    fun mapViewState(result: GameResult, event: GameEvent?): GameViewState {
         val isHost = authRepository.userId == result.game.hostId
         return GameViewState(
             host = result.host.name,

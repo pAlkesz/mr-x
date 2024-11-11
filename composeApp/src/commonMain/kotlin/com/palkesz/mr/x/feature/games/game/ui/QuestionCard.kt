@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.button.PrimaryCardButton
 import com.palkesz.mr.x.core.ui.components.button.SecondaryCardButton
+import com.palkesz.mr.x.core.util.extensions.capitalizeFirstChar
 import com.palkesz.mr.x.feature.games.game.QuestionItem
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.accept_button_label
@@ -149,7 +152,7 @@ private fun GuessAsHostQuestionCard(
         icon = vectorResource(Res.drawable.ic_play_circle),
     ) {
         QuestionCardButtons(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
             enabled = isGameOngoing,
             id = item.id,
             first = stringResource(Res.string.answer_button_label),
@@ -384,9 +387,9 @@ private fun QuestionCard(
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor),
     ) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
                 text = stringResource(Res.string.question_number_title, number, owner),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontSize = 18.sp,
@@ -395,12 +398,12 @@ private fun QuestionCard(
             )
             Box(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
                     .background(
                         color = MaterialTheme.colorScheme.tertiary,
                         shape = RoundedCornerShape(topEnd = 20.dp, bottomStart = 20.dp),
-                    ),
-                contentAlignment = Alignment.Center
+                    )
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     modifier = Modifier.size(24.dp),
@@ -412,8 +415,8 @@ private fun QuestionCard(
         }
         Text(
             modifier = Modifier.padding(16.dp),
-            text = stringResource(Res.string.question_text, text),
-            style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
+            text = stringResource(Res.string.question_text, text.capitalizeFirstChar()),
+            style = MaterialTheme.typography.bodyMedium,
         )
         content()
     }
@@ -429,18 +432,23 @@ private fun QuestionCardButtons(
     onFirstClicked: (String) -> Unit,
     onSecondClicked: (String) -> Unit,
 ) {
-    Row(modifier = modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround,
+    ) {
         PrimaryCardButton(
-            modifier = Modifier.weight(1f).padding(end = 32.dp),
+            modifier = Modifier.weight(1f),
             enabled = enabled,
             text = first,
-            onClick = { onFirstClicked(id) }
+            onClick = { onFirstClicked(id) },
         )
+        Spacer(modifier = Modifier.size(32.dp))
         SecondaryCardButton(
-            modifier = Modifier.weight(1f).padding(32.dp),
+            modifier = Modifier.weight(1f),
             enabled = enabled,
             text = second,
-            onClick = { onSecondClicked(id) }
+            onClick = { onSecondClicked(id) },
         )
     }
 }

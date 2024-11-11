@@ -12,3 +12,8 @@ fun <T : CharSequence> T?.isNotNullOrBlank() = !this.isNullOrBlank()
 fun String.capitalizeWords(): String = split(" ").joinToString(" ") { word ->
     word.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
 }
+
+fun String.capitalizeFirstChar(): String =
+    replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+
+fun String?.equalsAsName(other: String?) = this?.trim().equals(other?.trim(), ignoreCase = true)

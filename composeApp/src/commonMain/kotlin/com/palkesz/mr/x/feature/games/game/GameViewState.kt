@@ -135,9 +135,9 @@ sealed interface BarkochbaItem {
 @Immutable
 sealed interface GameEvent {
 
-    data object NavigateToCreateQuestion : GameEvent
+    data class NavigateToCreateQuestion(val gameId: String) : GameEvent
 
-    data object NavigateToCreateBarkochbaQuestion : GameEvent
+    data class NavigateToCreateBarkochbaQuestion(val gameId: String) : GameEvent
 
     data class NavigateToSpecifyQuestion(val questionId: String) : GameEvent
 

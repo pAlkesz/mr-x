@@ -97,7 +97,7 @@ class GameViewModelImpl(
     }
 
     override fun onAskQuestionClicked() {
-        event.update { GameEvent.NavigateToCreateQuestion }
+        event.update { GameEvent.NavigateToCreateQuestion(gameId = gameId) }
     }
 
     override fun onRetry() {

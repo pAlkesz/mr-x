@@ -166,7 +166,7 @@ private fun NormalQuestionPage(
                 }
             },
             onConditionFalse = {
-                LazyColumn {
+                LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
                     items(questions) { item ->
                         QuestionItemCard(
                             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
@@ -197,6 +197,10 @@ private fun HandleEvent(event: GameEvent?, onEventHandled: () -> Unit) {
         when (gameEvent) {
             is GameEvent.NavigateToQrCode -> {
                 navController?.navigate(GameGraph.QrCode(id = gameEvent.gameId))
+            }
+
+            is GameEvent.NavigateToCreateQuestion -> {
+                navController?.navigate(GameGraph.CreateQuestion(gameId = gameEvent.gameId))
             }
 
             else -> {
