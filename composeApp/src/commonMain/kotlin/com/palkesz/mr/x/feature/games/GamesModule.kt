@@ -21,7 +21,7 @@ val gamesModule = module {
         qrCodeModule,
         createQuestionModule,
         guessQuestionModule,
-        barkochbaQuestionModule,
         specifyQuestionModule,
+        barkochbaQuestionModule,
     )
 }

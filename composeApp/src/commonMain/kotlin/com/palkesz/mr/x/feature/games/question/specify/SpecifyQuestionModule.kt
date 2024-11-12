@@ -1,12 +1,18 @@
 package com.palkesz.mr.x.feature.games.question.specify
 
-import com.palkesz.mr.x.core.usecase.question.AcceptHostAnswerUseCase
-import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val specifyQuestionModule = module {
-    includes(specifyQuestionViewModelModule)
-    factory { AcceptHostAnswerUseCase(get()) }
+    viewModel { parameters ->
+        SpecifyQuestionViewModelImpl(
+            parameters.get(i = 0),
+            parameters.get(i = 1),
+            get(),
+            get(),
+            get(),
+            get(),
+        )
+    } bind SpecifyQuestionViewModel::class
 }
-
-expect val specifyQuestionViewModelModule: Module

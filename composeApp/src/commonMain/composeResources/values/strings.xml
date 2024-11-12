@@ -50,6 +50,7 @@
     <string name="game_screen_full_name_title">%1$s hosted by %2$s</string>
     <string name="host_answer_suffix"> by the host</string>
     <string name="player_answer_label">- %1$s by %2$s</string>
+    <string name="expected_answer_label">- Expected answer: %1$s</string>
     <string name="games_screen_title">My Games</string>
     <string name="answer_question_button_label">Guess</string>
     <string name="host">Host: %1$s</string>
@@ -132,7 +133,9 @@
     <string name="qrcode_screen_title">Share game link</string>
     <string name="question_input_label">Question</string>
     <string name="question_input_error_message">Please enter a valid question. Question cannot be empty.</string>
+    <string name="specify_question_input_error_message">Please enter a valid question. Question cannot be empty or the same as it was before.</string>
     <string name="create_question_screen_title">Create question</string>
     <string name="guess_question_screen_title">Make a guess</string>
+    <string name="specify_question_screen_title">Specify question</string>
     <string name="expected_last_name_input_label">Last name</string>
 </resources>

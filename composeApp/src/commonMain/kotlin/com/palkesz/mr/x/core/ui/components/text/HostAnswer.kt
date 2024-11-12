@@ -2,6 +2,7 @@ package com.palkesz.mr.x.core.ui.components.text
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
@@ -26,11 +27,14 @@ fun buildWrongHostAnswer(answer: String) = buildAnnotatedString {
 }
 
 @Composable
-fun buildCorrectHostAnswer(answer: String) = buildAnnotatedString {
+fun buildCorrectHostAnswer(
+    answer: String,
+    highlightColor: Color = MaterialTheme.colorScheme.tertiary,
+) = buildAnnotatedString {
     append("- ")
     withStyle(
         style = SpanStyle(
-            color = MaterialTheme.colorScheme.tertiary,
+            color = highlightColor,
             textDecoration = TextDecoration.Underline,
         )
     ) {

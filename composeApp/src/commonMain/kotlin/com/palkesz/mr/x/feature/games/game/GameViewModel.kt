@@ -63,7 +63,9 @@ class GameViewModelImpl(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ViewState.Loading)
 
     override fun onAcceptAsOwnerClicked(questionId: String) {
-        event.update { GameEvent.NavigateToSpecifyQuestion(questionId = questionId) }
+        event.update {
+            GameEvent.NavigateToSpecifyQuestion(gameId = gameId, questionId = questionId)
+        }
     }
 
     override fun onQrCodeClicked() {

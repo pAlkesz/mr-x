@@ -22,7 +22,6 @@ interface QuestionRepository {
     val questions: StateFlow<List<Question>>
 
     suspend fun fetchQuestions(gameId: String): Result<List<Question>>
-    suspend fun fetchQuestion(id: String): Result<Question>
     suspend fun createQuestion(question: Question): Result<Unit>
     suspend fun updateHostAnswer(id: String, answer: Answer, status: QuestionStatus): Result<Unit>
     suspend fun updatePlayerAnswer(id: String, answer: Answer, status: QuestionStatus): Result<Unit>
@@ -58,23 +57,6 @@ class QuestionRepositoryImpl(
                     .sortedByDescending { it.lastModifiedTimestamp.seconds }
             }
             Result.success(questions)
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
-        }
-    }
-
-    override suspend fun fetchQuestion(id: String): Result<Question> {
-        questions.value.find { it.id == id }?.let {
-            return Result.success(it)
-        }
-        return try {
-            val question = firestore.collection(QUESTIONS_COLLECTION_NAME).document(id).get()
-                .data(Question.serializer())
-            _questions.update { cachedQuestions ->
-                (listOf(question) + cachedQuestions).distinctBy { it.id }
-                    .sortedByDescending { it.lastModifiedTimestamp.seconds }
-            }
-            Result.success(question)
         } catch (exception: Exception) {
             Result.failure(exception = exception)
         }

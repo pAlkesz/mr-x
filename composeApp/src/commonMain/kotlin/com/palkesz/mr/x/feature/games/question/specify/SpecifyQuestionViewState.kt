@@ -1,18 +1,23 @@
 package com.palkesz.mr.x.feature.games.question.specify
 
-import org.jetbrains.compose.resources.StringResource
+import androidx.compose.runtime.Immutable
 
+@Immutable
 data class SpecifyQuestionViewState(
-	val text: String = "",
-	val oldQuestionText: String,
-	val gameId: String,
-	val expectedAnswer: String,
-	val isTextInvalid: Boolean = false,
-	val event: SpecifyQuestionEvent? = null
+    val text: String,
+    val oldText: String,
+    val expectedAnswer: String,
+    val hostAnswer: String,
+    val number: Int,
+    val owner: String,
+    val isTextValid: Boolean = false,
+    val isUpdateButtonEnabled: Boolean,
+    val event: SpecifyQuestionEvent? = null,
 )
 
+@Immutable
 sealed interface SpecifyQuestionEvent {
-	data class ValidationError(val message: StringResource) : SpecifyQuestionEvent
-	data class NavigateUp(val gameId: String, val message: StringResource) : SpecifyQuestionEvent
-}
 
+    data object NavigateUp : SpecifyQuestionEvent
+
+}

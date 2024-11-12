@@ -13,6 +13,8 @@ import com.palkesz.mr.x.feature.games.question.create.CreateQuestionScreen
 import com.palkesz.mr.x.feature.games.question.create.CreateQuestionViewModelImpl
 import com.palkesz.mr.x.feature.games.question.guess.GuessQuestionScreen
 import com.palkesz.mr.x.feature.games.question.guess.GuessQuestionViewModelImpl
+import com.palkesz.mr.x.feature.games.question.specify.SpecifyQuestionScreen
+import com.palkesz.mr.x.feature.games.question.specify.SpecifyQuestionViewModelImpl
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parameterSetOf
@@ -46,6 +48,12 @@ fun NavGraphBuilder.gamesGraphNavigation() {
                 parameterSetOf(guessQuestion.gameId, guessQuestion.questionId)
             }))
         }
+        composable<GameGraph.SpecifyQuestion> { backStackEntry ->
+            val specifyQuestion = backStackEntry.toRoute<GameGraph.SpecifyQuestion>()
+            SpecifyQuestionScreen(viewModel = koinViewModel<SpecifyQuestionViewModelImpl>(parameters = {
+                parameterSetOf(specifyQuestion.gameId, specifyQuestion.questionId)
+            }))
+        }
         /*
         composable(
             route = GameGraphRoute.BarkochbaQuestion.route.plus("/{$GAME_ID}"),
@@ -60,31 +68,6 @@ fun NavGraphBuilder.gamesGraphNavigation() {
             ),
         ) { backStackEntry ->
             BarkochbaQuestionScreen(
-                gameId = backStackEntry.arguments?.getString(GAME_ID).toString(),
-            )
-        }
-        composable(
-            route =
-            GameGraphRoute.SpecifyQuestion.route
-                .plus("/{$QUESTION_ID}/{$GAME_ID}"),
-            arguments =
-            listOf(
-                navArgument(
-                    name = QUESTION_ID,
-                    builder = {
-                        type = NavType.StringType
-                    },
-                ),
-                navArgument(
-                    name = GAME_ID,
-                    builder = {
-                        type = NavType.StringType
-                    },
-                ),
-            ),
-        ) { backStackEntry ->
-            SpecifyQuestionScreen(
-                questionId = backStackEntry.arguments?.getString(QUESTION_ID).toString(),
                 gameId = backStackEntry.arguments?.getString(GAME_ID).toString(),
             )
         }
@@ -109,16 +92,12 @@ sealed interface GameGraph {
     @Serializable
     data class GuessQuestion(val gameId: String, val questionId: String) : GameGraph
 
+    @Serializable
+    data class SpecifyQuestion(val gameId: String, val questionId: String) : GameGraph
+
     /*
     data object BarkochbaQuestion : GameGraphRoute("BARKOCHBA_QUESTION") {
         fun createRoute(gameId: String) = "$route/$gameId"
-    }
-
-    data object SpecifyQuestion : GameGraphRoute("SPECIFY_QUESTION") {
-        fun createRoute(
-            questionId: String,
-            gameId: String,
-        ) = "$route/$questionId/$gameId"
     }
     }*/
 }

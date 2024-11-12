@@ -139,7 +139,7 @@ sealed interface GameEvent {
 
     data class NavigateToCreateBarkochbaQuestion(val gameId: String) : GameEvent
 
-    data class NavigateToSpecifyQuestion(val questionId: String) : GameEvent
+    data class NavigateToSpecifyQuestion(val gameId: String, val questionId: String) : GameEvent
 
     data class NavigateToQrCode(val gameId: String) : GameEvent
 

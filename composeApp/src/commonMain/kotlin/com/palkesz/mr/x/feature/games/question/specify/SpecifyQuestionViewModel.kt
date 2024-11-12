@@ -1,128 +1,117 @@
 package com.palkesz.mr.x.feature.games.question.specify
 
 import androidx.lifecycle.ViewModel
-import com.palkesz.mr.x.core.usecase.game.GetGameAndQuestionUseCase
-import com.palkesz.mr.x.core.usecase.question.AcceptHostAnswerUseCase
-import com.palkesz.mr.x.core.util.extensions.safeLet
+import androidx.lifecycle.viewModelScope
+import com.palkesz.mr.x.core.data.game.GameRepository
+import com.palkesz.mr.x.core.data.question.QuestionRepository
+import com.palkesz.mr.x.core.data.user.UserRepository
+import com.palkesz.mr.x.core.model.game.GameStatus
+import com.palkesz.mr.x.core.util.extensions.capitalizeWords
+import com.palkesz.mr.x.core.util.extensions.combine
+import com.palkesz.mr.x.core.util.extensions.getName
+import com.palkesz.mr.x.core.util.networking.DataLoader
+import com.palkesz.mr.x.core.util.networking.RefreshTrigger
 import com.palkesz.mr.x.core.util.networking.ViewState
-import com.palkesz.mr.x.core.util.networking.getOrNull
-import com.palkesz.mr.x.core.util.networking.updateIfSuccess
+import com.palkesz.mr.x.core.util.networking.map
+import com.plusmobileapps.konnectivity.Konnectivity
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import mrx.composeapp.generated.resources.Res
-import mrx.composeapp.generated.resources.ask_in_progress
-import mrx.composeapp.generated.resources.missing_question
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 interface SpecifyQuestionViewModel {
+    val viewState: StateFlow<ViewState<SpecifyQuestionViewState>>
 
-	val viewState: StateFlow<ViewState<SpecifyQuestionViewState>>
-
-	fun onTextChanged(text: String)
-	fun onAskQuestionClicked()
-	fun onEventHandled()
-	fun setVariablesFromNavigation(questionId: String, gameId: String)
-	fun onRetry()
+    fun onTextChanged(text: String)
+    fun onSaveClicked()
+    fun onEventHandled()
 }
 
 class SpecifyQuestionViewModelImpl(
-	private val acceptHostAnswerUseCase: AcceptHostAnswerUseCase,
-	private val getGameAndQuestionUseCase: GetGameAndQuestionUseCase
+    private val gameId: String,
+    private val questionId: String,
+    private val questionRepository: QuestionRepository,
+    private val userRepository: UserRepository,
+    gameRepository: GameRepository,
+    konnectivity: Konnectivity,
 ) : ViewModel(), SpecifyQuestionViewModel {
 
-	private var questionId: String? = null
-	private var gameId: String? = null
+    private val dataLoader = DataLoader<Unit>()
 
-	private val _viewState =
-		MutableStateFlow<ViewState<SpecifyQuestionViewState>>(ViewState.Loading)
-	override val viewState = _viewState.asStateFlow()
+    private val refreshTrigger = RefreshTrigger()
 
-	override fun onTextChanged(text: String) {
-		_viewState.updateIfSuccess { currentState ->
-			currentState.copy(
-				text = text,
-				isTextInvalid = false
-			)
-		}
-	}
+    private val loadingResult = dataLoader.loadAndObserveDataAsState(
+        coroutineScope = viewModelScope,
+        refreshTrigger = refreshTrigger,
+        initialData = ViewState.Success(Unit),
+        fetchData = { specifyQuestion() },
+    )
 
-	override fun onAskQuestionClicked() {
-		when {
-			_viewState.value.getOrNull()?.text?.isEmpty() == true ->
-				_viewState.updateIfSuccess { currentState ->
-					currentState.copy(
-						event = SpecifyQuestionEvent.ValidationError(Res.string.missing_question),
-						isTextInvalid = true
-					)
-				}
+    private val questionText = MutableStateFlow("")
 
-			else -> safeLet(questionId, _viewState.value.getOrNull()) { questionId, viewState ->
+    private val isQuestionTextValid = MutableStateFlow(true)
 
-				acceptHostAnswerUseCase.run(
-					questionId = questionId,
-					text = viewState.text
-				)
+    private val event = MutableStateFlow<SpecifyQuestionEvent?>(null)
 
-				_viewState.updateIfSuccess { currentState ->
-					currentState.copy(
-						event = SpecifyQuestionEvent.NavigateUp(
-							viewState.gameId,
-							Res.string.ask_in_progress)
-					)
-				}
-			}
-		}
-	}
+    override val viewState = combine(
+        loadingResult,
+        questionRepository.questions.map { questions ->
+            questions.first { it.id == questionId }
+        }.distinctUntilChanged(),
+        gameRepository.games.map { games ->
+            games.find { it.id == gameId }
+        }.distinctUntilChanged(),
+        questionText,
+        isQuestionTextValid,
+        event,
+        konnectivity.isConnectedState,
+    ) { result, question, game, text, isTextValid, event, isConnected ->
+        result.map {
+            SpecifyQuestionViewState(
+                text = text,
+                oldText = question.text,
+                hostAnswer = question.hostAnswer?.getName()?.capitalizeWords().orEmpty(),
+                expectedAnswer = "${question.expectedFirstName} ${question.expectedLastName}".capitalizeWords(),
+                number = question.number,
+                owner = userRepository.users.value.first { it.id == question.userId }.name,
+                isTextValid = isTextValid,
+                isUpdateButtonEnabled = isConnected && game?.status == GameStatus.ONGOING,
+                event = event,
+            )
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ViewState.Loading)
 
-	override fun onEventHandled() {
-		_viewState.updateIfSuccess { currentState ->
-			currentState.copy(event = null)
-		}
-	}
+    override fun onTextChanged(text: String) {
+        questionText.update { text }
+        isQuestionTextValid.update { true }
+    }
 
-	override fun setVariablesFromNavigation(questionId: String, gameId: String) {
-		this.questionId = questionId
-		this.gameId = gameId
-		getGameAndQuestion()
-	}
+    override fun onSaveClicked() {
+        viewModelScope.launch {
+            refreshTrigger.refresh()
+        }
+    }
 
-	override fun onRetry() {
-		getGameAndQuestion()
-	}
+    override fun onEventHandled() {
+        event.update { null }
+    }
 
-	private fun getGameAndQuestion() {
-		safeLet(gameId, questionId) { gameId, questionId ->
-			/*viewModelScope.launch {
-				getGameAndQuestionUseCase.run(gameId, questionId)
-					.collect { result ->
-						when (result) {
-							is Error -> _viewState.update { ViewState.Failure() }
-							is Loading -> _viewState.update { ViewState.Loading }
-							is Success -> {
-								_viewState.update {
-									ViewState.Success(
-										SpecifyQuestionViewState(
-											gameId = gameId,
-											oldQuestionText = result.result.second.text,
-											text = result.result.second.text,
-											expectedAnswer =
-											"${result.result.second.expectedFirstName} ${
-												result.result.second.expectedLastName
-											}".trim(),
-											event = SpecifyQuestionEvent.NavigateUp(
-												gameId = gameId,
-												message = Res.string.game_ended_message
-											).takeIf {
-												result.result.first.status == GameStatus.FINISHED
-											}
-										)
-									)
-								}
-							}
-						}
-					}
-			}*/
-		}
-	}
-
+    private suspend fun specifyQuestion(): Result<Unit> {
+        val isTextValid =
+            questionText.value.isNotBlank() && questionRepository.questions.value.find {
+                it.id == questionId
+            }?.text?.equals(questionText.value, ignoreCase = true) == false
+        isQuestionTextValid.update { isTextValid }
+        return if (isTextValid) {
+            questionRepository.updateText(id = questionId, text = questionText.value).onSuccess {
+                event.update { SpecifyQuestionEvent.NavigateUp }
+            }
+        } else {
+            Result.success(Unit)
+        }
+    }
 }
