@@ -181,7 +181,7 @@ private fun NormalQuestionPage(
                 }
             },
             onConditionFalse = {
-                LazyColumn(modifier = Modifier.padding(vertical = 16.dp)) {
+                LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
                     itemsIndexed(questions) { index, item ->
                         QuestionItemCard(
                             modifier = Modifier
@@ -203,6 +203,7 @@ private fun NormalQuestionPage(
         )
         AnimatedVisibility(visible = isAskQuestionButtonVisible) {
             PrimaryButton(
+                modifier = Modifier.padding(top = 16.dp),
                 text = stringResource(Res.string.ask_question_button_label),
                 onClick = onAskQuestionClicked,
             )
@@ -233,7 +234,7 @@ private fun BarkochbaQuestionPage(
                 }
             },
             onConditionFalse = {
-                LazyColumn(modifier = Modifier.padding(vertical = 16.dp)) {
+                LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
                     itemsIndexed(questions) { index, item ->
                         BarkochbaCard(
                             modifier = Modifier
@@ -252,6 +253,7 @@ private fun BarkochbaQuestionPage(
         )
         AnimatedVisibility(visible = isAskBarkochbaQuestionButtonVisible) {
             PrimaryButton(
+                modifier = Modifier.padding(top = 16.dp),
                 text = stringResource(Res.string.ask_barkochba_question_button_label),
                 onClick = onAskQuestionClicked,
             )

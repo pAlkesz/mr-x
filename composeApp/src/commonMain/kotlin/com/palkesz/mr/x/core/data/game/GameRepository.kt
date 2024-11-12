@@ -8,11 +8,15 @@ import dev.gitlive.firebase.firestore.ChangeType
 import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.FirebaseFirestore
+import dev.gitlive.firebase.firestore.Timestamp
+import dev.gitlive.firebase.firestore.fromDuration
+import dev.gitlive.firebase.firestore.toDuration
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlin.time.Duration.Companion.days
 
 interface GameRepository {
     val games: StateFlow<List<Game>>
@@ -110,7 +114,11 @@ class GameRepositoryImpl(
     }
 
     private fun getGamesQuery(playerId: String) = firestore.collection(GAMES_COLLECTION_KEY).where {
-        any(HOST_FIELD_KEY equalTo playerId, PLAYERS_FIELD_KEY contains playerId)
+        any(HOST_FIELD_KEY equalTo playerId, PLAYERS_FIELD_KEY contains playerId)?.and(
+            LAST_MODIFIED_FIELD_KEY greaterThan Timestamp.fromDuration(
+                duration = Timestamp.now().toDuration() - 7.days
+            )
+        )
     }.orderBy(LAST_MODIFIED_FIELD_KEY, direction = Direction.DESCENDING).limit(GAMES_FETCH_LIMIT)
 
     companion object {
