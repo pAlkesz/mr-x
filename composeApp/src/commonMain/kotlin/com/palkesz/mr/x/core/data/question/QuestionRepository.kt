@@ -64,6 +64,10 @@ class QuestionRepositoryImpl(
 
     override suspend fun createQuestion(question: Question) = try {
         firestore.collection(QUESTIONS_COLLECTION_NAME).document(question.id).set(question)
+        _questions.update { cachedQuestions ->
+            (listOf(question) + cachedQuestions).distinctBy { it.id }
+                .sortedByDescending { it.lastModifiedTimestamp.seconds }
+        }
         Result.success(Unit)
     } catch (exception: Exception) {
         Result.failure(exception = exception)

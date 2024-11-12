@@ -14,13 +14,14 @@ class GameUiMapper(
 
     fun mapViewState(result: GameResult, event: GameEvent?): GameViewState {
         val isHost = authRepository.userId == result.game.hostId
+        val isGameOngoing = result.game.status == GameStatus.ONGOING
         return GameViewState(
             host = result.host.name,
             firstName = result.game.firstName,
             lastName = result.game.lastName,
             isHost = isHost,
             isGameOngoing = result.game.status == GameStatus.ONGOING,
-            isAskQuestionButtonVisible = !isHost,
+            isAskQuestionButtonVisible = !isHost && isGameOngoing,
             isAskBarkochbaQuestionButtonVisible = result.isAskBarkochbaQuestionButtonVisible(),
             barkochbaQuestionCount = result.getBarkochbaQuestionCount(),
             questions = result.mapQuestions(isHost = isHost),
@@ -82,6 +83,7 @@ class GameUiMapper(
                     text = question.text,
                     number = question.number,
                     owner = getOwner(id = question.userId),
+                    answer = "${question.expectedFirstName} ${question.expectedLastName}",
                 )
             }
 

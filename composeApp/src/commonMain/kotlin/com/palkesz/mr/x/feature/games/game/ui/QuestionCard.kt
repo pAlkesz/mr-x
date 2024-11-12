@@ -21,14 +21,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.button.PrimaryCardButton
 import com.palkesz.mr.x.core.ui.components.button.SecondaryCardButton
+import com.palkesz.mr.x.core.ui.components.text.buildCorrectAnswer
 import com.palkesz.mr.x.core.ui.components.text.buildCorrectHostAnswer
+import com.palkesz.mr.x.core.ui.components.text.buildCorrectPlayerAnswer
 import com.palkesz.mr.x.core.ui.components.text.buildWrongHostAnswer
+import com.palkesz.mr.x.core.ui.components.text.buildWrongPlayerAnswer
 import com.palkesz.mr.x.core.util.extensions.capitalizeFirstChar
 import com.palkesz.mr.x.feature.games.game.QuestionItem
 import mrx.composeapp.generated.resources.Res
@@ -44,7 +46,6 @@ import mrx.composeapp.generated.resources.ic_shield_error
 import mrx.composeapp.generated.resources.ic_star
 import mrx.composeapp.generated.resources.ic_trophy
 import mrx.composeapp.generated.resources.pass_button_label
-import mrx.composeapp.generated.resources.player_answer_label
 import mrx.composeapp.generated.resources.question_number_title
 import mrx.composeapp.generated.resources.question_text
 import org.jetbrains.compose.resources.stringResource
@@ -153,7 +154,7 @@ private fun GuessAsHostQuestionCard(
         icon = vectorResource(Res.drawable.ic_play_circle),
     ) {
         QuestionCardButtons(
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp, start = 16.dp, end = 16.dp),
             enabled = isGameOngoing,
             id = item.id,
             first = stringResource(Res.string.answer_button_label),
@@ -179,9 +180,9 @@ private fun WaitingForPlayersQuestionCard(
     ) {
         AnimatedNullability(item.hostAnswer) { answer ->
             Text(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                 text = buildWrongHostAnswer(answer = answer),
-                style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }
@@ -204,14 +205,13 @@ private fun GuessAsPlayerQuestionCard(
     ) {
         AnimatedNullability(item.hostAnswer) { answer ->
             Text(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                textDecoration = TextDecoration.LineThrough,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                 text = buildWrongHostAnswer(answer = answer),
-                style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
         PrimaryCardButton(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
             text = stringResource(Res.string.answer_button_label),
             enabled = isGameOngoing,
             onClick = { onAnswerClicked(item.id) }
@@ -234,7 +234,7 @@ private fun WaitingForOwnerQuestionCard(
     ) {
         AnimatedNullability(item.hostAnswer) { answer ->
             Text(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                 text = buildWrongHostAnswer(answer = answer),
                 style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
             )
@@ -260,13 +260,13 @@ private fun VerifyAsOwnerQuestionCard(
     ) {
         AnimatedNullability(item.hostAnswer) { answer ->
             Text(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                 text = buildWrongHostAnswer(answer = answer),
                 style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
             )
         }
         QuestionCardButtons(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
             enabled = isGameOngoing,
             id = item.id,
             first = stringResource(Res.string.accept_button_label),
@@ -292,16 +292,15 @@ private fun GuessedByPlayerQuestionCard(
     ) {
         AnimatedNullability(item.hostAnswer) { answer ->
             Text(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                textDecoration = TextDecoration.LineThrough,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                 text = buildWrongHostAnswer(answer = answer),
-                style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
         Text(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            text = stringResource(Res.string.player_answer_label, item.answer, item.owner),
-            style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+            text = buildCorrectPlayerAnswer(item.answer, item.owner),
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }
@@ -321,16 +320,14 @@ private fun MissedByPlayerQuestionCard(
     ) {
         AnimatedNullability(item.hostAnswer) { answer ->
             Text(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                textDecoration = TextDecoration.LineThrough,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
                 text = buildWrongHostAnswer(answer = answer),
-                style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
         Text(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            textDecoration = TextDecoration.LineThrough,
-            text = stringResource(Res.string.player_answer_label, item.answer, item.owner),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+            text = buildWrongPlayerAnswer(item.answer, item.owner),
             style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 25.sp),
         )
     }
@@ -364,12 +361,21 @@ private fun PlayersWonQuestionCard(
 ) {
     QuestionCard(
         modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         owner = item.owner,
         number = item.number,
         text = item.text,
         icon = vectorResource(Res.drawable.ic_trophy),
-    )
+    ) {
+        Text(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 4.dp),
+            text = buildCorrectAnswer(
+                answer = item.answer,
+                highlightColor = MaterialTheme.colorScheme.primary,
+            ),
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
 }
 
 @Composable
@@ -414,11 +420,12 @@ private fun QuestionCard(
             }
         }
         Text(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
             text = stringResource(Res.string.question_text, text.capitalizeFirstChar()),
             style = MaterialTheme.typography.bodyMedium,
         )
         content()
+        Spacer(modifier = Modifier.size(16.dp))
     }
 }
 

@@ -103,6 +103,7 @@ sealed interface QuestionItem {
         val text: String,
         val number: Int,
         val owner: String,
+        val answer: String,
     ) : QuestionItem
 
 }

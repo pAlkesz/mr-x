@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +26,7 @@ import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
+import com.palkesz.mr.x.core.ui.modifiers.conditional
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.feature.games.GameGraph
 import com.palkesz.mr.x.feature.games.game.ui.GameTitleBar
@@ -166,10 +167,14 @@ private fun NormalQuestionPage(
                 }
             },
             onConditionFalse = {
-                LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
-                    items(questions) { item ->
+                LazyColumn(modifier = Modifier.padding(vertical = 16.dp)) {
+                    itemsIndexed(questions) { index, item ->
                         QuestionItemCard(
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .conditional(condition = questions.lastIndex != index) {
+                                    padding(bottom = 16.dp)
+                                },
                             item = item,
                             isGameOngoing = isGameOngoing,
                             onPassAsHostClicked = onPassAsHostClicked,
