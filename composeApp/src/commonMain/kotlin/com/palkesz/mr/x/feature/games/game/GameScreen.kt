@@ -29,13 +29,16 @@ import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.ui.modifiers.conditional
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.feature.games.GameGraph
+import com.palkesz.mr.x.feature.games.game.ui.BarkochbaCard
 import com.palkesz.mr.x.feature.games.game.ui.GameTitleBar
 import com.palkesz.mr.x.feature.games.game.ui.QuestionItemCard
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 import mrx.composeapp.generated.resources.Res
+import mrx.composeapp.generated.resources.ask_barkochba_question_button_label
 import mrx.composeapp.generated.resources.ask_question_button_label
 import mrx.composeapp.generated.resources.barkochba_question_tab_title
+import mrx.composeapp.generated.resources.no_barkochba_questions_message
 import mrx.composeapp.generated.resources.no_questions_message
 import mrx.composeapp.generated.resources.normal_question_tab_title
 import org.jetbrains.compose.resources.stringResource
@@ -52,6 +55,8 @@ fun GameScreen(viewModel: GameViewModel) {
         onQrCodeClicked = viewModel::onQrCodeClicked,
         onAcceptAsOwnerClicked = viewModel::onAcceptAsOwnerClicked,
         onDeclineAsOwnerClicked = viewModel::onDeclineAsOwnerClicked,
+        onAskBarkochbaQuestionClicked = viewModel::onAskBarkochbaQuestionClicked,
+        onBarkochbaQuestionAnswered = viewModel::onBarkochbaQuestionAnswered,
         onRetry = viewModel::onRetry,
         onEventHandled = viewModel::onEventHandled,
     )
@@ -66,6 +71,8 @@ private fun GameScreenContent(
     onAcceptAsOwnerClicked: (String) -> Unit,
     onDeclineAsOwnerClicked: (String) -> Unit,
     onAskQuestionClicked: () -> Unit,
+    onAskBarkochbaQuestionClicked: () -> Unit,
+    onBarkochbaQuestionAnswered: (String, Boolean) -> Unit,
     onQrCodeClicked: () -> Unit,
     onEventHandled: () -> Unit,
     onRetry: () -> Unit,
@@ -99,7 +106,14 @@ private fun GameScreenContent(
                     )
                 },
                 barkochbaPage = {
-
+                    BarkochbaQuestionPage(
+                        modifier = Modifier.fillMaxSize(),
+                        questions = state.barkochbaQuestions,
+                        isGameOngoing = state.isGameOngoing,
+                        isAskBarkochbaQuestionButtonVisible = state.isAskBarkochbaQuestionButtonVisible,
+                        onAskQuestionClicked = onAskBarkochbaQuestionClicked,
+                        onBarkochbaQuestionAnswered = onBarkochbaQuestionAnswered,
+                    )
                 }
             )
         }
@@ -197,6 +211,55 @@ private fun NormalQuestionPage(
 }
 
 @Composable
+private fun BarkochbaQuestionPage(
+    modifier: Modifier = Modifier,
+    questions: ImmutableList<BarkochbaItem>,
+    isGameOngoing: Boolean,
+    isAskBarkochbaQuestionButtonVisible: Boolean,
+    onBarkochbaQuestionAnswered: (String, Boolean) -> Unit,
+    onAskQuestionClicked: () -> Unit,
+) {
+    Column(modifier = modifier) {
+        CrossFade(
+            modifier = Modifier.fillMaxWidth().weight(1f),
+            condition = questions.isEmpty(),
+            onConditionTrue = {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = stringResource(Res.string.no_barkochba_questions_message),
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            },
+            onConditionFalse = {
+                LazyColumn(modifier = Modifier.padding(vertical = 16.dp)) {
+                    itemsIndexed(questions) { index, item ->
+                        BarkochbaCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .conditional(condition = questions.lastIndex != index) {
+                                    padding(bottom = 16.dp)
+                                },
+                            item = item,
+                            isGameOngoing = isGameOngoing,
+                            onYesClicked = { onBarkochbaQuestionAnswered(it, true) },
+                            onNoClicked = { onBarkochbaQuestionAnswered(it, false) }
+                        )
+                    }
+                }
+            }
+        )
+        AnimatedVisibility(visible = isAskBarkochbaQuestionButtonVisible) {
+            PrimaryButton(
+                text = stringResource(Res.string.ask_barkochba_question_button_label),
+                onClick = onAskQuestionClicked,
+            )
+        }
+    }
+}
+
+@Composable
 private fun HandleEvent(event: GameEvent?, onEventHandled: () -> Unit) {
     HandleEventEffect(key1 = event) { gameEvent, _, _, navController ->
         when (gameEvent) {
@@ -226,8 +289,8 @@ private fun HandleEvent(event: GameEvent?, onEventHandled: () -> Unit) {
                 )
             }
 
-            else -> {
-
+            is GameEvent.NavigateToCreateBarkochbaQuestion -> {
+                navController?.navigate(GameGraph.CreateBarkochbaQuestion(gameId = gameEvent.gameId))
             }
         }
         onEventHandled()

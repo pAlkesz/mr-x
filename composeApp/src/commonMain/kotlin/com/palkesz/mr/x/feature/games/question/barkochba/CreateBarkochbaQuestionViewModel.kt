@@ -1,15 +1,12 @@
-package com.palkesz.mr.x.feature.games.question.specify
+package com.palkesz.mr.x.feature.games.question.barkochba
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.palkesz.mr.x.core.data.game.GameRepository
-import com.palkesz.mr.x.core.data.question.QuestionRepository
-import com.palkesz.mr.x.core.data.user.UserRepository
 import com.palkesz.mr.x.core.model.game.GameStatus
-import com.palkesz.mr.x.core.util.extensions.capitalizeWords
+import com.palkesz.mr.x.core.usecase.question.UpdateBarkochbaQuestionUseCase
 import com.palkesz.mr.x.core.util.extensions.combine
-import com.palkesz.mr.x.core.util.extensions.getName
 import com.palkesz.mr.x.core.util.networking.DataLoader
 import com.palkesz.mr.x.core.util.networking.RefreshTrigger
 import com.palkesz.mr.x.core.util.networking.ViewState
@@ -24,23 +21,21 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-interface SpecifyQuestionViewModel {
-    val viewState: StateFlow<ViewState<SpecifyQuestionViewState>>
+interface CreateBarkochbaQuestionViewModel {
+    val viewState: StateFlow<ViewState<CreateBarkochbaQuestionViewState>>
 
     fun onTextChanged(text: String)
-    fun onSaveClicked()
+    fun onCreateClicked()
     fun onEventHandled()
 }
 
 @Stable
-class SpecifyQuestionViewModelImpl(
+class CreateBarkochbaQuestionViewModelImpl(
     private val gameId: String,
-    private val questionId: String,
-    private val questionRepository: QuestionRepository,
-    private val userRepository: UserRepository,
+    private val updateBarkochbaQuestionUseCase: UpdateBarkochbaQuestionUseCase,
     gameRepository: GameRepository,
     konnectivity: Konnectivity,
-) : ViewModel(), SpecifyQuestionViewModel {
+) : ViewModel(), CreateBarkochbaQuestionViewModel {
 
     private val dataLoader = DataLoader<Unit>()
 
@@ -50,38 +45,30 @@ class SpecifyQuestionViewModelImpl(
         coroutineScope = viewModelScope,
         refreshTrigger = refreshTrigger,
         initialData = ViewState.Success(Unit),
-        fetchData = { specifyQuestion() },
+        fetchData = { updateQuestion() },
     )
 
     private val questionText = MutableStateFlow("")
 
     private val isQuestionTextValid = MutableStateFlow(true)
 
-    private val event = MutableStateFlow<SpecifyQuestionEvent?>(null)
+    private val event = MutableStateFlow<CreateBarkochbaQuestionEvent?>(null)
 
     override val viewState = combine(
         loadingResult,
-        questionRepository.questions.map { questions ->
-            questions.first { it.id == questionId }
-        }.distinctUntilChanged(),
         gameRepository.games.map { games ->
             games.find { it.id == gameId }
         }.distinctUntilChanged(),
         questionText,
         isQuestionTextValid,
         event,
-        konnectivity.isConnectedState,
-    ) { result, question, game, text, isTextValid, event, isConnected ->
+        konnectivity.isConnectedState
+    ) { result, game, text, isTextValid, event, isConnected ->
         result.map {
-            SpecifyQuestionViewState(
+            CreateBarkochbaQuestionViewState(
                 text = text,
-                oldText = question.text,
-                hostAnswer = question.hostAnswer?.getName()?.capitalizeWords().orEmpty(),
-                expectedAnswer = "${question.expectedFirstName} ${question.expectedLastName}".capitalizeWords(),
-                number = question.number,
-                owner = userRepository.users.value.first { it.id == question.userId }.name,
                 isTextValid = isTextValid,
-                isUpdateButtonEnabled = isConnected && game?.status == GameStatus.ONGOING,
+                isCreateButtonEnabled = isConnected && game?.status == GameStatus.ONGOING,
                 event = event,
             )
         }
@@ -92,7 +79,7 @@ class SpecifyQuestionViewModelImpl(
         isQuestionTextValid.update { true }
     }
 
-    override fun onSaveClicked() {
+    override fun onCreateClicked() {
         viewModelScope.launch {
             refreshTrigger.refresh()
         }
@@ -102,16 +89,11 @@ class SpecifyQuestionViewModelImpl(
         event.update { null }
     }
 
-    private suspend fun specifyQuestion(): Result<Unit> {
-        val isTextValid =
-            questionText.value.isNotBlank() && questionRepository.questions.value.find {
-                it.id == questionId
-            }?.text?.equals(questionText.value, ignoreCase = true) == false
+    private suspend fun updateQuestion(): Result<Unit> {
+        val isTextValid = questionText.value.isNotBlank()
         isQuestionTextValid.update { isTextValid }
         return if (isTextValid) {
-            questionRepository.updateText(id = questionId, text = questionText.value).onSuccess {
-                event.update { SpecifyQuestionEvent.NavigateUp }
-            }
+            updateBarkochbaQuestionUseCase.run(gameId = gameId, text = questionText.value)
         } else {
             Result.success(Unit)
         }

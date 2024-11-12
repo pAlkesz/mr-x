@@ -12,6 +12,6 @@ val gameModule = module {
     factoryOf(::FetchGameResultUseCase)
     factoryOf(::ObserveGameResultUseCase)
     viewModel { parameters ->
-        GameViewModelImpl(parameters.get(), get(), get(), get(), get())
+        GameViewModelImpl(parameters.get(), get(), get(), get(), get(), get())
     } bind GameViewModel::class
 }

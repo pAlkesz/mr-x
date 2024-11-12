@@ -1,6 +1,7 @@
 package com.palkesz.mr.x.core.usecase.question
 
 import com.palkesz.mr.x.core.data.auth.AuthRepository
+import com.palkesz.mr.x.core.data.auth.AuthRepositoryImpl.Companion.NO_USER_ID_FOUND_MESSAGE
 import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepository
 import com.palkesz.mr.x.core.model.game.GameStatus
@@ -18,7 +19,7 @@ class CreateQuestionUseCase(
 
     suspend fun run(text: String, firstName: String, lastName: String, gameId: String) =
         runCatching {
-            val userId = authRepository.userId ?: return@runCatching
+            val userId = authRepository.userId ?: throw Throwable(NO_USER_ID_FOUND_MESSAGE)
             val game = gameRepository.games.value.find { it.id == gameId } ?: return@runCatching
             val status =
                 if (game.firstName.equalsAsName(firstName) &&

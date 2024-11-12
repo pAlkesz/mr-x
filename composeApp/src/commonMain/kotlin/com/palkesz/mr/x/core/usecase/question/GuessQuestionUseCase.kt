@@ -12,6 +12,7 @@ class GuessQuestionUseCase(
     private val questionRepository: QuestionRepository,
     private val authRepository: AuthRepository,
     private val gameRepository: GameRepository,
+    private val createBarkochbaQuestionUseCase: CreateBarkochbaQuestionUseCase,
 ) {
 
     suspend fun run(questionId: String, firstName: String, lastName: String?) = runCatching {
@@ -29,15 +30,40 @@ class GuessQuestionUseCase(
             lastName = question.expectedLastName,
         )
         val isHost = game.hostId == userId
-        (if (isHost) {
-            val status =
-                if (isGuessed) QuestionStatus.GUESSED_BY_HOST else QuestionStatus.WAITING_FOR_OWNER
-            questionRepository.updateHostAnswer(id = questionId, answer = answer, status = status)
-        } else {
-            val status =
-                if (isGuessed) QuestionStatus.GUESSED_BY_PLAYER else QuestionStatus.MISSED_BY_PLAYER
-            questionRepository.updatePlayerAnswer(id = questionId, answer = answer, status = status)
-        }).getOrThrow()
+        when {
+            isHost && isGuessed -> {
+                questionRepository.updateHostAnswer(
+                    id = questionId,
+                    answer = answer,
+                    status = QuestionStatus.GUESSED_BY_HOST,
+                ).getOrThrow()
+            }
+
+            isHost -> {
+                questionRepository.updateHostAnswer(
+                    id = questionId,
+                    answer = answer,
+                    status = QuestionStatus.WAITING_FOR_OWNER,
+                ).getOrThrow()
+            }
+
+            isGuessed -> {
+                questionRepository.updatePlayerAnswer(
+                    id = questionId,
+                    answer = answer,
+                    status = QuestionStatus.GUESSED_BY_PLAYER,
+                ).getOrThrow()
+                createBarkochbaQuestionUseCase.run(gameId = game.id).getOrThrow()
+            }
+
+            else -> {
+                questionRepository.updatePlayerAnswer(
+                    id = questionId,
+                    answer = answer,
+                    status = QuestionStatus.MISSED_BY_PLAYER,
+                ).getOrThrow()
+            }
+        }
     }
 
     companion object {

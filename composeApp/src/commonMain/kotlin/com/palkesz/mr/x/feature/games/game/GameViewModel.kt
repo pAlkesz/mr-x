@@ -3,6 +3,7 @@ package com.palkesz.mr.x.feature.games.game
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepository
 import com.palkesz.mr.x.core.model.question.QuestionStatus
 import com.palkesz.mr.x.core.usecase.game.FetchGameResultUseCase
@@ -28,6 +29,8 @@ interface GameViewModel {
     fun onAcceptAsOwnerClicked(questionId: String)
     fun onDeclineAsOwnerClicked(questionId: String)
     fun onAskQuestionClicked()
+    fun onAskBarkochbaQuestionClicked()
+    fun onBarkochbaQuestionAnswered(questionId: String, answer: Boolean)
     fun onQrCodeClicked()
     fun onEventHandled()
     fun onRetry()
@@ -40,6 +43,7 @@ class GameViewModelImpl(
     private val observeGameResultUseCase: ObserveGameResultUseCase,
     private val gameUiMapper: GameUiMapper,
     private val questionRepository: QuestionRepository,
+    private val barkochbaQuestionRepository: BarkochbaQuestionRepository,
 ) : ViewModel(), GameViewModel {
 
     private val dataLoader = DataLoader<GameResult>()
@@ -100,6 +104,16 @@ class GameViewModelImpl(
 
     override fun onAskQuestionClicked() {
         event.update { GameEvent.NavigateToCreateQuestion(gameId = gameId) }
+    }
+
+    override fun onAskBarkochbaQuestionClicked() {
+        event.update { GameEvent.NavigateToCreateBarkochbaQuestion(gameId = gameId) }
+    }
+
+    override fun onBarkochbaQuestionAnswered(questionId: String, answer: Boolean) {
+        viewModelScope.launch {
+            barkochbaQuestionRepository.updateAnswer(id = questionId, answer = answer)
+        }
     }
 
     override fun onRetry() {

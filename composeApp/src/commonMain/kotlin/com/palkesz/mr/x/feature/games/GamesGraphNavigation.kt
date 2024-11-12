@@ -9,6 +9,8 @@ import com.palkesz.mr.x.feature.games.game.GameScreen
 import com.palkesz.mr.x.feature.games.game.GameViewModelImpl
 import com.palkesz.mr.x.feature.games.qrcode.QrCodeScreen
 import com.palkesz.mr.x.feature.games.qrcode.QrCodeViewModelImpl
+import com.palkesz.mr.x.feature.games.question.barkochba.CreateBarkochbaQuestionScreen
+import com.palkesz.mr.x.feature.games.question.barkochba.CreateBarkochbaQuestionViewModelImpl
 import com.palkesz.mr.x.feature.games.question.create.CreateQuestionScreen
 import com.palkesz.mr.x.feature.games.question.create.CreateQuestionViewModelImpl
 import com.palkesz.mr.x.feature.games.question.guess.GuessQuestionScreen
@@ -54,24 +56,14 @@ fun NavGraphBuilder.gamesGraphNavigation() {
                 parameterSetOf(specifyQuestion.gameId, specifyQuestion.questionId)
             }))
         }
-        /*
-        composable(
-            route = GameGraphRoute.BarkochbaQuestion.route.plus("/{$GAME_ID}"),
-            arguments =
-            listOf(
-                navArgument(
-                    name = GAME_ID,
-                    builder = {
-                        type = NavType.StringType
-                    },
-                ),
-            ),
-        ) { backStackEntry ->
-            BarkochbaQuestionScreen(
-                gameId = backStackEntry.arguments?.getString(GAME_ID).toString(),
+        composable<GameGraph.CreateBarkochbaQuestion> { backStackEntry ->
+            val createQuestion = backStackEntry.toRoute<GameGraph.CreateBarkochbaQuestion>()
+            CreateBarkochbaQuestionScreen(
+                viewModel = koinViewModel<CreateBarkochbaQuestionViewModelImpl>(parameters = {
+                    parameterSetOf(createQuestion.gameId)
+                })
             )
         }
-        */
     }
 }
 
@@ -95,9 +87,7 @@ sealed interface GameGraph {
     @Serializable
     data class SpecifyQuestion(val gameId: String, val questionId: String) : GameGraph
 
-    /*
-    data object BarkochbaQuestion : GameGraphRoute("BARKOCHBA_QUESTION") {
-        fun createRoute(gameId: String) = "$route/$gameId"
-    }
-    }*/
+    @Serializable
+    data class CreateBarkochbaQuestion(val gameId: String) : GameGraph
+
 }
