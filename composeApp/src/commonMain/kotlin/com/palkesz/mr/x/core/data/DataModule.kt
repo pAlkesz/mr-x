@@ -5,6 +5,8 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.auth.AuthRepositoryImpl
+import com.palkesz.mr.x.core.data.auth.FirebaseAuthentication
+import com.palkesz.mr.x.core.data.auth.FirebaseAuthenticationImpl
 import com.palkesz.mr.x.core.data.datastore.MrXDataStoreImpl
 import com.palkesz.mr.x.core.data.datastore.MrxDataStore
 import com.palkesz.mr.x.core.data.game.GameRepository
@@ -28,6 +30,7 @@ val dataModule = module {
     single { Firebase.auth }
     single { Firebase.firestore }
     includes(dataStoreModule)
+    singleOf(::FirebaseAuthenticationImpl) bind FirebaseAuthentication::class
     singleOf(::AuthRepositoryImpl) bind AuthRepository::class
     singleOf(::MrXDataStoreImpl) bind MrxDataStore::class
     singleOf(::UserRepositoryImpl) bind UserRepository::class

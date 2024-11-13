@@ -1,6 +1,7 @@
 rootProject.name = "MrX"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+@Suppress("UnstableApiUsage")
 pluginManagement {
 	repositories {
 		google {
@@ -15,6 +16,7 @@ pluginManagement {
 	}
 }
 
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
 	repositories {
 		google {

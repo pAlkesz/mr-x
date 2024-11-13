@@ -36,7 +36,7 @@ interface LoginViewModel {
 @Stable
 class LoginViewModelImpl(
     private val sendSignInLinkUseCase: SendSignInLinkUseCase,
-    private val singInWithLinkUseCase: SignInWithLinkUseCase,
+    private val signInWithLinkUseCase: SignInWithLinkUseCase,
     private val isUsernameUploadedUseCase: IsUsernameUploadedUseCase,
     private val authRepository: AuthRepository,
     konnectivity: Konnectivity,
@@ -131,7 +131,7 @@ class LoginViewModelImpl(
     }
 
     private suspend fun loginWithLink(link: DeepLink) =
-        singInWithLinkUseCase.run(link = link).onSuccess {
+        signInWithLinkUseCase.run(link = link).onSuccess {
             event.update {
                 if (isUsernameUploadedUseCase.run()) {
                     LoginEvent.NavigateToHome

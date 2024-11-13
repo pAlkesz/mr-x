@@ -3,8 +3,6 @@ package com.palkesz.mr.x.core.data.auth
 import com.palkesz.mr.x.core.util.extensions.getSignInLink
 import dev.gitlive.firebase.auth.ActionCodeSettings
 import dev.gitlive.firebase.auth.AndroidPackageName
-import dev.gitlive.firebase.auth.AuthResult
-import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.theolm.rinku.DeepLink
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
@@ -17,13 +15,34 @@ interface AuthRepository {
     val loggedIn: Flow<Boolean>
 
     suspend fun sendSignInLinkToEmail(email: String): Result<Unit>
-    suspend fun signInWithEmailLink(email: String, link: String): Result<AuthResult>
+    suspend fun signInWithEmailLink(email: String, link: String): Result<Unit>
     suspend fun updateUsername(name: String): Result<Unit>
     fun isSignInLink(link: DeepLink): Boolean
+
+    interface Stub : AuthRepository {
+        override val userId: String?
+            get() = throw NotImplementedError()
+        override val username: String?
+            get() = throw NotImplementedError()
+        override val isLoggedIn: Boolean
+            get() = throw NotImplementedError()
+        override val loggedIn: Flow<Boolean>
+            get() = throw NotImplementedError()
+
+        override suspend fun updateUsername(name: String): Result<Unit> =
+            throw NotImplementedError()
+
+        override fun isSignInLink(link: DeepLink): Boolean = throw NotImplementedError()
+        override suspend fun sendSignInLinkToEmail(email: String): Result<Unit> =
+            throw NotImplementedError()
+
+        override suspend fun signInWithEmailLink(email: String, link: String): Result<Unit> =
+            throw NotImplementedError()
+    }
 }
 
 class AuthRepositoryImpl(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuthentication
 ) : AuthRepository {
 
     override val userId: String?
@@ -53,12 +72,12 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun signInWithEmailLink(email: String, link: String): Result<AuthResult> =
-        try {
-            Result.success(auth.signInWithEmailLink(email, link = link))
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
-        }
+    override suspend fun signInWithEmailLink(email: String, link: String) = try {
+        auth.signInWithEmailLink(email = email, link = link)
+        Result.success(Unit)
+    } catch (exception: Exception) {
+        Result.failure(exception = exception)
+    }
 
     override suspend fun updateUsername(name: String) =
         try {

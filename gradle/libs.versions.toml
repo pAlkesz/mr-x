@@ -32,6 +32,9 @@ rinq = "0.5.0"
 napier = "2.7.1"
 konnectivity = "0.1-alpha01"
 
+# Testing
+kotlinxCoroutinesTest = "1.9.0"
+
 [libraries]
 # AndroidX
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidxViewModel" }
@@ -70,6 +73,10 @@ rinqu = { group = "dev.theolm", name = "rinku", version.ref = "rinq" }
 rinqu-compose-ext = { group = "dev.theolm", name = "rinku-compose-ext", version.ref = "rinq" }
 aakira-napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 plusmobileapps-konnectivity = { group = "com.plusmobileapps", name = "konnectivity", version.ref = "konnectivity" }
+
+# Testing
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

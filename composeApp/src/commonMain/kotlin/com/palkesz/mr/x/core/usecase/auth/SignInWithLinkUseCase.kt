@@ -7,12 +7,16 @@ import com.palkesz.mr.x.core.util.extensions.getSignInLink
 import dev.theolm.rinku.DeepLink
 import io.github.aakira.napier.Napier
 
-class SignInWithLinkUseCase(
+fun interface SignInWithLinkUseCase {
+    suspend fun run(link: DeepLink): Result<Unit>
+}
+
+class SignInWithLinkUseCaseImpl(
     private val authRepository: AuthRepository,
     private val mrxDataStore: MrxDataStore,
-) {
+) : SignInWithLinkUseCase {
 
-    suspend fun run(link: DeepLink): Result<Unit> {
+    override suspend fun run(link: DeepLink): Result<Unit> {
         val email = mrxDataStore.getUserEmail() ?: return Result.failure(
             exception = Throwable(message = NO_EMAIL_FOUND_MESSAGE)
         )
@@ -21,7 +25,7 @@ class SignInWithLinkUseCase(
         )
         return authRepository.signInWithEmailLink(email = email, link = signInLink).also {
             Napier.d(tag = AUTH_TAG) { "Signing in with link: $it" }
-        }.map { }
+        }
     }
 
     companion object {

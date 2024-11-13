@@ -84,6 +84,10 @@ kotlin {
             implementation(libs.aakira.napier)
             implementation(libs.plusmobileapps.konnectivity)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+        }
     }
 }
 

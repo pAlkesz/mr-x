@@ -13,6 +13,17 @@ interface UserRepository {
     suspend fun uploadUser(user: User): Result<User>
     suspend fun fetchUser(id: String): Result<User>
     suspend fun fetchUsers(ids: List<String>): Result<List<User>>
+
+    interface Stub : UserRepository {
+        override val users: StateFlow<List<User>>
+            get() = throw NotImplementedError()
+
+        override suspend fun fetchUser(id: String): Result<User> = throw NotImplementedError()
+        override suspend fun fetchUsers(ids: List<String>): Result<List<User>> =
+            throw NotImplementedError()
+
+        override suspend fun uploadUser(user: User): Result<User> = throw NotImplementedError()
+    }
 }
 
 class UserRepositoryImpl(
