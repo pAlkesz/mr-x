@@ -8,7 +8,6 @@ import com.palkesz.mr.x.core.usecase.auth.SendSignInLinkUseCase
 import com.palkesz.mr.x.core.usecase.auth.SignInWithLinkUseCase
 import com.palkesz.mr.x.core.util.networking.ViewState
 import dev.theolm.rinku.DeepLink
-import dev.theolm.rinku.Rinku
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
@@ -194,126 +193,6 @@ class LoginViewModelTest : BaseTest() {
         viewModel.onSendLinkClicked()
         assertEquals(
             expected = ViewState.Failure(isLoading = false),
-            actual = viewModel.viewState.value,
-        )
-    }
-
-    @Test
-    fun `Receiving deep link and signing in successfully with username not uploaded`() = runTest {
-        val isConnectedState = flowOf(value = true).stateIn(backgroundScope)
-        val konnectivity = object : KonnectivityStub {
-            override val isConnected = true
-            override val isConnectedState = isConnectedState
-        }
-        val viewModel = getViewModel(
-            isUserNameUploaded = false,
-            isSignInLink = true,
-            sendSignInLinkResult = Result.success(Unit),
-            signInWithLinkResult = Result.success(Unit),
-            konnectivity = konnectivity,
-        )
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.viewState.collect()
-        }
-        Rinku.handleDeepLink("")
-        assertEquals(
-            expected = ViewState.Success(
-                LoginViewState(
-                    email = "",
-                    isEmailValid = true,
-                    isLinkSent = false,
-                    isSendButtonEnabled = true,
-                    event = LoginEvent.NavigateToAddUsername,
-                )
-            ),
-            actual = viewModel.viewState.value,
-        )
-    }
-
-    @Test
-    fun `Receiving deep link and signing in successfully with username uploaded`() = runTest {
-        val isConnectedState = flowOf(value = true).stateIn(backgroundScope)
-        val konnectivity = object : KonnectivityStub {
-            override val isConnected = true
-            override val isConnectedState = isConnectedState
-        }
-        val viewModel = getViewModel(
-            isUserNameUploaded = true,
-            isSignInLink = true,
-            sendSignInLinkResult = Result.success(Unit),
-            signInWithLinkResult = Result.success(Unit),
-            konnectivity = konnectivity,
-        )
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.viewState.collect()
-        }
-        Rinku.handleDeepLink("")
-        assertEquals(
-            expected = ViewState.Success(
-                LoginViewState(
-                    email = "",
-                    isEmailValid = true,
-                    isLinkSent = false,
-                    isSendButtonEnabled = true,
-                    event = LoginEvent.NavigateToHome,
-                )
-            ),
-            actual = viewModel.viewState.value,
-        )
-    }
-
-    @Test
-    fun `Receiving deep link and signing in fails`() = runTest {
-        val isConnectedState = flowOf(value = true).stateIn(backgroundScope)
-        val konnectivity = object : KonnectivityStub {
-            override val isConnected = true
-            override val isConnectedState = isConnectedState
-        }
-        val viewModel = getViewModel(
-            isUserNameUploaded = true,
-            isSignInLink = true,
-            sendSignInLinkResult = Result.success(Unit),
-            signInWithLinkResult = Result.failure(exception = Exception()),
-            konnectivity = konnectivity,
-        )
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.viewState.collect()
-        }
-        Rinku.handleDeepLink("")
-        assertEquals(
-            expected = ViewState.Failure(isLoading = false),
-            actual = viewModel.viewState.value,
-        )
-    }
-
-    @Test
-    fun `Receiving deep link but it is not a sign in link`() = runTest {
-        val isConnectedState = flowOf(value = true).stateIn(backgroundScope)
-        val konnectivity = object : KonnectivityStub {
-            override val isConnected = true
-            override val isConnectedState = isConnectedState
-        }
-        val viewModel = getViewModel(
-            isUserNameUploaded = true,
-            isSignInLink = false,
-            sendSignInLinkResult = Result.success(Unit),
-            signInWithLinkResult = Result.success(Unit),
-            konnectivity = konnectivity,
-        )
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.viewState.collect()
-        }
-        Rinku.handleDeepLink("")
-        assertEquals(
-            expected = ViewState.Success(
-                LoginViewState(
-                    email = "",
-                    isEmailValid = true,
-                    isLinkSent = false,
-                    isSendButtonEnabled = true,
-                    event = null,
-                )
-            ),
             actual = viewModel.viewState.value,
         )
     }

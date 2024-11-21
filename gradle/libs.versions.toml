@@ -1,8 +1,8 @@
 [versions]
 agp = "8.7.2"
-compileSdk = "34"
+compileSdk = "35"
 minSdk = "24"
-targetSdk = "34"
+targetSdk = "35"
 kotlin = "2.0.21"
 
 # AndroidX
@@ -11,13 +11,13 @@ androidxViewModel = "2.8.7"
 androidxDataStore = "1.1.1"
 
 # AndroidX Compose
-composeBom = "2024.10.01"
+composeBom = "2024.11.00"
 composePlugin = "1.7.0"
 composeNavigation = "2.8.0-alpha10"
 composeViewModel = "2.8.2"
 
 # Firebase
-firebaseBom = "33.5.1"
+firebaseBom = "33.6.0"
 firebaseKotlinSdk = "2.1.0"
 googleServices = "4.4.2"
 
