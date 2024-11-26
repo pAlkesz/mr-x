@@ -167,12 +167,11 @@ jobs:
           code-signing-identity: "Apple Distribution"
           team-id: ${{ secrets.IOS_TEAM_ID }}
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
-          workspace-path: iosApp/iosApp.xcworkspace
 
       - name: Upload IPA file as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: IOS IPA
+          name: mrx_iOS_app_signed
           path: output.ipa
 
       - name: Upload iOS app to TestFlight
