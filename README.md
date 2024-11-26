@@ -27,3 +27,21 @@ Home screen                |  Game Screen               |  Tutorial screen
 More information about Compose Multiplatform developer environment setup is available [here](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-multiplatform-create-first-app.html)   
 
 The default run configuration is the composeApp which builds the Android app but with the iOSApp run configuration the iOS app also can be build directly from Android Studio.
+
+# Architecture
+
+The **Mr. X** app follows the
+[official architecture guidance](https://developer.android.com/topic/architecture) 
+on Android and uses Clean Architecture, MVVM and Koin for dependency injection.
+
+# Modularization
+
+The **Mr. X** app has only one module because it is a small app but the folder structure resembles the modularization strategy used in
+[modularization learning journey](docs/ModularizationLearningJourney.md). This is intentional so the app is prepared for modularization in the future should it be needed.
+
+# Testing
+
+The app contains unit tests in the common source set and uses the kotlin.test library to run them. These tests are executed on every push to the main branch. Lint is also executed on every push.
+
+
+
