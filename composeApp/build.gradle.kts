@@ -101,8 +101,8 @@ android {
         applicationId = "com.palkesz.mr.x"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = System.getenv("MRX_MOBILE_APP_VERSION_CODE")?.toIntOrNull() ?: 1
+        versionName = System.getenv("MRX_MOBILE_APP_VERSION_NAME") ?: "0.0.1"
     }
     packaging {
         resources {
@@ -112,6 +112,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
         }
     }
     compileOptions {

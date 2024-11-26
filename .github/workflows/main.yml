@@ -1,0 +1,184 @@
+name: Main pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  run_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run tests
+        run: ./gradlew testDebugUnitTest
+
+      - name: Upload test result as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mrx_test_result
+          path: composeApp/build/reports/tests/testDebugUnitTest/index.html
+
+      - name: Run lint
+        run: ./gradlew lintDebug
+
+      - name: Upload lint result as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mrx_lint_result
+          path: composeApp/build/reports/lint-results-debug.html
+
+  prepare_deploy:
+    needs: [ run_tests ]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set tag environment variable
+        id: last_tag
+        run: echo "LAST_TAG=$(git tag --sort=committerdate | tail -1)" >> $GITHUB_OUTPUT
+
+      - name: Bump semantic version
+        uses: actions-ecosystem/action-bump-semver@v1
+        id: bump-semver
+        with:
+          current_version: ${{ steps.last_tag.outputs.LAST_TAG }}
+          level: minor
+
+      - name: Push new git tag
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git tag ${{ steps.bump-semver.outputs.new_version }}
+          git push --tags
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "mrx_mobile_version_name=${{ steps.bump-semver.outputs.new_version }}" >> $GITHUB_OUTPUT
+          
+          IFS='.' read -r major minor patch <<< "${{ steps.bump-semver.outputs.new_version }}"
+          mrx_mobile_version_code=$((major * 10000 + minor * 100 + patch))
+          
+          echo "mrx_mobile_version_code=${mrx_mobile_version_code}" >> $GITHUB_OUTPUT
+
+      - name: Print version name and code
+        run: |
+          echo -e "Version name is: \n ${{ steps.set-output.outputs.mrx_mobile_version_name }}"
+          echo -e "Version code is: \n ${{ steps.set-output.outputs.mrx_mobile_version_code }}"
+
+    outputs:
+      output_write_mrx_mobile_version_name: ${{ steps.set-output.outputs.mrx_mobile_version_name }}
+      output_write_mrx_mobile_version_code: ${{ steps.set-output.outputs.mrx_mobile_version_code }}
+
+  deploy_android:
+    needs: [ prepare_deploy ]
+    env:
+      MRX_MOBILE_APP_VERSION_NAME: ${{ needs.prepare_deploy.outputs.output_write_mrx_mobile_version_name }}
+      MRX_MOBILE_APP_VERSION_CODE: ${{ needs.prepare_deploy.outputs.output_write_mrx_mobile_version_code }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run build
+        run: ./gradlew composeApp:bundleRelease
+
+      - name: Sign app
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: composeApp/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+          alias: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+
+      - name: Upload AAB file as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mrx_android_app_signed
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - name: Upload to app Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: com.palkesz.mr.x
+          releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
+          track: internal
+          status: draft
+
+  deploy_ios:
+    needs: [ prepare_deploy ]
+    env:
+      MRX_MOBILE_APP_VERSION_NAME: ${{ needs.prepare_deploy.outputs.output_write_mrx_mobile_version_name }}
+      MRX_MOBILE_APP_VERSION_CODE: ${{ needs.prepare_deploy.outputs.output_write_mrx_mobile_version_code }}
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Apply versions
+        run: |
+          /usr/libexec/Plistbuddy -c "Set CFBundleVersion $MRX_MOBILE_APP_VERSION_CODE" iosApp/iosApp/Info.plist
+          /usr/libexec/Plistbuddy -c "Set CFBundleShortVersionString $MRX_MOBILE_APP_VERSION_NAME" iosApp/iosApp/Info.plist
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build iOS App
+        uses: yukiarrr/ios-build-action@v1.12.0
+        with:
+          project-path: iosApp/iosApp.xcodeproj
+          p12-base64: ${{ secrets.IOS_P12_CERTIFICATE }}
+          mobileprovision-base64: ${{ secrets.IOS_PROVISION_PROFILE }}
+          code-signing-identity: "Apple Distribution"
+          team-id: ${{ secrets.IOS_TEAM_ID }}
+          certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          workspace-path: iosApp/iosApp.xcworkspace
+
+      - name: Upload IPA file as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: IOS IPA
+          path: output.ipa
+
+      - name: Upload iOS app to TestFlight
+        uses: apple-actions/upload-testflight-build@v1
+        with:
+          app-path: 'output.ipa'
+          issuer-id: ${{ secrets.IOS_APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.IOS_APPSTORE_KEY_ID }}
+          api-private-key: ${{ secrets.IOS_APPSTORE_PRIVATE_KEY }}
