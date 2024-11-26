@@ -163,7 +163,7 @@ jobs:
         with:
           project-path: iosApp/iosApp.xcodeproj
           p12-base64: ${{ secrets.IOS_P12_CERTIFICATE }}
-          mobileprovision-base64: ${{ secrets.IOS_PROVISION_PROFILE }}
+          mobileprovision-base64: ${{ secrets.IOS_PROVISIONING_PROFILE }}
           code-signing-identity: "Apple Distribution"
           team-id: ${{ secrets.IOS_TEAM_ID }}
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
