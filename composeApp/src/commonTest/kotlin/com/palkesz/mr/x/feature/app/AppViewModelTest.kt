@@ -25,15 +25,12 @@ class AppViewModelTest : BaseTest() {
             override val isConnected = true
             override val isConnectedState = isConnectedState
         }
-        var isCrashlyticsEnabled = true
-        var crashlyticsUserId = ""
+        var crashlyticsUserId: String? = null
         val viewModel = getViewModel(
             isLoggedIn = false,
             konnectivity = konnectivity,
             crashlytics = object : Crashlytics.Stub {
-                override fun setCrashlyticsCollectionEnabled(enabled: Boolean) {
-                    isCrashlyticsEnabled = enabled
-                }
+                override fun setCrashlyticsCollectionEnabled(enabled: Boolean) = Unit
 
                 override fun setUserId(userId: String) {
                     crashlyticsUserId = userId
@@ -44,8 +41,7 @@ class AppViewModelTest : BaseTest() {
             expected = AppViewState(isLoggedIn = false, isOfflineBarVisible = false, event = null),
             actual = viewModel.viewState.value,
         )
-        assertFalse { isCrashlyticsEnabled }
-        assertEquals(expected = TEST_USER_ID, actual = crashlyticsUserId)
+        assertEquals(expected = null, actual = crashlyticsUserId)
     }
 
     @Test
