@@ -28,6 +28,37 @@ interface QuestionRepository {
     suspend fun updateStatus(id: String, status: QuestionStatus): Result<Unit>
     suspend fun updateText(id: String, text: String): Result<Unit>
     suspend fun observeQuestions()
+
+    interface Stub : QuestionRepository {
+        override val questions: StateFlow<List<Question>>
+            get() = throw NotImplementedError()
+
+        override suspend fun fetchQuestions(gameId: String): Result<List<Question>> =
+            throw NotImplementedError()
+
+        override suspend fun createQuestion(question: Question): Result<Unit> =
+            throw NotImplementedError()
+
+        override suspend fun updateHostAnswer(
+            id: String,
+            answer: Answer,
+            status: QuestionStatus
+        ): Result<Unit> = throw NotImplementedError()
+
+        override suspend fun updatePlayerAnswer(
+            id: String,
+            answer: Answer,
+            status: QuestionStatus
+        ): Result<Unit> = throw NotImplementedError()
+
+        override suspend fun updateStatus(id: String, status: QuestionStatus): Result<Unit> =
+            throw NotImplementedError()
+
+        override suspend fun updateText(id: String, text: String): Result<Unit> =
+            throw NotImplementedError()
+
+        override suspend fun observeQuestions(): Unit = throw NotImplementedError()
+    }
 }
 
 class QuestionRepositoryImpl(

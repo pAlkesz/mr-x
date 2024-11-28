@@ -25,6 +25,25 @@ interface BarkochbaQuestionRepository {
     suspend fun updateText(id: String, text: String): Result<Unit>
     suspend fun updateAnswer(id: String, answer: Boolean): Result<Unit>
     suspend fun observeQuestions()
+
+    interface Stub : BarkochbaQuestionRepository {
+        override val questions: StateFlow<List<BarkochbaQuestion>>
+            get() = throw NotImplementedError()
+
+        override suspend fun fetchQuestions(gameId: String): Result<List<BarkochbaQuestion>> =
+            throw NotImplementedError()
+
+        override suspend fun createQuestion(question: BarkochbaQuestion): Result<Unit> =
+            throw NotImplementedError()
+
+        override suspend fun updateText(id: String, text: String): Result<Unit> =
+            throw NotImplementedError()
+
+        override suspend fun updateAnswer(id: String, answer: Boolean): Result<Unit> =
+            throw NotImplementedError()
+
+        override suspend fun observeQuestions(): Unit = throw NotImplementedError()
+    }
 }
 
 class BarkochbaQuestionRepositoryImpl(

@@ -11,6 +11,6 @@ import org.koin.dsl.module
 
 val appModule = module {
     viewModelOf(::AppViewModelImpl) bind AppViewModel::class
-    single { Konnectivity() }
+    factory { Konnectivity() }
     includes(homeModule, dataModule, gamesModule, authModule)
 }

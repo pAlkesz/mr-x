@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 kotlin {
@@ -27,7 +28,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-            export(libs.rinqu)
+            export(libs.rinku)
         }
     }
 
@@ -41,6 +42,7 @@ kotlin {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 optIn("kotlin.uuid.ExperimentalUuidApi")
+                optIn("kotlin.experimental.ExperimentalNativeApi")
             }
         }
         androidMain.dependencies {
@@ -49,7 +51,8 @@ kotlin {
             implementation(project.dependencies.platform(libs.firebase.bom.get()))
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
-            implementation(libs.firebase.common.ktx)
+            implementation(libs.firebase.crashlytics.android)
+            implementation(libs.firebase.analytics.android)
         }
         commonMain.dependencies {
             api(project.dependencies.platform(libs.androidx.compose.composeBom))
@@ -69,6 +72,7 @@ kotlin {
             implementation(libs.firebase.firestore)
             implementation(libs.firebase.common)
             implementation(libs.firebase.auth)
+            implementation(libs.firebase.crashlytics)
 
             api(project.dependencies.platform(libs.koin.bom))
             api(libs.koin.core)
@@ -79,10 +83,11 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.collections.immutable)
             implementation(libs.qr.kit)
-            api(libs.rinqu)
-            implementation(libs.rinqu.compose.ext)
+            api(libs.rinku)
+            implementation(libs.rinku.compose.ext)
             implementation(libs.aakira.napier)
             implementation(libs.plusmobileapps.konnectivity)
+            implementation(libs.crashkios.crashlytics)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -118,6 +123,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        buildConfig = true
     }
     dependencies {
         debugImplementation(libs.androidx.compose.ui.tooling)

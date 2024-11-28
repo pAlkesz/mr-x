@@ -20,17 +20,19 @@ composeViewModel = "2.8.2"
 firebaseBom = "33.6.0"
 firebaseKotlinSdk = "2.1.0"
 googleServices = "4.4.2"
+firebaseCrashlytics = "3.0.2"
 
 # Koin
 koinBom = "4.0.0"
 
 # Miscellanious
 kotlinxCollectionsImmutable = "0.3.7"
-kotlinxSerializationJson = "1.7.1"
+kotlinxSerializationJson = "1.7.3"
 qrKit = "3.0.1"
-rinq = "0.5.0"
+rink = "1.1.0"
 napier = "2.7.1"
 konnectivity = "0.1-alpha01"
+crashkios = "0.8.6"
 
 # Testing
 kotlinxCoroutinesTest = "1.9.0"
@@ -51,10 +53,12 @@ androidx-compose-navigation = { group = "org.jetbrains.androidx.navigation", nam
 
 # Firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx" }
+firebase-crashlytics-android = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-analytics-android = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-auth = { group = "dev.gitlive", name = "firebase-auth", version.ref = "firebaseKotlinSdk" }
 firebase-common = { group = "dev.gitlive", name = "firebase-common", version.ref = "firebaseKotlinSdk" }
 firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "firebaseKotlinSdk" }
+firebase-crashlytics = { group = "dev.gitlive", name = "firebase-crashlytics", version.ref = "firebaseKotlinSdk" }
 
 # Koin
 koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koinBom" }
@@ -69,10 +73,11 @@ koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compos
 kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 qr-kit = { group = "network.chaintech", name = "qr-kit", version.ref = "qrKit" }
-rinqu = { group = "dev.theolm", name = "rinku", version.ref = "rinq" }
-rinqu-compose-ext = { group = "dev.theolm", name = "rinku-compose-ext", version.ref = "rinq" }
+rinku = { group = "dev.theolm", name = "rinku", version.ref = "rink" }
+rinku-compose-ext = { group = "dev.theolm", name = "rinku-compose-ext", version.ref = "rink" }
 aakira-napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
 plusmobileapps-konnectivity = { group = "com.plusmobileapps", name = "konnectivity", version.ref = "konnectivity" }
+crashkios-crashlytics = { group = "co.touchlab.crashkios", name = "crashlytics", version.ref = "crashkios" }
 
 # Testing
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
@@ -86,3 +91,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "composePlugin" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }

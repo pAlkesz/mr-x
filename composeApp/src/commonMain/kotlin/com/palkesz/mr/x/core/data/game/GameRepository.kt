@@ -27,6 +27,24 @@ interface GameRepository {
     suspend fun fetchGames(playerId: String): Result<List<Game>>
     suspend fun joinGame(gameId: String, playerId: String): Result<Unit>
     suspend fun observeGames()
+
+    interface Stub : GameRepository {
+        override val games: StateFlow<List<Game>>
+            get() = throw NotImplementedError()
+
+        override suspend fun createGame(game: Game): Result<Game> = throw NotImplementedError()
+        override suspend fun updateStatus(id: String, status: GameStatus): Result<Unit> =
+            throw NotImplementedError()
+
+        override suspend fun fetchGame(id: String): Result<Game> = throw NotImplementedError()
+        override suspend fun fetchGames(playerId: String): Result<List<Game>> =
+            throw NotImplementedError()
+
+        override suspend fun joinGame(gameId: String, playerId: String): Result<Unit> =
+            throw NotImplementedError()
+
+        override suspend fun observeGames(): Unit = throw NotImplementedError()
+    }
 }
 
 class GameRepositoryImpl(

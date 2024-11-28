@@ -3,12 +3,15 @@ package com.palkesz.mr.x.feature.app
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.crashkios.crashlytics.enableCrashlytics
 import com.palkesz.mr.x.core.data.auth.AuthRepository
+import com.palkesz.mr.x.core.data.crashlytics.Crashlytics
 import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepository
 import com.palkesz.mr.x.core.usecase.game.JoinGameUseCase
 import com.palkesz.mr.x.core.util.BUSINESS_TAG
+import com.palkesz.mr.x.core.util.platform.isDebug
 import com.plusmobileapps.konnectivity.Konnectivity
 import dev.theolm.rinku.DeepLink
 import dev.theolm.rinku.listenForDeepLinks
@@ -34,6 +37,7 @@ class AppViewModelImpl(
     private val barkochbaQuestionRepository: BarkochbaQuestionRepository,
     private val joinGameUseCase: JoinGameUseCase,
     private val konnectivity: Konnectivity,
+    crashlytics: Crashlytics,
 ) : ViewModel(), AppViewModel {
 
     private val _viewState = MutableStateFlow(
@@ -50,6 +54,17 @@ class AppViewModelImpl(
         observeGames()
         observeQuestions()
         observeBarkochbaQuestions()
+        Napier.d(tag = BUSINESS_TAG) { "Crashlytics enabled: ${!isDebug}" }
+        if (!isDebug) {
+            crashlytics.apply {
+                setCrashlyticsCollectionEnabled(enabled = true)
+                enableCrashlytics()
+                authRepository.userId?.let {
+                    setUserId(userId = it)
+                    Napier.d(tag = BUSINESS_TAG) { "Crashlytics user_id set: $it" }
+                }
+            }
+        }
     }
 
     override fun onEventHandled() {

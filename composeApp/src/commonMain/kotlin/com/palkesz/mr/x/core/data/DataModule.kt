@@ -7,6 +7,8 @@ import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.auth.AuthRepositoryImpl
 import com.palkesz.mr.x.core.data.auth.FirebaseAuthentication
 import com.palkesz.mr.x.core.data.auth.FirebaseAuthenticationImpl
+import com.palkesz.mr.x.core.data.crashlytics.Crashlytics
+import com.palkesz.mr.x.core.data.crashlytics.CrashlyticsImpl
 import com.palkesz.mr.x.core.data.datastore.MrXDataStoreImpl
 import com.palkesz.mr.x.core.data.datastore.MrxDataStore
 import com.palkesz.mr.x.core.data.game.GameRepository
@@ -19,6 +21,7 @@ import com.palkesz.mr.x.core.data.user.UserRepository
 import com.palkesz.mr.x.core.data.user.UserRepositoryImpl
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
+import dev.gitlive.firebase.crashlytics.crashlytics
 import dev.gitlive.firebase.firestore.firestore
 import okio.Path.Companion.toPath
 import org.koin.core.module.Module
@@ -29,8 +32,10 @@ import org.koin.dsl.module
 val dataModule = module {
     single { Firebase.auth }
     single { Firebase.firestore }
+    single { Firebase.crashlytics }
     includes(dataStoreModule)
     singleOf(::FirebaseAuthenticationImpl) bind FirebaseAuthentication::class
+    singleOf(::CrashlyticsImpl) bind Crashlytics::class
     singleOf(::AuthRepositoryImpl) bind AuthRepository::class
     singleOf(::MrXDataStoreImpl) bind MrxDataStore::class
     singleOf(::UserRepositoryImpl) bind UserRepository::class

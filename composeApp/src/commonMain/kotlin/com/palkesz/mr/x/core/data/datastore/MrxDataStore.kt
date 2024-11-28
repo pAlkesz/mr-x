@@ -9,6 +9,12 @@ import kotlinx.coroutines.flow.first
 interface MrxDataStore {
     suspend fun getUserEmail(): String?
     suspend fun storeUserEmail(email: String): Result<Unit>
+
+    interface Stub : MrxDataStore {
+        override suspend fun getUserEmail(): String? = throw NotImplementedError()
+        override suspend fun storeUserEmail(email: String): Result<Unit> =
+            throw NotImplementedError()
+    }
 }
 
 class MrXDataStoreImpl(

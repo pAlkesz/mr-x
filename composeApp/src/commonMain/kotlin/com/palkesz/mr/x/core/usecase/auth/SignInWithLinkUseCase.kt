@@ -2,6 +2,7 @@ package com.palkesz.mr.x.core.usecase.auth
 
 import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.auth.AuthRepositoryImpl.Companion.AUTH_TAG
+import com.palkesz.mr.x.core.data.crashlytics.Crashlytics
 import com.palkesz.mr.x.core.data.datastore.MrxDataStore
 import com.palkesz.mr.x.core.util.extensions.getSignInLink
 import dev.theolm.rinku.DeepLink
@@ -14,6 +15,7 @@ fun interface SignInWithLinkUseCase {
 class SignInWithLinkUseCaseImpl(
     private val authRepository: AuthRepository,
     private val mrxDataStore: MrxDataStore,
+    private val crashlytics: Crashlytics,
 ) : SignInWithLinkUseCase {
 
     override suspend fun run(link: DeepLink): Result<Unit> {
@@ -24,6 +26,7 @@ class SignInWithLinkUseCaseImpl(
             exception = Throwable(message = NO_LINK_FOUND_MESSAGE)
         )
         return authRepository.signInWithEmailLink(email = email, link = signInLink).also {
+            authRepository.userId?.let { crashlytics.setUserId(userId = it) }
             Napier.d(tag = AUTH_TAG) { "Signing in with link: $it" }
         }
     }
