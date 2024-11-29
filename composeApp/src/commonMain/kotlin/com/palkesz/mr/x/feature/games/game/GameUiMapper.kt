@@ -8,11 +8,15 @@ import com.palkesz.mr.x.core.util.extensions.getName
 import com.palkesz.mr.x.core.util.extensions.immutableMap
 import com.palkesz.mr.x.core.util.extensions.immutableMapNotNull
 
-class GameUiMapper(
-    private val authRepository: AuthRepository,
-) {
+fun interface GameUiMapper {
+    fun mapViewState(result: GameResult, event: GameEvent?): GameViewState
+}
 
-    fun mapViewState(result: GameResult, event: GameEvent?): GameViewState {
+class GameUiMapperImpl(
+    private val authRepository: AuthRepository,
+) : GameUiMapper {
+
+    override fun mapViewState(result: GameResult, event: GameEvent?): GameViewState {
         val isHost = authRepository.userId == result.game.hostId
         val isGameOngoing = result.game.status == GameStatus.ONGOING
         return GameViewState(
@@ -59,7 +63,7 @@ class GameUiMapper(
                 )
             }
 
-            question.status == QuestionStatus.WAITING_FOR_PLAYERS && isHost -> {
+            question.status == QuestionStatus.WAITING_FOR_PLAYERS && (isHost || question.userId == authRepository.userId) -> {
                 QuestionItem.WaitingForPlayersItem(
                     text = question.text,
                     hostAnswer = question.hostAnswer?.getName(),

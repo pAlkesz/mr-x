@@ -8,7 +8,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val gameModule = module {
-    factoryOf(::GameUiMapper)
+    factoryOf(::GameUiMapperImpl) bind GameUiMapper::class
     factoryOf(::FetchGameResultUseCase)
     factoryOf(::ObserveGameResultUseCase)
     viewModel { parameters ->

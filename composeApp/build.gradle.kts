@@ -2,13 +2,15 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.compose)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.google.services)
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.cocoapods)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.kotest.multiplatform)
 }
 
 kotlin {
@@ -18,6 +20,15 @@ kotlin {
                 jvmTarget.set(JvmTarget.JVM_17)
             }
         }
+    }
+
+    cocoapods {
+        version = "1.0"
+        ios.deploymentTarget = "17.0"
+        pod("FirebaseCore", linkOnly = true)
+        pod("FirebaseFirestore", linkOnly = true)
+        pod("FirebaseAuth", linkOnly = true)
+        pod("FirebaseCrashlytics", linkOnly = true)
     }
 
     listOf(
@@ -92,6 +103,9 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.kotest.engine)
+            implementation(libs.kotest.assertions)
+            implementation(libs.kotest.property)
         }
     }
 }

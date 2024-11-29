@@ -36,6 +36,7 @@ crashkios = "0.8.6"
 
 # Testing
 kotlinxCoroutinesTest = "1.9.0"
+koTest = "6.0.0.M1"
 
 [libraries]
 # AndroidX
@@ -82,13 +83,17 @@ crashkios-crashlytics = { group = "co.touchlab.crashkios", name = "crashlytics",
 # Testing
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+kotest-engine = { group = "io.kotest", name = "kotest-framework-engine", version.ref = "koTest" }
+kotest-assertions = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "koTest" }
+kotest-property = { group = "io.kotest", name = "kotest-property", version.ref = "koTest" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "composePlugin" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
+kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "koTest" }
