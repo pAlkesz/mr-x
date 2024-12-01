@@ -11,16 +11,20 @@ import com.palkesz.mr.x.core.util.extensions.equalsAsName
 import dev.gitlive.firebase.firestore.Timestamp
 import kotlin.uuid.Uuid
 
-class CreateQuestionUseCase(
+fun interface CreateQuestionUseCase {
+    suspend fun run(text: String, firstName: String, lastName: String, gameId: String): Result<Unit>
+}
+
+class CreateQuestionUseCaseImpl(
     private val questionRepository: QuestionRepository,
     private val authRepository: AuthRepository,
     private val gameRepository: GameRepository
-) {
+) : CreateQuestionUseCase {
 
-    suspend fun run(text: String, firstName: String, lastName: String, gameId: String) =
+    override suspend fun run(text: String, firstName: String, lastName: String, gameId: String) =
         runCatching {
             val userId = authRepository.userId ?: throw Throwable(NO_USER_ID_FOUND_MESSAGE)
-            val game = gameRepository.games.value.find { it.id == gameId } ?: return@runCatching
+            val game = gameRepository.games.value.first { it.id == gameId }
             val status =
                 if (game.firstName.equalsAsName(firstName) &&
                     game.lastName.orEmpty().equalsAsName(lastName)
@@ -46,7 +50,7 @@ class CreateQuestionUseCase(
                     status = status,
                     lastModifiedTimestamp = Timestamp.now(),
                 )
-            )
+            ).getOrThrow()
         }
 
 }

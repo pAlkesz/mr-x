@@ -1,6 +1,7 @@
 package com.palkesz.mr.x.feature.games.question.create
 
 import com.palkesz.mr.x.core.usecase.question.CreateQuestionUseCase
+import com.palkesz.mr.x.core.usecase.question.CreateQuestionUseCaseImpl
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
@@ -10,5 +11,5 @@ val createQuestionModule = module {
     viewModel { parameters ->
         CreateQuestionViewModelImpl(parameters.get(), get(), get(), get())
     } bind CreateQuestionViewModel::class
-    factoryOf(::CreateQuestionUseCase)
+    factoryOf(::CreateQuestionUseCaseImpl) bind CreateQuestionUseCase::class
 }

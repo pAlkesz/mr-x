@@ -99,6 +99,7 @@ kotlin {
             implementation(libs.aakira.napier)
             implementation(libs.plusmobileapps.konnectivity)
             implementation(libs.crashkios.crashlytics)
+            implementation(libs.doist.normalize)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -113,9 +114,6 @@ kotlin {
 android {
     namespace = "com.palkesz.mr.x"
     compileSdk = libs.versions.compileSdk.get().toInt()
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
     defaultConfig {
         applicationId = "com.palkesz.mr.x"
         minSdk = libs.versions.minSdk.get().toInt()

@@ -1,5 +1,8 @@
 package com.palkesz.mr.x.core.util.extensions
 
+import doist.x.normalize.Form
+import doist.x.normalize.normalize
+
 fun String.validateAsName() = all { it.isLetter() || it == ' ' }
 
 fun String.validateAsUsername() = trim().all { it != ' ' } && length > 5 && length < 20
@@ -16,4 +19,8 @@ fun String.capitalizeWords(): String = split(" ").joinToString(" ") { word ->
 fun String.capitalizeFirstChar(): String =
     replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
 
-fun String?.equalsAsName(other: String?) = this?.trim().equals(other?.trim(), ignoreCase = true)
+fun String?.equalsAsName(other: String?) = this?.trim()?.normalize()
+    .equals(other?.trim()?.normalize(), ignoreCase = true)
+
+fun String.normalize() =
+    normalize(Form.NFD).replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
