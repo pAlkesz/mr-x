@@ -22,13 +22,16 @@ class ObserveGameResultUseCase(
         barkochbaQuestionRepository.questions.map { questions -> questions.filter { it.gameId == id } },
     ) { game, users, questions, barkochbaQuestions ->
         val host = users.first { it.id == game.hostId }
-        val players = users.filter { user -> questions.map { it.userId }.contains(user.id) }
+        val questionOwnerIds =
+            (questions.map { it.userId } + barkochbaQuestions.map { it.userId }).distinct()
+        val players = users.filter { user -> user.id in questionOwnerIds }
+        val playerIds = players.map { it.id }
         GameResult(
             game = game,
             host = host,
             players = players,
-            questions = questions,
-            barkochbaQuestions = barkochbaQuestions
+            questions = questions.filter { it.userId in playerIds },
+            barkochbaQuestions = barkochbaQuestions.filter { it.userId in playerIds },
         )
     }
 

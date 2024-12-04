@@ -7,6 +7,7 @@ import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.usecase.question.CreateQuestionUseCase
 import com.palkesz.mr.x.core.util.extensions.combine
+import com.palkesz.mr.x.core.util.extensions.getInitial
 import com.palkesz.mr.x.core.util.extensions.validateAsName
 import com.palkesz.mr.x.core.util.networking.DataLoader
 import com.palkesz.mr.x.core.util.networking.RefreshTrigger
@@ -36,7 +37,7 @@ interface CreateQuestionViewModel {
 class CreateQuestionViewModelImpl(
     private val gameId: String,
     private val createQuestionUseCase: CreateQuestionUseCase,
-    gameRepository: GameRepository,
+    private val gameRepository: GameRepository,
     konnectivity: Konnectivity,
 ) : ViewModel(), CreateQuestionViewModel {
 
@@ -130,9 +131,10 @@ class CreateQuestionViewModelImpl(
 
     private suspend fun createQuestion(): Result<Unit> {
         val isTextValid = questionText.value.isNotBlank()
-        val isFirstNameValid =
-            expectedFirstName.value.isNotBlank() && expectedFirstName.value.validateAsName()
-        val isLastNameValid = expectedLastName.value.validateAsName()
+        val gameInitial = gameRepository.games.value.find { it.id == gameId }?.getInitial()
+        val (isFirstNameValid, isLastNameValid) =
+            (expectedFirstName.value to expectedLastName.value)
+                .validateAsName(gameInitial = gameInitial)
         isQuestionTextValid.update { isTextValid }
         isExpectedFirstNameValid.update { isFirstNameValid }
         isExpectedLastNameValid.update { isLastNameValid }

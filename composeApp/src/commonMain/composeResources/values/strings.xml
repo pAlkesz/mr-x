@@ -13,8 +13,10 @@
     <string name="join_game_description">Join a Mr. X lobby! Play with friends, be the detectives, and dive into the thrilling chase. The adventure awaits!</string>
     <string name="first_name_input_label">First name</string>
     <string name="first_name_error_message">Please enter a valid first name. The first name cannot be blank.</string>
+    <string name="question_first_name_error_message">Please enter a valid first name. The first name cannot be blank or start with a different letter than Mr. X</string>
     <string name="last_name_input_label">Last name (optional)</string>
     <string name="last_name_error_message">Please enter a valid last name</string>
+    <string name="question_last_name_error_message">Please enter a valid last name. The last name cannot start with a different letter than Mr. X</string>
     <string name="expected_answer">Expected answer:</string>
     <string name="network_error_label">Oops, something went wrong...</string>
     <string name="game_title_with_initial">Mr. %1$s</string>

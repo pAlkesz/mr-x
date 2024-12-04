@@ -10,6 +10,7 @@ import com.palkesz.mr.x.core.data.user.UserRepository
 import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.usecase.question.GuessQuestionUseCase
 import com.palkesz.mr.x.core.util.extensions.combine
+import com.palkesz.mr.x.core.util.extensions.getInitial
 import com.palkesz.mr.x.core.util.extensions.getName
 import com.palkesz.mr.x.core.util.extensions.validateAsName
 import com.palkesz.mr.x.core.util.networking.DataLoader
@@ -42,8 +43,8 @@ class GuessQuestionViewModelImpl(
     private val guessQuestionUseCase: GuessQuestionUseCase,
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
+    private val gameRepository: GameRepository,
     questionRepository: QuestionRepository,
-    gameRepository: GameRepository,
     konnectivity: Konnectivity,
 ) : ViewModel(), GuessQuestionViewModel {
 
@@ -122,8 +123,10 @@ class GuessQuestionViewModelImpl(
     }
 
     private suspend fun guessQuestion(): Result<Unit> {
-        val isFirstNameValid = firstName.value.isNotBlank() && firstName.value.validateAsName()
-        val isLastNameValid = lastName.value.validateAsName()
+        val gameInitial = gameRepository.games.value.find { it.id == gameId }?.getInitial()
+        val (isFirstNameValid, isLastNameValid) =
+            (firstName.value to lastName.value)
+                .validateAsName(gameInitial = gameInitial)
         this.isFirstNameValid.update { isFirstNameValid }
         this.isLastNameValid.update { isLastNameValid }
         return if (isFirstNameValid && isLastNameValid) {

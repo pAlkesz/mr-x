@@ -7,6 +7,7 @@ import com.palkesz.mr.x.core.data.crashlytics.Crashlytics
 import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepository
+import com.palkesz.mr.x.core.data.user.UserRepository
 import com.palkesz.mr.x.core.usecase.game.JoinGameUseCase
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
@@ -42,6 +43,7 @@ class AppViewModelTest : BaseTest() {
         var isObservingGames = false
         var isObservingQuestions = false
         var isObservingBarkochbaQuestions = false
+        var isObservingUsers = false
         getViewModel(
             isLoggedIn = true,
             konnectivity = konnectivity,
@@ -60,10 +62,16 @@ class AppViewModelTest : BaseTest() {
                     isObservingBarkochbaQuestions = true
                 }
             },
+            userRepository = object : UserRepository.Stub {
+                override suspend fun observeUsers() {
+                    isObservingUsers = true
+                }
+            },
         )
         assertTrue { isObservingGames }
         assertTrue { isObservingQuestions }
         assertTrue { isObservingBarkochbaQuestions }
+        assertTrue { isObservingUsers }
     }
 
     @Test
@@ -76,6 +84,7 @@ class AppViewModelTest : BaseTest() {
         var isObservingGames = false
         var isObservingQuestions = false
         var isObservingBarkochbaQuestions = false
+        var isObservingUsers = false
         getViewModel(
             isLoggedIn = false,
             konnectivity = konnectivity,
@@ -94,10 +103,16 @@ class AppViewModelTest : BaseTest() {
                     isObservingBarkochbaQuestions = true
                 }
             },
+            userRepository = object : UserRepository.Stub {
+                override suspend fun observeUsers() {
+                    isObservingUsers = true
+                }
+            },
         )
         assertFalse { isObservingGames }
         assertFalse { isObservingQuestions }
         assertFalse { isObservingBarkochbaQuestions }
+        assertFalse { isObservingUsers }
     }
 
     private fun getViewModel(
@@ -112,6 +127,9 @@ class AppViewModelTest : BaseTest() {
         barkochbaQuestionRepository: BarkochbaQuestionRepository = object :
             BarkochbaQuestionRepository.Stub {
             override suspend fun observeQuestions() = Unit
+        },
+        userRepository: UserRepository = object : UserRepository.Stub {
+            override suspend fun observeUsers() = Unit
         },
         crashlytics: Crashlytics = object : Crashlytics.Stub {
             override fun setCrashlyticsCollectionEnabled(enabled: Boolean) = Unit
@@ -129,6 +147,7 @@ class AppViewModelTest : BaseTest() {
             gameRepository = gameRepository,
             questionRepository = questionRepository,
             barkochbaQuestionRepository = barkochbaQuestionRepository,
+            userRepository = userRepository,
             joinGameUseCase = joinGameUseCase,
             konnectivity = konnectivity,
             crashlytics = crashlytics,

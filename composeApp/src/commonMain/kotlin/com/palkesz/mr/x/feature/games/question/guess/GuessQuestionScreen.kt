@@ -33,10 +33,10 @@ import com.palkesz.mr.x.core.util.networking.ViewState
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.answer_question_button_label
 import mrx.composeapp.generated.resources.expected_last_name_input_label
-import mrx.composeapp.generated.resources.first_name_error_message
 import mrx.composeapp.generated.resources.first_name_input_label
 import mrx.composeapp.generated.resources.guess_question_screen_title
-import mrx.composeapp.generated.resources.last_name_error_message
+import mrx.composeapp.generated.resources.question_first_name_error_message
+import mrx.composeapp.generated.resources.question_last_name_error_message
 import mrx.composeapp.generated.resources.question_number_title
 import mrx.composeapp.generated.resources.question_text
 import org.jetbrains.compose.resources.stringResource
@@ -85,7 +85,7 @@ private fun GuessQuestionScreenContent(
                         onValueChanged = onFirstNameChanged,
                         isValueValid = state.isFirstNameValid,
                         label = stringResource(Res.string.first_name_input_label),
-                        error = stringResource(Res.string.first_name_error_message),
+                        error = stringResource(Res.string.question_first_name_error_message),
                         showKeyboard = true,
                     )
                     PrimaryTextField(
@@ -94,7 +94,7 @@ private fun GuessQuestionScreenContent(
                         onValueChanged = onLastNameChanged,
                         isValueValid = state.isLastNameValid,
                         label = stringResource(Res.string.expected_last_name_input_label),
-                        error = stringResource(Res.string.last_name_error_message),
+                        error = stringResource(Res.string.question_last_name_error_message),
                         showKeyboard = false,
                     )
                 }

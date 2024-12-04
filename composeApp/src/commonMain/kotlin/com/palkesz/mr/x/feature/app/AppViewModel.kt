@@ -9,6 +9,7 @@ import com.palkesz.mr.x.core.data.crashlytics.Crashlytics
 import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepository
+import com.palkesz.mr.x.core.data.user.UserRepository
 import com.palkesz.mr.x.core.usecase.game.JoinGameUseCase
 import com.palkesz.mr.x.core.util.BUSINESS_TAG
 import com.palkesz.mr.x.core.util.platform.isDebug
@@ -35,6 +36,7 @@ class AppViewModelImpl(
     private val gameRepository: GameRepository,
     private val questionRepository: QuestionRepository,
     private val barkochbaQuestionRepository: BarkochbaQuestionRepository,
+    private val userRepository: UserRepository,
     private val joinGameUseCase: JoinGameUseCase,
     private val konnectivity: Konnectivity,
     crashlytics: Crashlytics,
@@ -54,6 +56,7 @@ class AppViewModelImpl(
         observeGames()
         observeQuestions()
         observeBarkochbaQuestions()
+        observeUsers()
         Napier.d(tag = BUSINESS_TAG) { "Crashlytics enabled: ${!isDebug}" }
         if (!isDebug) {
             crashlytics.apply {
@@ -116,6 +119,16 @@ class AppViewModelImpl(
             authRepository.loggedIn.collectLatest { isLoggedIn ->
                 if (isLoggedIn) {
                     barkochbaQuestionRepository.observeQuestions()
+                }
+            }
+        }
+    }
+
+    private fun observeUsers() {
+        viewModelScope.launch {
+            authRepository.loggedIn.collectLatest { isLoggedIn ->
+                if (isLoggedIn) {
+                    userRepository.observeUsers()
                 }
             }
         }

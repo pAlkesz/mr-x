@@ -24,11 +24,11 @@ import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.ask_question_button_label
 import mrx.composeapp.generated.resources.create_question_screen_title
 import mrx.composeapp.generated.resources.expected_last_name_input_label
-import mrx.composeapp.generated.resources.first_name_error_message
 import mrx.composeapp.generated.resources.first_name_input_label
-import mrx.composeapp.generated.resources.last_name_error_message
+import mrx.composeapp.generated.resources.question_first_name_error_message
 import mrx.composeapp.generated.resources.question_input_error_message
 import mrx.composeapp.generated.resources.question_input_label
+import mrx.composeapp.generated.resources.question_last_name_error_message
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -84,7 +84,7 @@ private fun CreateQuestionScreenContent(
                         onValueChanged = onFirstNameChanged,
                         isValueValid = state.isFirstNameValid,
                         label = stringResource(Res.string.first_name_input_label),
-                        error = stringResource(Res.string.first_name_error_message),
+                        error = stringResource(Res.string.question_first_name_error_message),
                         showKeyboard = false,
                     )
                     PrimaryTextField(
@@ -93,7 +93,7 @@ private fun CreateQuestionScreenContent(
                         onValueChanged = onLastNameChanged,
                         isValueValid = state.isLastNameValid,
                         label = stringResource(Res.string.expected_last_name_input_label),
-                        error = stringResource(Res.string.last_name_error_message),
+                        error = stringResource(Res.string.question_last_name_error_message),
                         showKeyboard = false,
                     )
                 }
