@@ -1,12 +1,12 @@
 import SwiftUI
-import Firebase
+import FirebaseCore
 import ComposeApp
 
 @main
 struct iOSApp: App {
 
     init() {
-        FirebaseApp.configure()
+       FirebaseApp.configure()
     }
     
     let rinku = RinkuIos.init(deepLinkFilter: nil, deepLinkMapper: nil)

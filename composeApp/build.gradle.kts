@@ -22,21 +22,21 @@ kotlin {
         }
     }
 
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
     cocoapods {
+        summary = "Common module for the Mr. X app"
+        homepage = "Common Module homepage"
         version = "1.0"
         ios.deploymentTarget = "17.0"
         pod("FirebaseCore", linkOnly = true)
         pod("FirebaseFirestore", linkOnly = true)
         pod("FirebaseAuth", linkOnly = true)
         pod("FirebaseCrashlytics", linkOnly = true)
-    }
-
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
+        podfile = project.file("../iosApp/Podfile")
+        framework {
             baseName = "ComposeApp"
             isStatic = true
             export(libs.rinku)
