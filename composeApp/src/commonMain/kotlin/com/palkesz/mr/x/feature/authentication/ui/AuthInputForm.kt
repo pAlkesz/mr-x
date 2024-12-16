@@ -37,7 +37,7 @@ fun AuthInputForm(
 ) {
     ColumnWithMrxIcon(modifier = modifier) {
         Text(
-            modifier = Modifier.padding(bottom = 16.dp),
+            modifier = Modifier.padding(bottom = 8.dp),
             text = title,
             style = MaterialTheme.typography.titleMedium,
         )
@@ -69,7 +69,8 @@ fun ColumnWithMrxIcon(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
-            modifier = Modifier.padding(top = 100.dp, bottom = 8.dp)
+            modifier = Modifier
+                .padding(top = 100.dp, bottom = 16.dp)
                 .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape),
             imageVector = vectorResource(Res.drawable.ic_mrx),
             contentDescription = null

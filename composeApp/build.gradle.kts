@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -126,8 +127,28 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    val localProperties = Properties().apply {
+        with(File(rootProject.projectDir, "local.properties")) {
+            if (exists()) {
+                load(reader())
+            }
+        }
+    }
+    signingConfigs {
+        register("release") {
+            storeFile = File(localProperties.getProperty("keystore.path"))
+            keyAlias = localProperties.getProperty("key.alias")
+            storePassword = localProperties.getProperty("keystore.password")
+            keyPassword = localProperties.getProperty("key.password")
+        }
+    }
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
             isMinifyEnabled = true
             isShrinkResources = true
         }

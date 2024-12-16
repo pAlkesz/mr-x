@@ -57,7 +57,8 @@ fun <T> ContentWithBackgroundLoadingIndicator(
                 label = errorLabel,
                 onRetry = onRetry,
             )
-        })
+        },
+    )
 }
 
 @Composable
@@ -75,12 +76,13 @@ fun <T> ContentWithBackgroundLoadingIndicator(
                 modifier = Modifier.padding(16.dp).fillMaxSize(),
                 onRetry = onRetry,
             )
-        })
+        },
+    )
 }
 
 @Composable
 private fun LoadingIndicator(modifier: Modifier = Modifier, label: String? = null) {
-    var showSlowConnection by remember { mutableStateOf(false) }
+    var showSlowConnection by remember { mutableStateOf(value = false) }
     LaunchedEffect(key1 = Unit) {
         delay(DELAY_FOR_BAD_CONNECTION_TEXT)
         showSlowConnection = true
@@ -117,7 +119,7 @@ private fun ErrorIndicator(
         )
         OutlinedButton(
             onClick = onRetry,
-            modifier = Modifier.padding(vertical = 4.dp).debouncedClickable { onRetry() },
+            modifier = Modifier.padding(vertical = 8.dp).debouncedClickable { onRetry() },
         ) {
             Text(text = stringResource(Res.string.retry_button_label))
         }
