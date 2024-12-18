@@ -71,7 +71,7 @@ private fun HandleEvent(event: AppEvent?, onEventHandled: () -> Unit) {
     HandleEventEffect(key1 = event) { appEvent, _, _, navController ->
         when (appEvent) {
             is AppEvent.NavigateToGames -> {
-                navController?.navigate(GameGraph.Games)
+                navController?.navigate(route = GameGraph.Games(joinedGameId = appEvent.gameId))
             }
         }
         onEventHandled()

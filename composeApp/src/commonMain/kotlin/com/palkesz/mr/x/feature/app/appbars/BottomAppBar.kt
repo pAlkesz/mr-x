@@ -67,7 +67,7 @@ fun MrXBottomAppBar() {
                 )
                 NavigationBarItem(
                     currentDestination = currentDestination,
-                    route = GameGraph.Games,
+                    route = GameGraph.Games(joinedGameId = null),
                     icon = vectorResource(Res.drawable.ic_game_controller),
                 )
             }
@@ -109,4 +109,4 @@ private fun NavigationBarItem(currentDestination: NavDestination?, route: Any, i
     }
 }
 
-private val bottomBarNavigationRoutes = listOf(HomeGraph.Home, GameGraph.Games)
+private val bottomBarNavigationRoutes = listOf(HomeGraph.Home, GameGraph.Games(joinedGameId = null))

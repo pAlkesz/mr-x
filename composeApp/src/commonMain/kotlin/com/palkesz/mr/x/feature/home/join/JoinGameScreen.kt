@@ -72,11 +72,11 @@ private fun HandleEvent(event: JoinGameEvent?, onEventHandled: () -> Unit) {
     HandleEventEffect(event) { joinGameEvent, _, _, navController ->
         when (joinGameEvent) {
             is JoinGameEvent.NavigateToGames -> {
-                navController?.navigate(GameGraph.Games)
+                navController?.navigate(route = GameGraph.Games(joinedGameId = joinGameEvent.gameId))
             }
 
             is JoinGameEvent.NavigateToHome -> {
-                navController?.navigate(HomeGraph.Home)
+                navController?.navigate(route = HomeGraph.Home)
             }
         }
         onEventHandled()

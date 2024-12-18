@@ -11,13 +11,13 @@ androidxViewModel = "2.8.7"
 androidxDataStore = "1.1.1"
 
 # AndroidX Compose
-composeBom = "2024.11.00"
+composeBom = "2024.12.01"
 composePlugin = "1.7.1"
 composeNavigation = "2.8.0-alpha10"
 composeViewModel = "2.8.2"
 
 # Firebase
-firebaseBom = "33.6.0"
+firebaseBom = "33.7.0"
 firebaseKotlinSdk = "2.1.0"
 googleServices = "4.4.2"
 firebaseCrashlytics = "3.0.2"

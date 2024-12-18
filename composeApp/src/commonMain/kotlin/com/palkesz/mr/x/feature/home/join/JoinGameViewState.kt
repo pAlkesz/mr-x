@@ -8,7 +8,7 @@ data class JoinGameViewState(val event: JoinGameEvent? = null)
 @Immutable
 sealed interface JoinGameEvent {
 
-    data object NavigateToGames : JoinGameEvent
+    data class NavigateToGames(val gameId: String?) : JoinGameEvent
 
     data object NavigateToHome : JoinGameEvent
 

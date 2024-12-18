@@ -22,9 +22,15 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parameterSetOf
 
 fun NavGraphBuilder.gamesGraphNavigation() {
-    navigation(startDestination = GameGraph.Games, route = MrXGraph.Games::class) {
-        composable<GameGraph.Games> {
-            GamesScreen()
+    navigation(
+        startDestination = GameGraph.Games(joinedGameId = null),
+        route = MrXGraph.Games::class
+    ) {
+        composable<GameGraph.Games> { backStackEntry ->
+            val games = backStackEntry.toRoute<GameGraph.Games>()
+            GamesScreen(viewModel = koinViewModel<GamesViewModelImpl>(parameters = {
+                parameterSetOf(games.joinedGameId)
+            }))
         }
         composable<GameGraph.Game> { backStackEntry ->
             val game = backStackEntry.toRoute<GameGraph.Game>()
@@ -70,7 +76,7 @@ fun NavGraphBuilder.gamesGraphNavigation() {
 sealed interface GameGraph {
 
     @Serializable
-    data object Games : GameGraph
+    data class Games(val joinedGameId: String?) : GameGraph
 
     @Serializable
     data class Game(val id: String) : GameGraph

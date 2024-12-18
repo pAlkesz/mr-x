@@ -21,8 +21,10 @@ fun Answer.isGuessed(firstName: String, lastName: String?) =
     this.firstName.equalsAsName(firstName) && this.lastName.equalsAsName(lastName)
 
 fun Pair<String, String>.validateAsName(gameInitial: Char?): Pair<Boolean, Boolean> {
-    val isFirstNameValid = first.isNotBlank() && first.validateAsName()
-            && (second.isNotBlank() || first.firstOrNull() == gameInitial)
+    val isFirstNameValid = first.isNotBlank() && first.validateAsName() &&
+            (second.isNotBlank() || gameInitial?.let {
+                first.firstOrNull()?.equals(other = it, ignoreCase = true)
+            } ?: false)
     val isLastNameValid =
         second.validateAsName() && (second.isBlank() || second.firstOrNull() == gameInitial)
     return isFirstNameValid to isLastNameValid

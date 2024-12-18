@@ -22,6 +22,7 @@
     <string name="game_title_with_initial">Mr. %1$s</string>
     <string name="game_screen_hidden_name_title">Mr. %1$s hosted by %2$s</string>
     <string name="game_screen_full_name_title">%1$s hosted by %2$s</string>
+    <string name="game_host_label">By %1$s</string>
     <string name="host_answer_suffix"> by the host</string>
     <string name="player_answer_suffix">%1$s</string>
     <string name="expected_answer_label">- Expected answer: %1$s</string>

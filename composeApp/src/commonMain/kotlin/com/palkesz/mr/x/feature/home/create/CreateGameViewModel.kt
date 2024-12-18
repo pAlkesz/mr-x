@@ -114,7 +114,7 @@ class CreateGameViewModelImpl(
             createGameUseCase.run(
                 firstName = firstName.value.trim(),
                 lastName = lastName.value.trim().takeIf { it.isNotBlank() }).onSuccess { game ->
-                event.update { CreateGameEvent.NavigateToGames(game = game) }
+                event.update { CreateGameEvent.NavigateToGames(gameId = game.id) }
             }.map { Unit }
         } else {
             Result.success(Unit)

@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
@@ -92,10 +93,12 @@ private fun CreateGameScreenContent(
 
 @Composable
 private fun HandleEvent(event: CreateGameEvent?, onEventHandled: () -> Unit) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     HandleEventEffect(event) { createGameEvent, _, _, navController ->
         when (createGameEvent) {
             is CreateGameEvent.NavigateToGames -> {
-                navController?.navigate(GameGraph.Games)
+                keyboardController?.hide()
+                navController?.navigate(GameGraph.Games(joinedGameId = createGameEvent.gameId))
             }
         }
         onEventHandled()

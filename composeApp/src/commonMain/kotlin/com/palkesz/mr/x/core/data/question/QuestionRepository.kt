@@ -9,6 +9,7 @@ import com.palkesz.mr.x.core.util.extensions.map
 import dev.gitlive.firebase.firestore.ChangeType
 import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FirebaseFirestore
+import dev.gitlive.firebase.firestore.Query
 import dev.gitlive.firebase.firestore.Timestamp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +23,7 @@ interface QuestionRepository {
     val questions: StateFlow<List<Question>>
 
     suspend fun fetchQuestions(gameId: String): Result<List<Question>>
+    suspend fun fetchQuestions(gameIds: List<String>): Result<List<Question>>
     suspend fun createQuestion(question: Question): Result<Unit>
     suspend fun updateHostAnswer(id: String, answer: Answer, status: QuestionStatus): Result<Unit>
     suspend fun updatePlayerAnswer(id: String, answer: Answer, status: QuestionStatus): Result<Unit>
@@ -34,6 +36,9 @@ interface QuestionRepository {
             get() = throw NotImplementedError()
 
         override suspend fun fetchQuestions(gameId: String): Result<List<Question>> =
+            throw NotImplementedError()
+
+        override suspend fun fetchQuestions(gameIds: List<String>): Result<List<Question>> =
             throw NotImplementedError()
 
         override suspend fun createQuestion(question: Question): Result<Unit> =
@@ -77,16 +82,22 @@ class QuestionRepositoryImpl(
         return try {
             val questions = firestore.collection(QUESTIONS_COLLECTION_NAME).where {
                 GAME_ID_FIELD_KEY equalTo gameId
-            }.orderBy(
-                field = LAST_MODIFIED_FIELD_KEY,
-                direction = Direction.DESCENDING,
-            ).limit(QUESTIONS_FETCH_LIMIT).get().documents.map {
-                it.data(Question.serializer())
-            }
-            _questions.update { cachedQuestions ->
-                (questions + cachedQuestions).distinctBy { it.id }
-                    .sortedByDescending { it.lastModifiedTimestamp.seconds }
-            }
+            }.processQuestionQuery()
+            Result.success(questions)
+        } catch (exception: Exception) {
+            Result.failure(exception = exception)
+        }
+    }
+
+    override suspend fun fetchQuestions(gameIds: List<String>): Result<List<Question>> {
+        val gameQuestions = questions.value.filter { it.gameId in gameIds }
+        if (gameQuestions.map { it.gameId }.containsAll(elements = gameIds)) {
+            return Result.success(gameQuestions)
+        }
+        return try {
+            val questions = firestore.collection(QUESTIONS_COLLECTION_NAME).where {
+                GAME_ID_FIELD_KEY inArray gameIds
+            }.processQuestionQuery()
             Result.success(questions)
         } catch (exception: Exception) {
             Result.failure(exception = exception)
@@ -175,6 +186,20 @@ class QuestionRepositoryImpl(
                 direction = Direction.DESCENDING,
             ).limit(QUESTIONS_FETCH_LIMIT).snapshots
         }
+    }
+
+    private suspend fun Query.processQuestionQuery(): List<Question> {
+        val questions = orderBy(
+            field = LAST_MODIFIED_FIELD_KEY,
+            direction = Direction.DESCENDING,
+        ).limit(QUESTIONS_FETCH_LIMIT).get().documents.map {
+            it.data(Question.serializer())
+        }
+        _questions.update { cachedQuestions ->
+            (questions + cachedQuestions).distinctBy { it.id }
+                .sortedByDescending { it.lastModifiedTimestamp.seconds }
+        }
+        return questions
     }
 
     companion object {

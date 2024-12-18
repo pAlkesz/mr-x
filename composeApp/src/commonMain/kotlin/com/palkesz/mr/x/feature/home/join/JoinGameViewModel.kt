@@ -3,6 +3,7 @@ package com.palkesz.mr.x.feature.home.join
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.usecase.game.JoinGameUseCase
 import com.palkesz.mr.x.core.util.BUSINESS_TAG
 import com.palkesz.mr.x.core.util.networking.DataLoader
@@ -30,6 +31,7 @@ interface JoinGameViewModel {
 @Stable
 class JoinGameViewModelImpl(
     private val joinGameUseCase: JoinGameUseCase,
+    private val gameRepository: GameRepository,
 ) : ViewModel(), JoinGameViewModel {
 
     private val dataLoader = DataLoader<Unit>()
@@ -77,10 +79,10 @@ class JoinGameViewModelImpl(
         event.update { null }
     }
 
-    private suspend fun joinGame() = gameId?.let {
-        joinGameUseCase.run(gameId = it).onSuccess {
-            event.update { JoinGameEvent.NavigateToGames }
+    private suspend fun joinGame() = gameId?.let { id ->
+        joinGameUseCase.run(gameId = id).onSuccess {
+            val isAlreadyJoined = gameRepository.games.value.any { it.id == id }
+            event.update { JoinGameEvent.NavigateToGames(gameId = id.takeIf { !isAlreadyJoined }) }
         }
     } ?: Result.success(Unit)
-
 }

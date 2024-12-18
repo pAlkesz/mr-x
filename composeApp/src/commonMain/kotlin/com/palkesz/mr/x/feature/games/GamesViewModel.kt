@@ -3,9 +3,8 @@ package com.palkesz.mr.x.feature.games
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.palkesz.mr.x.core.data.game.GameRepository
-import com.palkesz.mr.x.core.model.game.Game
-import com.palkesz.mr.x.core.usecase.game.FetchGamesUseCase
+import com.palkesz.mr.x.core.usecase.game.FetchGamesResultUseCase
+import com.palkesz.mr.x.core.usecase.game.ObserveGamesResultUseCase
 import com.palkesz.mr.x.core.util.networking.DataLoader
 import com.palkesz.mr.x.core.util.networking.RefreshTrigger
 import com.palkesz.mr.x.core.util.networking.ViewState
@@ -28,12 +27,13 @@ interface GamesViewModel {
 
 @Stable
 class GamesViewModelImpl(
-    private val fetchGamesUseCase: FetchGamesUseCase,
-    private val gameRepository: GameRepository,
+    private val joinedGameId: String?,
+    private val fetchGamesResultUseCase: FetchGamesResultUseCase,
+    private val observeGamesResultUseCase: ObserveGamesResultUseCase,
     private val gamesUiMapper: GamesUiMapper,
 ) : ViewModel(), GamesViewModel {
 
-    private val dataLoader = DataLoader<List<Game>>()
+    private val dataLoader = DataLoader<GamesResult>()
 
     private val refreshTrigger = RefreshTrigger()
 
@@ -41,15 +41,19 @@ class GamesViewModelImpl(
         coroutineScope = viewModelScope,
         refreshTrigger = refreshTrigger,
         initialData = ViewState.Loading,
-        fetchData = { fetchGamesUseCase.run() },
-        observeData = { gameRepository.games },
+        fetchData = { fetchGamesResultUseCase.run() },
+        observeData = { observeGamesResultUseCase.run() },
     )
 
     private val event = MutableStateFlow<GamesEvent?>(null)
 
     override val viewState = combine(loadingResult, event) { result, event ->
-        result.map { games ->
-            GamesViewState(games = gamesUiMapper.mapGames(games = games), event = event)
+        result.map { gamesResult ->
+            GamesViewState(
+                joinedGameId = joinedGameId,
+                games = gamesUiMapper.mapGames(result = gamesResult),
+                event = event,
+            )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ViewState.Loading)
 
@@ -66,5 +70,4 @@ class GamesViewModelImpl(
             refreshTrigger.refresh()
         }
     }
-
 }

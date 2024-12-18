@@ -51,6 +51,7 @@ kotlin {
                 optIn("androidx.compose.material3.ExperimentalMaterial3Api")
                 optIn("androidx.compose.animation.ExperimentalAnimationApi")
                 optIn("androidx.compose.foundation.ExperimentalFoundationApi")
+                optIn("androidx.compose.ui.ExperimentalComposeUiApi")
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 optIn("kotlin.uuid.ExperimentalUuidApi")
@@ -134,17 +135,22 @@ android {
             }
         }
     }
-    signingConfigs {
-        register("release") {
-            storeFile = File(localProperties.getProperty("keystore.path"))
-            keyAlias = localProperties.getProperty("key.alias")
-            storePassword = localProperties.getProperty("keystore.password")
-            keyPassword = localProperties.getProperty("key.password")
+    val isLocalBuild = !System.getenv("CI").toBoolean()
+    if (isLocalBuild) {
+        signingConfigs {
+            register("release") {
+                storeFile = File(localProperties.getProperty("keystore.path"))
+                keyAlias = localProperties.getProperty("key.alias")
+                storePassword = localProperties.getProperty("keystore.password")
+                keyPassword = localProperties.getProperty("key.password")
+            }
         }
     }
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            if (isLocalBuild) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

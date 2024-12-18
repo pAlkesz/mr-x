@@ -1,7 +1,6 @@
 package com.palkesz.mr.x.feature.home.create
 
 import androidx.compose.runtime.Immutable
-import com.palkesz.mr.x.core.model.game.Game
 
 @Immutable
 data class CreateGameViewState(
@@ -16,6 +15,6 @@ data class CreateGameViewState(
 @Immutable
 sealed interface CreateGameEvent {
 
-    data class NavigateToGames(val game: Game) : CreateGameEvent
+    data class NavigateToGames(val gameId: String) : CreateGameEvent
 
 }
