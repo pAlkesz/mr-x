@@ -65,7 +65,7 @@ private fun GamesScreenContent(
 ) {
     ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onRetry) { state ->
         HandleEvent(event = state.event, onEventHandled = onEventHandled)
-        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+        Column(modifier = Modifier.padding(bottom = 16.dp)) {
             CenteredTitleBar(
                 title = stringResource(Res.string.games_screen_title),
                 navigationIcon = null,
@@ -73,7 +73,10 @@ private fun GamesScreenContent(
             CrossFade(
                 condition = state.games.isEmpty(),
                 onConditionTrue = {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
                         Text(
                             text = stringResource(Res.string.no_games_message),
                             style = MaterialTheme.typography.bodyLarge,
@@ -89,7 +92,7 @@ private fun GamesScreenContent(
                         getKey = { id },
                     ) { item ->
                         GameCard(
-                            modifier = Modifier.padding(bottom = 16.dp),
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                             item = item,
                             onClick = onGameClicked,
                         )

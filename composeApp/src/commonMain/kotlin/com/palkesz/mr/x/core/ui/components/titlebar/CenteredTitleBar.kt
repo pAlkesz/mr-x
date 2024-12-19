@@ -18,11 +18,13 @@ import com.palkesz.mr.x.core.ui.providers.LocalNavController
 
 @Composable
 fun CenteredTitleBar(
+    modifier: Modifier = Modifier,
     title: String,
     navigationIcon: ImageVector? = Icons.AutoMirrored.Filled.ArrowBack,
     navigationAction: (NavHostController?) -> Unit = { it?.popBackStack() },
 ) {
     CenterAlignedTopAppBar(
+        modifier = modifier,
         title = {
             Text(
                 text = title,
