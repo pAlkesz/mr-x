@@ -17,7 +17,7 @@ data class GameResult(
 
 @Immutable
 data class GameViewState(
-    val host: String,
+    val host: String?,
     val firstName: String,
     val lastName: String?,
     val isHost: Boolean,

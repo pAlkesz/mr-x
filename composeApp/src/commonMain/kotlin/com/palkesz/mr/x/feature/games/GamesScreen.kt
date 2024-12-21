@@ -1,14 +1,11 @@
 package com.palkesz.mr.x.feature.games
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -20,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -33,6 +29,7 @@ import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.ui.helpers.bold
 import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.feature.games.ui.GameIcon
 import com.palkesz.mr.x.feature.games.ui.GameQuestionChip
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.game_host_label
@@ -150,23 +147,6 @@ private fun GameCard(modifier: Modifier = Modifier, item: GameItem, onClick: (St
                 contentDescription = null,
             )
         }
-    }
-}
-
-@Composable
-private fun GameIcon(modifier: Modifier = Modifier, icon: ImageVector) {
-    Box(
-        modifier = modifier
-            .size(40.dp)
-            .background(color = MaterialTheme.colorScheme.secondary, shape = CircleShape),
-        contentAlignment = Alignment.Center,
-    ) {
-        Icon(
-            modifier = Modifier.size(32.dp),
-            imageVector = icon,
-            tint = MaterialTheme.colorScheme.onSecondary,
-            contentDescription = null,
-        )
     }
 }
 

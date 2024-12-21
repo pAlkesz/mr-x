@@ -121,7 +121,7 @@ class GameUiMapperTest : FunSpec({
         val mapper = GameUiMapperImpl(authRepository = authRepository)
         checkAll(resultArb, eventExhaustive) { result, event ->
             mapper.mapViewState(result = result, event = event).apply {
-                this.host shouldBe result.host.name
+                this.host shouldBe result.host.name.takeIf { !isHost }
                 this.event shouldBe event
                 firstName shouldBe result.game.firstName
                 lastName shouldBe result.game.lastName

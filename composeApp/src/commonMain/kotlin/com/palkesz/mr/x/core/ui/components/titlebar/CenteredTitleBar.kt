@@ -11,9 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
 import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
+import com.palkesz.mr.x.core.ui.helpers.bold
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 
 @Composable
@@ -26,15 +26,12 @@ fun CenteredTitleBar(
     CenterAlignedTopAppBar(
         modifier = modifier,
         title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-            )
+            Text(text = title, style = MaterialTheme.typography.titleMedium.bold())
         },
         navigationIcon = {
             NavigationIcon(iconVector = navigationIcon, navigationAction = navigationAction)
         },
-        windowInsets = WindowInsets(0, 0, 0, 0)
+        windowInsets = WindowInsets(left = 0, top =  0, right =  0, bottom =  0)
     )
 }
 

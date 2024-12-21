@@ -20,7 +20,7 @@ class GameUiMapperImpl(
         val isHost = authRepository.userId == result.game.hostId
         val isGameOngoing = result.game.status == GameStatus.ONGOING
         return GameViewState(
-            host = result.host.name,
+            host = result.host.name.takeIf { !isHost },
             firstName = result.game.firstName,
             lastName = result.game.lastName,
             isHost = isHost,
