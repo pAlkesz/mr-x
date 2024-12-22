@@ -74,7 +74,7 @@ private fun GameScreenContent(
         HandleEvent(onEventHandled = onEventHandled, event = state.event)
         Column {
             GameTitleBar(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+                modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp, top = 8.dp),
                 firstName = state.firstName,
                 lastName = state.lastName,
                 hostName = state.host,
@@ -82,7 +82,7 @@ private fun GameScreenContent(
                 onQrCodeClicked = onQrCodeClicked,
             )
             QuestionPager(
-                modifier = Modifier.padding(all = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
                 normalPage = {
                     NormalQuestionPage(
                         modifier = Modifier.fillMaxSize(),

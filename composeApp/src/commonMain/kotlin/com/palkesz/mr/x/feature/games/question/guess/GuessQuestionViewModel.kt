@@ -26,6 +26,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import mrx.composeapp.generated.resources.Res
+import mrx.composeapp.generated.resources.own_name_label
+import org.jetbrains.compose.resources.getString
 
 interface GuessQuestionViewModel {
     val viewState: StateFlow<ViewState<GuessQuestionViewState>>
@@ -89,6 +92,11 @@ class GuessQuestionViewModelImpl(
                 questionText = question.text,
                 hostAnswer = question.hostAnswer?.getName()?.takeIf {
                     game?.hostId != authRepository.userId
+                },
+                hostName = if (game?.hostId == authRepository.userId) {
+                    getString(resource = Res.string.own_name_label)
+                } else {
+                    userRepository.users.value.first { it.id == game?.hostId }.name
                 },
                 number = question.number,
                 owner = userRepository.users.value.first { it.id == question.userId }.name,

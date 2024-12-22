@@ -8,6 +8,7 @@ data class SpecifyQuestionViewState(
     val oldText: String,
     val expectedAnswer: String,
     val hostAnswer: String,
+    val hostName: String,
     val number: Int,
     val owner: String,
     val isTextValid: Boolean = false,

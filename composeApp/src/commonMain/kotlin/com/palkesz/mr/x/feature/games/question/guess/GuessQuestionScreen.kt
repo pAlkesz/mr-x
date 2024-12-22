@@ -25,21 +25,22 @@ import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
 import com.palkesz.mr.x.core.ui.components.input.PrimaryTextField
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
-import com.palkesz.mr.x.core.ui.components.text.buildWrongHostAnswer
 import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
-import com.palkesz.mr.x.core.util.extensions.capitalizeFirstChar
 import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.feature.games.game.ui.AnswerText
+import com.palkesz.mr.x.feature.games.game.ui.QuestionText
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.answer_question_button_label
 import mrx.composeapp.generated.resources.expected_last_name_input_label
 import mrx.composeapp.generated.resources.first_name_input_label
 import mrx.composeapp.generated.resources.guess_question_screen_title
+import mrx.composeapp.generated.resources.ic_wrong_answer
 import mrx.composeapp.generated.resources.question_first_name_error_message
 import mrx.composeapp.generated.resources.question_last_name_error_message
 import mrx.composeapp.generated.resources.question_number_title
-import mrx.composeapp.generated.resources.question_text
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun GuessQuestionScreen(viewModel: GuessQuestionViewModel) {
@@ -75,6 +76,7 @@ private fun GuessQuestionScreenContent(
                 QuestionDetails(
                     text = state.questionText,
                     hostAnswer = state.hostAnswer,
+                    hostName = state.hostName,
                     number = state.number,
                     owner = state.owner,
                 )
@@ -114,6 +116,7 @@ private fun QuestionDetails(
     modifier: Modifier = Modifier,
     text: String,
     hostAnswer: String?,
+    hostName: String,
     number: Int,
     owner: String,
 ) {
@@ -123,23 +126,25 @@ private fun QuestionDetails(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
     ) {
         Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(Res.string.question_number_title, number, owner),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
+            text = stringResource(Res.string.question_number_title, number),
             style = MaterialTheme.typography.titleMedium.copy(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
             ),
         )
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(Res.string.question_text, text.capitalizeFirstChar()),
-            style = MaterialTheme.typography.bodyMedium,
+        QuestionText(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            text = text,
+            owner = owner,
         )
         AnimatedNullability(hostAnswer) { answer ->
-            Text(
-                text = buildWrongHostAnswer(answer = answer),
-                modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
-                style = MaterialTheme.typography.bodyMedium,
+            AnswerText(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp),
+                text = answer,
+                owner = hostName,
+                isHost = true,
+                icon = vectorResource(Res.drawable.ic_wrong_answer),
             )
         }
         Spacer(modifier = Modifier.size(16.dp))

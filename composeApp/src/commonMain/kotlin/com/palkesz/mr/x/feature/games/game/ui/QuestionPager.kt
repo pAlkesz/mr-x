@@ -51,7 +51,12 @@ fun QuestionPager(
         QuestionTabs(
             selectedItemIndex = pagerState.currentPage,
             onClick = { index ->
-                coroutineScope.launch { pagerState.animateScrollToPage(page = index) }
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(
+                        page = index,
+                        animationSpec = tween(easing = LinearEasing),
+                    )
+                }
             },
         )
         HorizontalPager(
@@ -137,7 +142,7 @@ private fun TabIndicator(width: Dp, offset: Dp) {
             .offset(x = offset)
             .background(
                 color = MaterialTheme.colorScheme.primary,
-                shape = RoundedCornerShape(size = 10.dp),
+                shape = RoundedCornerShape(size = 14.dp),
             )
     )
 }

@@ -49,6 +49,7 @@ sealed interface QuestionItem {
     data class WaitingForPlayersItem(
         val text: String,
         val hostAnswer: String?,
+        val hostName: String,
         val number: Int,
         val owner: String,
     ) : QuestionItem
@@ -57,6 +58,7 @@ sealed interface QuestionItem {
         val id: String,
         val text: String,
         val hostAnswer: String?,
+        val hostName: String,
         val number: Int,
         val owner: String,
     ) : QuestionItem
@@ -64,6 +66,7 @@ sealed interface QuestionItem {
     data class WaitingForOwnerItem(
         val text: String,
         val hostAnswer: String,
+        val hostName: String,
         val number: Int,
         val owner: String,
     ) : QuestionItem
@@ -72,6 +75,7 @@ sealed interface QuestionItem {
         val id: String,
         val text: String,
         val hostAnswer: String,
+        val hostName: String,
         val number: Int,
         val owner: String,
     ) : QuestionItem
@@ -79,7 +83,9 @@ sealed interface QuestionItem {
     data class GuessedByPlayerItem(
         val text: String,
         val answer: String,
+        val answerOwner: String,
         val hostAnswer: String?,
+        val hostName: String,
         val number: Int,
         val owner: String,
     ) : QuestionItem
@@ -87,7 +93,9 @@ sealed interface QuestionItem {
     data class MissedByPlayerItem(
         val text: String,
         val answer: String,
+        val answerOwner: String,
         val hostAnswer: String?,
+        val hostName: String,
         val number: Int,
         val owner: String,
     ) : QuestionItem
@@ -95,6 +103,7 @@ sealed interface QuestionItem {
     data class GuessedByHostItem(
         val text: String,
         val hostAnswer: String,
+        val hostName: String,
         val number: Int,
         val owner: String,
     ) : QuestionItem
@@ -129,6 +138,7 @@ sealed interface BarkochbaItem {
         val number: Int,
         val owner: String,
         val answer: Boolean,
+        val hostName: String,
     ) : BarkochbaItem
 
 }

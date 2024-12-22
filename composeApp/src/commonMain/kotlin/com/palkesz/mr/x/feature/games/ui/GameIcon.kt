@@ -13,15 +13,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun GameIcon(modifier: Modifier = Modifier, icon: ImageVector) {
+fun GameIcon(modifier: Modifier = Modifier, isBig: Boolean = true, icon: ImageVector) {
     Box(
         modifier = modifier
-            .size(40.dp)
+            .size(size = if (isBig) 40.dp else 32.dp)
             .background(color = MaterialTheme.colorScheme.secondary, shape = CircleShape),
         contentAlignment = Alignment.Center,
     ) {
         Icon(
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier.size(size = if (isBig) 32.dp else 24.dp),
             imageVector = icon,
             tint = MaterialTheme.colorScheme.onSecondary,
             contentDescription = null,

@@ -6,6 +6,7 @@ import androidx.compose.runtime.Immutable
 data class GuessQuestionViewState(
     val questionText: String,
     val hostAnswer: String?,
+    val hostName: String,
     val number: Int,
     val owner: String,
     val firstName: String,

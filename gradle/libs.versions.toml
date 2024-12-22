@@ -12,7 +12,7 @@ androidxDataStore = "1.1.1"
 
 # AndroidX Compose
 composeBom = "2024.12.01"
-composePlugin = "1.7.1"
+composePlugin = "1.7.3"
 composeNavigation = "2.8.0-alpha10"
 composeViewModel = "2.8.2"
 

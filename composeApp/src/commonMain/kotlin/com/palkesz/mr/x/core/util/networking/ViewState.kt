@@ -30,7 +30,7 @@ fun <T> Result<T>.toViewState() = fold(
         ViewState.Failure()
     })
 
-fun <T, R> ViewState<T>.map(transform: (T) -> R): ViewState<R> = when (this) {
+suspend fun <T, R> ViewState<T>.map(transform: suspend (T) -> R): ViewState<R> = when (this) {
     is ViewState.Loading -> this
     is ViewState.Success -> ViewState.Success(data = transform(this.data))
     is ViewState.Failure -> this

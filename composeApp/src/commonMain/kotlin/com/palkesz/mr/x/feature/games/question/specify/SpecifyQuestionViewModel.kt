@@ -77,6 +77,7 @@ class SpecifyQuestionViewModelImpl(
                 text = text,
                 oldText = question.text,
                 hostAnswer = question.hostAnswer?.getName()?.capitalizeWords().orEmpty(),
+                hostName = userRepository.users.value.first { it.id == game?.hostId }.name,
                 expectedAnswer = "${question.expectedFirstName} ${question.expectedLastName}".capitalizeWords(),
                 number = question.number,
                 owner = userRepository.users.value.first { it.id == question.userId }.name,

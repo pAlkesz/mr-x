@@ -23,21 +23,23 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
 import com.palkesz.mr.x.core.ui.components.input.PrimaryTextField
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
-import com.palkesz.mr.x.core.ui.components.text.buildCorrectHostAnswer
 import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
-import com.palkesz.mr.x.core.util.extensions.capitalizeFirstChar
 import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.feature.games.game.ui.AnswerText
+import com.palkesz.mr.x.feature.games.game.ui.QuestionText
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.expected_answer_label
+import mrx.composeapp.generated.resources.ic_accepted_answer
+import mrx.composeapp.generated.resources.ic_correct_answer
 import mrx.composeapp.generated.resources.question_input_label
 import mrx.composeapp.generated.resources.question_number_title
-import mrx.composeapp.generated.resources.question_text
 import mrx.composeapp.generated.resources.save_button_label
 import mrx.composeapp.generated.resources.specify_question_input_error_message
 import mrx.composeapp.generated.resources.specify_question_screen_title
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun SpecifyQuestionScreen(viewModel: SpecifyQuestionViewModel) {
@@ -71,6 +73,7 @@ private fun SpecifyQuestionScreenContent(
                 QuestionDetails(
                     text = state.oldText,
                     hostAnswer = state.hostAnswer,
+                    hostName = state.hostName,
                     expectedAnswer = state.expectedAnswer,
                     number = state.number,
                     owner = state.owner,
@@ -101,6 +104,7 @@ private fun QuestionDetails(
     modifier: Modifier = Modifier,
     text: String,
     hostAnswer: String,
+    hostName: String,
     expectedAnswer: String,
     number: Int,
     owner: String,
@@ -118,23 +122,24 @@ private fun QuestionDetails(
                 fontWeight = FontWeight.Bold,
             ),
         )
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
-            text = stringResource(Res.string.question_text, text.capitalizeFirstChar()),
-            style = MaterialTheme.typography.bodyMedium,
+        QuestionText(
+            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp),
+            text = text,
+            owner = owner,
         )
-        Text(
-            text = buildCorrectHostAnswer(
-                answer = hostAnswer,
-                highlightColor = MaterialTheme.colorScheme.primary,
-            ),
-            modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
-            style = MaterialTheme.typography.bodyMedium,
+        AnswerText(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp),
+            text = hostAnswer,
+            owner = hostName,
+            isHost = true,
+            icon = vectorResource(Res.drawable.ic_accepted_answer),
         )
-        Text(
+        AnswerText(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp),
             text = stringResource(Res.string.expected_answer_label, expectedAnswer),
-            modifier = Modifier.padding(start = 16.dp, top = 4.dp, end = 16.dp),
-            style = MaterialTheme.typography.bodyMedium,
+            owner = owner,
+            isHost = false,
+            icon = vectorResource(Res.drawable.ic_correct_answer),
         )
         Spacer(modifier = Modifier.size(16.dp))
     }
