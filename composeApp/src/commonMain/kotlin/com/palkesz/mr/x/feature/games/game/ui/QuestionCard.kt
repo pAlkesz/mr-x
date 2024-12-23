@@ -345,6 +345,11 @@ private fun MissedByPlayerQuestionCard(
             isHost = false,
             icon = vectorResource(Res.drawable.ic_wrong_answer),
         )
+        ExpectedAnswerText(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp),
+            text = item.expectedAnswer,
+            owner = item.owner
+        )
     }
 }
 
@@ -390,12 +395,10 @@ private fun PlayersWonQuestionCard(
             text = item.text,
             owner = item.owner,
         )
-        AnswerText(
+        ExpectedAnswerText(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp),
             text = item.answer,
             owner = item.owner,
-            isHost = false,
-            icon = vectorResource(Res.drawable.ic_correct_answer),
         )
     }
 }

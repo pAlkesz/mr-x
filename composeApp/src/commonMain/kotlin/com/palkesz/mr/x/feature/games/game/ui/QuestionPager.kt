@@ -49,6 +49,7 @@ fun QuestionPager(
         val pagerState = rememberPagerState { 2 }
         val coroutineScope = rememberCoroutineScope()
         QuestionTabs(
+            modifier = Modifier.padding(horizontal = 16.dp),
             selectedItemIndex = pagerState.currentPage,
             onClick = { index ->
                 coroutineScope.launch {

@@ -82,7 +82,7 @@ class SpecifyQuestionViewModelImpl(
                 number = question.number,
                 owner = userRepository.users.value.first { it.id == question.userId }.name,
                 isTextValid = isTextValid,
-                isUpdateButtonEnabled = isConnected && game?.status == GameStatus.ONGOING,
+                isSaveButtonEnabled = isConnected && game?.status == GameStatus.ONGOING,
                 event = event,
             )
         }

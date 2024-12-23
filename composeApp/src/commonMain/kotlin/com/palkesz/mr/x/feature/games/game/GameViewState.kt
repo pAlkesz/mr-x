@@ -98,6 +98,7 @@ sealed interface QuestionItem {
         val hostName: String,
         val number: Int,
         val owner: String,
+        val expectedAnswer: String,
     ) : QuestionItem
 
     data class GuessedByHostItem(

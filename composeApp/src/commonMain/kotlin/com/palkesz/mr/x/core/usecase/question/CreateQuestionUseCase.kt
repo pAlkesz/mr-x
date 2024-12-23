@@ -12,7 +12,12 @@ import dev.gitlive.firebase.firestore.Timestamp
 import kotlin.uuid.Uuid
 
 fun interface CreateQuestionUseCase {
-    suspend fun run(text: String, firstName: String, lastName: String, gameId: String): Result<Unit>
+    suspend fun run(
+        text: String,
+        firstName: String,
+        lastName: String?,
+        gameId: String,
+    ): Result<Unit>
 }
 
 class CreateQuestionUseCaseImpl(
@@ -21,7 +26,7 @@ class CreateQuestionUseCaseImpl(
     private val gameRepository: GameRepository
 ) : CreateQuestionUseCase {
 
-    override suspend fun run(text: String, firstName: String, lastName: String, gameId: String) =
+    override suspend fun run(text: String, firstName: String, lastName: String?, gameId: String) =
         runCatching {
             val userId = authRepository.userId ?: throw Throwable(NO_USER_ID_FOUND_MESSAGE)
             val game = gameRepository.games.value.first { it.id == gameId }
@@ -43,7 +48,7 @@ class CreateQuestionUseCaseImpl(
                     gameId = gameId,
                     number = questionRepository.questions.value.filter { it.gameId == gameId }.size + 1,
                     expectedFirstName = firstName.trim(),
-                    expectedLastName = lastName.trim(),
+                    expectedLastName = lastName?.trim(),
                     hostAnswer = null,
                     playerAnswer = null,
                     text = text.trim(),

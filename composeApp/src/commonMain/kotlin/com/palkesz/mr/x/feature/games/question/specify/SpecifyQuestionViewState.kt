@@ -12,7 +12,7 @@ data class SpecifyQuestionViewState(
     val number: Int,
     val owner: String,
     val isTextValid: Boolean = false,
-    val isUpdateButtonEnabled: Boolean,
+    val isSaveButtonEnabled: Boolean,
     val event: SpecifyQuestionEvent? = null,
 )
 

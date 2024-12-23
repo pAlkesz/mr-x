@@ -10,7 +10,7 @@ data class Question(
     val gameId: String,
     val number: Int,
     val expectedFirstName: String,
-    val expectedLastName: String,
+    val expectedLastName: String?,
     val hostAnswer: Answer?,
     val playerAnswer: Answer?,
     val status: QuestionStatus,

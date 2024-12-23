@@ -164,6 +164,7 @@ class GameUiMapperImpl(
                         hostName = hostName,
                         number = question.number,
                         owner = getOwner(id = question.userId),
+                        expectedAnswer = "${question.expectedFirstName} ${question.expectedLastName ?: ""}"
                     )
                 }
             }

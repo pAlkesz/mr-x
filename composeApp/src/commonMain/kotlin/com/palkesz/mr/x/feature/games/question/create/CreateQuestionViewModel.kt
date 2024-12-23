@@ -142,7 +142,7 @@ class CreateQuestionViewModelImpl(
             createQuestionUseCase.run(
                 text = questionText.value,
                 firstName = expectedFirstName.value,
-                lastName = expectedLastName.value,
+                lastName = expectedLastName.value.takeIf { it.isNotBlank() },
                 gameId = gameId,
             ).onSuccess {
                 event.update { CreateQuestionEvent.NavigateUp }

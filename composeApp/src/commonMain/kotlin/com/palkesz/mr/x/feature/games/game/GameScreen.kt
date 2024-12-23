@@ -82,10 +82,10 @@ private fun GameScreenContent(
                 onQrCodeClicked = onQrCodeClicked,
             )
             QuestionPager(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                modifier = Modifier.padding(top = 16.dp),
                 normalPage = {
                     NormalQuestionPage(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                         questions = state.questions,
                         isGameOngoing = state.isGameOngoing,
                         isAskQuestionButtonVisible = state.isAskQuestionButtonVisible,
@@ -99,7 +99,7 @@ private fun GameScreenContent(
                 },
                 barkochbaPage = {
                     BarkochbaQuestionPage(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                         questions = state.barkochbaQuestions,
                         isGameOngoing = state.isGameOngoing,
                         isAskBarkochbaQuestionButtonVisible = state.isAskBarkochbaQuestionButtonVisible,

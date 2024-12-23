@@ -28,11 +28,14 @@ import androidx.compose.ui.unit.sp
 import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.button.PrimaryCardButton
 import com.palkesz.mr.x.core.ui.components.button.SecondaryCardButton
+import com.palkesz.mr.x.core.ui.components.layout.BackwardsRowLayout
 import com.palkesz.mr.x.core.ui.helpers.bold
 import com.palkesz.mr.x.core.util.extensions.capitalizeFirstChar
 import com.palkesz.mr.x.core.util.extensions.capitalizeWords
 import com.palkesz.mr.x.feature.games.ui.GameIcon
 import mrx.composeapp.generated.resources.Res
+import mrx.composeapp.generated.resources.expected_answer_label
+import mrx.composeapp.generated.resources.ic_correct_answer
 import mrx.composeapp.generated.resources.ic_host
 import mrx.composeapp.generated.resources.ic_player
 import mrx.composeapp.generated.resources.question_number_title
@@ -120,6 +123,22 @@ fun QuestionText(modifier: Modifier = Modifier, text: String, owner: String) {
 }
 
 @Composable
+fun ExpectedAnswerText(modifier: Modifier = Modifier, text: String, owner: String) {
+    Row(modifier = modifier, verticalAlignment = Alignment.Bottom) {
+        GameIcon(
+            isBig = false,
+            icon = vectorResource(Res.drawable.ic_player),
+        )
+        QuestionTextBubble(
+            modifier = Modifier.padding(start = 8.dp, bottom = 4.dp),
+            text = stringResource(Res.string.expected_answer_label, text.capitalizeWords()),
+            owner = owner,
+            icon = vectorResource(Res.drawable.ic_correct_answer),
+        )
+    }
+}
+
+@Composable
 fun AnswerText(
     modifier: Modifier = Modifier,
     text: String,
@@ -127,10 +146,10 @@ fun AnswerText(
     isHost: Boolean,
     icon: ImageVector? = null,
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.End,
+    BackwardsRowLayout(
+        modifier = modifier,
+        fillMaxWidth = true,
+        minChildWidth = 32.dp
     ) {
         QuestionTextBubble(
             modifier = Modifier.padding(start = 40.dp, end = 8.dp, bottom = 4.dp),
@@ -157,9 +176,9 @@ private fun QuestionTextBubble(
         shape = RoundedCornerShape(size = 12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceBright)
     ) {
-        Row(
+        BackwardsRowLayout(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.Bottom
+            minChildWidth = 28.dp,
         ) {
             Column {
                 Text(
