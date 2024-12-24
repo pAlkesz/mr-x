@@ -18,7 +18,8 @@ fun Game.getInitial() = lastName?.firstOrNull() ?: firstName.firstOrNull()
 fun Answer.getName() = "$firstName ${lastName.orEmpty()}".trim()
 
 fun Answer.isGuessed(firstName: String, lastName: String?) =
-    this.firstName.equalsAsName(firstName) && this.lastName.equalsAsName(lastName)
+    (this.firstName.equalsAsName(firstName) && this.lastName.equalsAsName(lastName)) ||
+            (this.firstName.equalsAsName(lastName) && this.lastName.equalsAsName(firstName))
 
 fun Pair<String, String>.validateAsName(gameInitial: Char?): Pair<Boolean, Boolean> {
     val isFirstNameValid = first.isNotBlank() && first.validateAsName() &&

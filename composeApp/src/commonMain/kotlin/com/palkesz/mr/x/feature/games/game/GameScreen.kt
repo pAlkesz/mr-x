@@ -31,7 +31,9 @@ import kotlinx.collections.immutable.ImmutableList
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.ask_barkochba_question_button_label
 import mrx.composeapp.generated.resources.ask_question_button_label
+import mrx.composeapp.generated.resources.no_barkochba_questions_host_message
 import mrx.composeapp.generated.resources.no_barkochba_questions_message
+import mrx.composeapp.generated.resources.no_questions_host_message
 import mrx.composeapp.generated.resources.no_questions_message
 import org.jetbrains.compose.resources.stringResource
 
@@ -88,6 +90,7 @@ private fun GameScreenContent(
                         questions = state.questions,
                         animatedQuestionId = state.animatedQuestionId,
                         isGameOngoing = state.isGameOngoing,
+                        isHost = state.isHost,
                         isAskQuestionButtonVisible = state.isAskQuestionButtonVisible,
                         onPassAsHostClicked = onPassAsHostClicked,
                         onGuessAsHostClicked = onGuessAsHostClicked,
@@ -103,6 +106,7 @@ private fun GameScreenContent(
                         questions = state.barkochbaQuestions,
                         animatedQuestionId = state.animatedBarkochbaQuestionId,
                         isGameOngoing = state.isGameOngoing,
+                        isHost = state.isHost,
                         isAskBarkochbaQuestionButtonVisible = state.isAskBarkochbaQuestionButtonVisible,
                         onAskQuestionClicked = onAskBarkochbaQuestionClicked,
                         onBarkochbaQuestionAnswered = onBarkochbaQuestionAnswered,
@@ -119,6 +123,7 @@ private fun NormalQuestionPage(
     questions: ImmutableList<QuestionItem>,
     animatedQuestionId: String?,
     isGameOngoing: Boolean,
+    isHost: Boolean,
     isAskQuestionButtonVisible: Boolean,
     onGuessAsHostClicked: (String) -> Unit,
     onPassAsHostClicked: (String) -> Unit,
@@ -135,7 +140,7 @@ private fun NormalQuestionPage(
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         modifier = Modifier.padding(horizontal = 16.dp),
-                        text = stringResource(Res.string.no_questions_message),
+                        text = stringResource(if (isHost) Res.string.no_questions_host_message else Res.string.no_questions_message),
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center,
                     )
@@ -182,6 +187,7 @@ private fun BarkochbaQuestionPage(
     questions: ImmutableList<BarkochbaItem>,
     animatedQuestionId: String?,
     isGameOngoing: Boolean,
+    isHost: Boolean,
     isAskBarkochbaQuestionButtonVisible: Boolean,
     onBarkochbaQuestionAnswered: (String, Boolean) -> Unit,
     onAskQuestionClicked: () -> Unit,
@@ -194,7 +200,7 @@ private fun BarkochbaQuestionPage(
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         modifier = Modifier.padding(horizontal = 16.dp),
-                        text = stringResource(Res.string.no_barkochba_questions_message),
+                        text = stringResource(if (isHost) Res.string.no_barkochba_questions_host_message else Res.string.no_barkochba_questions_message),
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center,
                     )
