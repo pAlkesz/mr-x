@@ -93,7 +93,17 @@ class CreateBarkochbaQuestionViewModelImpl(
         val isTextValid = questionText.value.isNotBlank()
         isQuestionTextValid.update { isTextValid }
         return if (isTextValid) {
-            updateBarkochbaQuestionUseCase.run(gameId = gameId, text = questionText.value)
+            updateBarkochbaQuestionUseCase.run(
+                gameId = gameId,
+                text = questionText.value,
+            ).onSuccess { questionId ->
+                event.update {
+                    CreateBarkochbaQuestionEvent.NavigateUp(
+                        gameId = gameId,
+                        questionId = questionId,
+                    )
+                }
+            }.map { Unit }
         } else {
             Result.success(Unit)
         }

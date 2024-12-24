@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.palkesz.mr.x.core.ui.components.animation.AnimatedLazyColumn
 import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
@@ -85,8 +84,9 @@ private fun GameScreenContent(
                 modifier = Modifier.padding(top = 16.dp),
                 normalPage = {
                     NormalQuestionPage(
-                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                        modifier = Modifier.fillMaxSize(),
                         questions = state.questions,
+                        animatedQuestionId = state.animatedQuestionId,
                         isGameOngoing = state.isGameOngoing,
                         isAskQuestionButtonVisible = state.isAskQuestionButtonVisible,
                         onPassAsHostClicked = onPassAsHostClicked,
@@ -99,8 +99,9 @@ private fun GameScreenContent(
                 },
                 barkochbaPage = {
                     BarkochbaQuestionPage(
-                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                        modifier = Modifier.fillMaxSize(),
                         questions = state.barkochbaQuestions,
+                        animatedQuestionId = state.animatedBarkochbaQuestionId,
                         isGameOngoing = state.isGameOngoing,
                         isAskBarkochbaQuestionButtonVisible = state.isAskBarkochbaQuestionButtonVisible,
                         onAskQuestionClicked = onAskBarkochbaQuestionClicked,
@@ -116,6 +117,7 @@ private fun GameScreenContent(
 private fun NormalQuestionPage(
     modifier: Modifier = Modifier,
     questions: ImmutableList<QuestionItem>,
+    animatedQuestionId: String?,
     isGameOngoing: Boolean,
     isAskQuestionButtonVisible: Boolean,
     onGuessAsHostClicked: (String) -> Unit,
@@ -132,6 +134,7 @@ private fun NormalQuestionPage(
             onConditionTrue = {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
+                        modifier = Modifier.padding(horizontal = 16.dp),
                         text = stringResource(Res.string.no_questions_message),
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center,
@@ -139,29 +142,33 @@ private fun NormalQuestionPage(
                 }
             },
             onConditionFalse = {
-                LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
-                    itemsIndexed(questions) { index, item ->
-                        QuestionItemCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .conditional(condition = questions.lastIndex != index) {
-                                    padding(bottom = 16.dp)
-                                },
-                            item = item,
-                            isGameOngoing = isGameOngoing,
-                            onPassAsHostClicked = onPassAsHostClicked,
-                            onGuessAsHostClicked = onGuessAsHostClicked,
-                            onAcceptAsOwnerClicked = onAcceptAsOwnerClicked,
-                            onDeclineAsOwnerClicked = onDeclineAsOwnerClicked,
-                            onGuessAsPlayerClicked = onGuessAsPlayerClicked,
-                        )
-                    }
+                AnimatedLazyColumn(
+                    modifier = Modifier.padding(top = 16.dp),
+                    items = questions,
+                    animatedItemKey = animatedQuestionId,
+                    getKey = { id },
+                ) { index, item ->
+                    QuestionItemCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .conditional(condition = questions.lastIndex != index) {
+                                padding(bottom = 16.dp)
+                            },
+                        item = item,
+                        isGameOngoing = isGameOngoing,
+                        onPassAsHostClicked = onPassAsHostClicked,
+                        onGuessAsHostClicked = onGuessAsHostClicked,
+                        onAcceptAsOwnerClicked = onAcceptAsOwnerClicked,
+                        onDeclineAsOwnerClicked = onDeclineAsOwnerClicked,
+                        onGuessAsPlayerClicked = onGuessAsPlayerClicked,
+                    )
                 }
             }
         )
         AnimatedVisibility(visible = isAskQuestionButtonVisible) {
             PrimaryButton(
-                modifier = Modifier.padding(top = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
                 text = stringResource(Res.string.ask_question_button_label),
                 onClick = onAskQuestionClicked,
             )
@@ -173,6 +180,7 @@ private fun NormalQuestionPage(
 private fun BarkochbaQuestionPage(
     modifier: Modifier = Modifier,
     questions: ImmutableList<BarkochbaItem>,
+    animatedQuestionId: String?,
     isGameOngoing: Boolean,
     isAskBarkochbaQuestionButtonVisible: Boolean,
     onBarkochbaQuestionAnswered: (String, Boolean) -> Unit,
@@ -185,6 +193,7 @@ private fun BarkochbaQuestionPage(
             onConditionTrue = {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
+                        modifier = Modifier.padding(horizontal = 16.dp),
                         text = stringResource(Res.string.no_barkochba_questions_message),
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center,
@@ -192,26 +201,30 @@ private fun BarkochbaQuestionPage(
                 }
             },
             onConditionFalse = {
-                LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
-                    itemsIndexed(questions) { index, item ->
-                        BarkochbaCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .conditional(condition = questions.lastIndex != index) {
-                                    padding(bottom = 16.dp)
-                                },
-                            item = item,
-                            isGameOngoing = isGameOngoing,
-                            onYesClicked = { onBarkochbaQuestionAnswered(it, true) },
-                            onNoClicked = { onBarkochbaQuestionAnswered(it, false) }
-                        )
-                    }
+                AnimatedLazyColumn(
+                    modifier = Modifier.padding(top = 16.dp),
+                    items = questions,
+                    animatedItemKey = animatedQuestionId,
+                    getKey = { id },
+                ) { index, item ->
+                    BarkochbaCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .conditional(condition = questions.lastIndex != index) {
+                                padding(bottom = 16.dp)
+                            },
+                        item = item,
+                        isGameOngoing = isGameOngoing,
+                        onYesClicked = { onBarkochbaQuestionAnswered(it, true) },
+                        onNoClicked = { onBarkochbaQuestionAnswered(it, false) }
+                    )
                 }
             }
         )
         AnimatedVisibility(visible = isAskBarkochbaQuestionButtonVisible) {
             PrimaryButton(
-                modifier = Modifier.padding(top = 16.dp),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
                 text = stringResource(Res.string.ask_barkochba_question_button_label),
                 onClick = onAskQuestionClicked,
             )

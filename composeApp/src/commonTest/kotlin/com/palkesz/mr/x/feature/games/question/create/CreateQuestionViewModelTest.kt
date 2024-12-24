@@ -5,6 +5,8 @@ import com.palkesz.mr.x.KonnectivityStub
 import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.model.game.Game
 import com.palkesz.mr.x.core.model.game.GameStatus
+import com.palkesz.mr.x.core.model.question.Question
+import com.palkesz.mr.x.core.model.question.QuestionStatus
 import com.palkesz.mr.x.core.usecase.question.CreateQuestionUseCase
 import com.palkesz.mr.x.core.util.networking.ViewState
 import dev.gitlive.firebase.firestore.Timestamp
@@ -30,7 +32,7 @@ class CreateQuestionViewModelTest : BaseTest() {
         }
         val viewModel = getViewModel(
             game = getTestGame(status = GameStatus.ONGOING),
-            createQuestionResult = Result.success(Unit),
+            createQuestionResult = Result.success(value = TEST_QUESTION),
             konnectivity = konnectivity,
         )
         assertEquals(
@@ -59,7 +61,7 @@ class CreateQuestionViewModelTest : BaseTest() {
         }
         val viewModel = getViewModel(
             game = getTestGame(status = GameStatus.FINISHED),
-            createQuestionResult = Result.success(Unit),
+            createQuestionResult = Result.success(value = TEST_QUESTION),
             konnectivity = konnectivity,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -91,7 +93,7 @@ class CreateQuestionViewModelTest : BaseTest() {
         }
         val viewModel = getViewModel(
             game = getTestGame(status = GameStatus.ONGOING),
-            createQuestionResult = Result.success(Unit),
+            createQuestionResult = Result.success(value = TEST_QUESTION),
             konnectivity = konnectivity,
         )
         assertEquals(
@@ -120,7 +122,7 @@ class CreateQuestionViewModelTest : BaseTest() {
         }
         val viewModel = getViewModel(
             game = getTestGame(status = GameStatus.ONGOING),
-            createQuestionResult = Result.success(Unit),
+            createQuestionResult = Result.success(value = TEST_QUESTION),
             konnectivity = konnectivity,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -153,7 +155,7 @@ class CreateQuestionViewModelTest : BaseTest() {
         }
         val viewModel = getViewModel(
             game = getTestGame(status = GameStatus.ONGOING),
-            createQuestionResult = Result.success(Unit),
+            createQuestionResult = Result.success(value = TEST_QUESTION),
             konnectivity = konnectivity,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -186,7 +188,7 @@ class CreateQuestionViewModelTest : BaseTest() {
         }
         val viewModel = getViewModel(
             game = getTestGame(status = GameStatus.ONGOING),
-            createQuestionResult = Result.success(Unit),
+            createQuestionResult = Result.success(value = TEST_QUESTION),
             konnectivity = konnectivity,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -219,7 +221,7 @@ class CreateQuestionViewModelTest : BaseTest() {
         }
         val viewModel = getViewModel(
             game = getTestGame(status = GameStatus.ONGOING),
-            createQuestionResult = Result.success(Unit),
+            createQuestionResult = Result.success(value = TEST_QUESTION),
             konnectivity = konnectivity,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -252,7 +254,7 @@ class CreateQuestionViewModelTest : BaseTest() {
         }
         val viewModel = getViewModel(
             game = getTestGame(status = GameStatus.ONGOING),
-            createQuestionResult = Result.success(Unit),
+            createQuestionResult = Result.success(value = TEST_QUESTION),
             konnectivity = konnectivity,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -306,7 +308,7 @@ class CreateQuestionViewModelTest : BaseTest() {
         }
         val viewModel = getViewModel(
             game = getTestGame(status = GameStatus.ONGOING),
-            createQuestionResult = Result.success(Unit),
+            createQuestionResult = Result.success(value = TEST_QUESTION),
             konnectivity = konnectivity,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -344,7 +346,7 @@ class CreateQuestionViewModelTest : BaseTest() {
         }
         val viewModel = getViewModel(
             game = getTestGame(status = GameStatus.ONGOING, lastName = TEST_LAST_NAME),
-            createQuestionResult = Result.success(Unit),
+            createQuestionResult = Result.success(value = TEST_QUESTION),
             konnectivity = konnectivity,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -366,7 +368,10 @@ class CreateQuestionViewModelTest : BaseTest() {
                     isFirstNameValid = true,
                     isLastNameValid = true,
                     isCreateButtonEnabled = true,
-                    event = CreateQuestionEvent.NavigateUp,
+                    event = CreateQuestionEvent.NavigateUp(
+                        gameId = TEST_GAME_ID,
+                        questionId = TEST_QUESTION_ID,
+                    ),
                 )
             ),
             actual = viewModel.viewState.value
@@ -424,7 +429,7 @@ class CreateQuestionViewModelTest : BaseTest() {
 
     private fun getViewModel(
         game: Game,
-        createQuestionResult: Result<Unit>,
+        createQuestionResult: Result<Question>,
         konnectivity: KonnectivityStub,
     ): CreateQuestionViewModel {
         val createQuestionUseCase = CreateQuestionUseCase { _, _, _, _ -> createQuestionResult }
@@ -440,6 +445,20 @@ class CreateQuestionViewModelTest : BaseTest() {
     }
 
     companion object {
+        private const val TEST_QUESTION_ID = "TEST_QUESTION_ID"
+        private val TEST_QUESTION = Question(
+            id = TEST_QUESTION_ID,
+            userId = "",
+            gameId = "",
+            number = 1,
+            expectedFirstName = "",
+            expectedLastName = null,
+            hostAnswer = null,
+            playerAnswer = null,
+            status = QuestionStatus.WAITING_FOR_HOST,
+            text = "",
+            lastModifiedTimestamp = Timestamp.now(),
+        )
         private const val TEST_FIRST_NAME = "John"
         private const val TEST_LAST_NAME = "Doe"
         private const val TEST_WRONG_LAST_NAME = "Smith"

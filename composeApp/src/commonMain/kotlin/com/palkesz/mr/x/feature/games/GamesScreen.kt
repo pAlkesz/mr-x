@@ -87,7 +87,7 @@ private fun GamesScreenContent(
                         items = state.games,
                         animatedItemKey = state.joinedGameId,
                         getKey = { id },
-                    ) { item ->
+                    ) { _, item ->
                         GameCard(
                             modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                             item = item,
@@ -155,7 +155,13 @@ private fun HandleEvent(event: GamesEvent?, onEventHandled: () -> Unit) {
     HandleEventEffect(event) { gameEvent, _, _, navController ->
         when (gameEvent) {
             is GamesEvent.NavigateToGame -> {
-                navController?.navigate(GameGraph.Game(id = gameEvent.id))
+                navController?.navigate(
+                    GameGraph.Game(
+                        id = gameEvent.id,
+                        addedQuestionId = null,
+                        addedBarkochbaQuestionId = null,
+                    )
+                )
             }
         }
         onEventHandled()

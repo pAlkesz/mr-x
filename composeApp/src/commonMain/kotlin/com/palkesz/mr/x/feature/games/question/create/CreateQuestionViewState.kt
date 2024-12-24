@@ -17,6 +17,6 @@ data class CreateQuestionViewState(
 @Immutable
 sealed interface CreateQuestionEvent {
 
-    data object NavigateUp : CreateQuestionEvent
+    data class NavigateUp(val gameId: String, val questionId: String) : CreateQuestionEvent
 
 }

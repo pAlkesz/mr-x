@@ -13,6 +13,6 @@ data class CreateBarkochbaQuestionViewState(
 @Immutable
 sealed interface CreateBarkochbaQuestionEvent {
 
-    data object NavigateUp : CreateBarkochbaQuestionEvent
+    data class NavigateUp(val gameId: String, val questionId: String) : CreateBarkochbaQuestionEvent
 
 }

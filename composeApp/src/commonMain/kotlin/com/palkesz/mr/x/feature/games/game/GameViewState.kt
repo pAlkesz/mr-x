@@ -27,26 +27,32 @@ data class GameViewState(
     val barkochbaQuestionCount: Int,
     val questions: ImmutableList<QuestionItem>,
     val barkochbaQuestions: ImmutableList<BarkochbaItem>,
+    val animatedQuestionId: String?,
+    val animatedBarkochbaQuestionId: String?,
     val event: GameEvent? = null,
 )
 
 @Immutable
 sealed interface QuestionItem {
 
+    val id: String
+
     data class WaitingForHostItem(
+        override val id: String,
         val text: String,
         val number: Int,
         val owner: String,
     ) : QuestionItem
 
     data class GuessAsHostItem(
-        val id: String,
+        override val id: String,
         val text: String,
         val number: Int,
         val owner: String,
     ) : QuestionItem
 
     data class WaitingForPlayersItem(
+        override val id: String,
         val text: String,
         val hostAnswer: String?,
         val hostName: String,
@@ -55,7 +61,7 @@ sealed interface QuestionItem {
     ) : QuestionItem
 
     data class GuessAsPlayerItem(
-        val id: String,
+        override val id: String,
         val text: String,
         val hostAnswer: String?,
         val hostName: String,
@@ -64,6 +70,7 @@ sealed interface QuestionItem {
     ) : QuestionItem
 
     data class WaitingForOwnerItem(
+        override val id: String,
         val text: String,
         val hostAnswer: String,
         val hostName: String,
@@ -72,7 +79,7 @@ sealed interface QuestionItem {
     ) : QuestionItem
 
     data class VerifyAsOwnerItem(
-        val id: String,
+        override val id: String,
         val text: String,
         val hostAnswer: String,
         val hostName: String,
@@ -81,6 +88,7 @@ sealed interface QuestionItem {
     ) : QuestionItem
 
     data class GuessedByPlayerItem(
+        override val id: String,
         val text: String,
         val answer: String,
         val answerOwner: String,
@@ -91,6 +99,7 @@ sealed interface QuestionItem {
     ) : QuestionItem
 
     data class MissedByPlayerItem(
+        override val id: String,
         val text: String,
         val answer: String,
         val answerOwner: String,
@@ -102,6 +111,7 @@ sealed interface QuestionItem {
     ) : QuestionItem
 
     data class GuessedByHostItem(
+        override val id: String,
         val text: String,
         val hostAnswer: String,
         val hostName: String,
@@ -110,6 +120,7 @@ sealed interface QuestionItem {
     ) : QuestionItem
 
     data class PlayersWonItem(
+        override val id: String,
         val text: String,
         val number: Int,
         val owner: String,
@@ -121,20 +132,24 @@ sealed interface QuestionItem {
 @Immutable
 sealed interface BarkochbaItem {
 
+    val id: String
+
     data class WaitingForHostItem(
+        override val id: String,
         val text: String,
         val number: Int,
         val owner: String,
     ) : BarkochbaItem
 
     data class AnswerAsHostItem(
-        val id: String,
+        override val id: String,
         val text: String,
         val number: Int,
         val owner: String,
     ) : BarkochbaItem
 
     data class AnsweredByHostItem(
+        override val id: String,
         val text: String,
         val number: Int,
         val owner: String,

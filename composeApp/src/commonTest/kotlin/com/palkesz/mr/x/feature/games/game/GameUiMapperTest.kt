@@ -120,7 +120,12 @@ class GameUiMapperTest : FunSpec({
         }
         val mapper = GameUiMapperImpl(authRepository = authRepository)
         checkAll(resultArb, eventExhaustive) { result, event ->
-            mapper.mapViewState(result = result, event = event).apply {
+            mapper.mapViewState(
+                result = result,
+                addedQuestionId = null,
+                addedBarkochbaQuestionId = null,
+                event = event
+            ).apply {
                 this.host shouldBe result.host.name.takeIf { !isHost }
                 this.event shouldBe event
                 firstName shouldBe result.game.firstName

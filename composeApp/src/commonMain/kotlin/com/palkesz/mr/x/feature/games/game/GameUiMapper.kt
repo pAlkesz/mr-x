@@ -12,14 +12,24 @@ import mrx.composeapp.generated.resources.own_name_label
 import org.jetbrains.compose.resources.getString
 
 fun interface GameUiMapper {
-    suspend fun mapViewState(result: GameResult, event: GameEvent?): GameViewState
+    suspend fun mapViewState(
+        result: GameResult,
+        addedQuestionId: String?,
+        addedBarkochbaQuestionId: String?,
+        event: GameEvent?
+    ): GameViewState
 }
 
 class GameUiMapperImpl(
     private val authRepository: AuthRepository,
 ) : GameUiMapper {
 
-    override suspend fun mapViewState(result: GameResult, event: GameEvent?): GameViewState {
+    override suspend fun mapViewState(
+        result: GameResult,
+        addedQuestionId: String?,
+        addedBarkochbaQuestionId: String?,
+        event: GameEvent?
+    ): GameViewState {
         val isHost = authRepository.userId == result.game.hostId
         val isGameOngoing = result.game.status == GameStatus.ONGOING
         val hostName = result.getHostName(isHost = isHost)
@@ -34,6 +44,8 @@ class GameUiMapperImpl(
             barkochbaQuestionCount = result.getBarkochbaQuestionCount(),
             questions = result.mapQuestions(isHost = isHost, hostName = hostName),
             barkochbaQuestions = result.mapBarkochbaQuestions(isHost = isHost, hostName = hostName),
+            animatedQuestionId = addedQuestionId,
+            animatedBarkochbaQuestionId = addedBarkochbaQuestionId,
             event = event,
         )
     }
@@ -72,6 +84,7 @@ class GameUiMapperImpl(
 
                 question.status == QuestionStatus.WAITING_FOR_HOST -> {
                     QuestionItem.WaitingForHostItem(
+                        id = question.id,
                         text = question.text,
                         number = question.number,
                         owner = getOwner(id = question.userId),
@@ -80,6 +93,7 @@ class GameUiMapperImpl(
 
                 question.status == QuestionStatus.WAITING_FOR_PLAYERS && (isHost || question.userId == authRepository.userId) -> {
                     QuestionItem.WaitingForPlayersItem(
+                        id = question.id,
                         text = question.text,
                         hostAnswer = question.hostAnswer?.getName(),
                         hostName = hostName,
@@ -101,6 +115,7 @@ class GameUiMapperImpl(
 
                 question.status == QuestionStatus.PLAYERS_WON -> {
                     QuestionItem.PlayersWonItem(
+                        id = question.id,
                         text = question.text,
                         number = question.number,
                         owner = getOwner(id = question.userId),
@@ -110,6 +125,7 @@ class GameUiMapperImpl(
 
                 question.status == QuestionStatus.GUESSED_BY_HOST -> {
                     QuestionItem.GuessedByHostItem(
+                        id = question.id,
                         text = question.text,
                         hostAnswer = question.hostAnswer?.getName().orEmpty(),
                         hostName = hostName,
@@ -131,6 +147,7 @@ class GameUiMapperImpl(
 
                 question.status == QuestionStatus.WAITING_FOR_OWNER -> {
                     QuestionItem.WaitingForOwnerItem(
+                        id = question.id,
                         text = question.text,
                         hostAnswer = question.hostAnswer?.getName().orEmpty(),
                         hostName = hostName,
@@ -141,6 +158,7 @@ class GameUiMapperImpl(
 
                 question.status == QuestionStatus.GUESSED_BY_PLAYER -> {
                     QuestionItem.GuessedByPlayerItem(
+                        id = question.id,
                         text = question.text,
                         answer = question.playerAnswer?.getName().orEmpty(),
                         answerOwner = question.playerAnswer?.userId?.let { id ->
@@ -155,6 +173,7 @@ class GameUiMapperImpl(
 
                 else -> {
                     QuestionItem.MissedByPlayerItem(
+                        id = question.id,
                         text = question.text,
                         answer = question.playerAnswer?.getName().orEmpty(),
                         answerOwner = question.playerAnswer?.userId?.let { id ->
@@ -184,6 +203,7 @@ class GameUiMapperImpl(
 
                 question.status == BarkochbaStatus.ASKED -> {
                     BarkochbaItem.WaitingForHostItem(
+                        id = question.id,
                         text = question.text,
                         number = question.number,
                         owner = getOwner(id = question.userId),
@@ -192,6 +212,7 @@ class GameUiMapperImpl(
 
                 question.status == BarkochbaStatus.ANSWERED -> {
                     BarkochbaItem.AnsweredByHostItem(
+                        id = question.id,
                         text = question.text,
                         number = question.number,
                         owner = getOwner(id = question.userId),

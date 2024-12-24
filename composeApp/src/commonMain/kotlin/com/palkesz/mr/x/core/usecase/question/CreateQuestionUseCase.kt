@@ -17,7 +17,7 @@ fun interface CreateQuestionUseCase {
         firstName: String,
         lastName: String?,
         gameId: String,
-    ): Result<Unit>
+    ): Result<Question>
 }
 
 class CreateQuestionUseCaseImpl(

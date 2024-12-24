@@ -2,6 +2,7 @@ package com.palkesz.mr.x.feature.games.question.barkochba
 
 import com.palkesz.mr.x.core.usecase.question.CreateBarkochbaQuestionUseCase
 import com.palkesz.mr.x.core.usecase.question.UpdateBarkochbaQuestionUseCase
+import com.palkesz.mr.x.core.usecase.question.UpdateBarkochbaQuestionUseCaseImpl
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.bind
@@ -12,5 +13,5 @@ val createBarkochbaQuestionModule = module {
         CreateBarkochbaQuestionViewModelImpl(parameters.get(), get(), get(), get())
     } bind CreateBarkochbaQuestionViewModel::class
     factoryOf(::CreateBarkochbaQuestionUseCase)
-    factoryOf(::UpdateBarkochbaQuestionUseCase)
+    factoryOf(::UpdateBarkochbaQuestionUseCaseImpl) bind UpdateBarkochbaQuestionUseCase::class
 }

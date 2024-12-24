@@ -4,12 +4,16 @@ import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
 import com.palkesz.mr.x.core.model.question.BarkochbaStatus
 
-class UpdateBarkochbaQuestionUseCase(
+fun interface UpdateBarkochbaQuestionUseCase {
+    suspend fun run(gameId: String, text: String): Result<String>
+}
+
+class UpdateBarkochbaQuestionUseCaseImpl(
     private val authRepository: AuthRepository,
     private val barkochbaQuestionRepository: BarkochbaQuestionRepository,
-) {
+) : UpdateBarkochbaQuestionUseCase {
 
-    suspend fun run(gameId: String, text: String): Result<Unit> {
+    override suspend fun run(gameId: String, text: String): Result<String> {
         val question = barkochbaQuestionRepository.questions.value.filter { question ->
             question.gameId == gameId && question.userId == authRepository.userId && question.status == BarkochbaStatus.IN_STORE
         }.minByOrNull { question ->

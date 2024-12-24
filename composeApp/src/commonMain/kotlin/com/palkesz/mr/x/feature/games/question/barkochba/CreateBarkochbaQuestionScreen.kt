@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
@@ -19,6 +20,7 @@ import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
 import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.feature.games.GameGraph
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.ask_question_button_label
 import mrx.composeapp.generated.resources.create_barkochba_question_screen_title
@@ -78,10 +80,18 @@ private fun CreateBarkochbaQuestionScreenContent(
 
 @Composable
 private fun HandleEvent(event: CreateBarkochbaQuestionEvent?, onEventHandled: () -> Unit) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     HandleEventEffect(event) { createEvent, _, _, navController ->
         when (createEvent) {
             is CreateBarkochbaQuestionEvent.NavigateUp -> {
-                navController?.popBackStack()
+                keyboardController?.hide()
+                navController?.navigate(
+                    route = GameGraph.Game(
+                        id = createEvent.gameId,
+                        addedQuestionId = null,
+                        addedBarkochbaQuestionId = createEvent.questionId,
+                    )
+                )
             }
         }
         onEventHandled()

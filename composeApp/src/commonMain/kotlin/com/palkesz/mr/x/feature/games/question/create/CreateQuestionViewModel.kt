@@ -144,9 +144,14 @@ class CreateQuestionViewModelImpl(
                 firstName = expectedFirstName.value,
                 lastName = expectedLastName.value.takeIf { it.isNotBlank() },
                 gameId = gameId,
-            ).onSuccess {
-                event.update { CreateQuestionEvent.NavigateUp }
-            }
+            ).onSuccess { question ->
+                event.update {
+                    CreateQuestionEvent.NavigateUp(
+                        gameId = gameId,
+                        questionId = question.id
+                    )
+                }
+            }.map { Unit }
         } else {
             Result.success(Unit)
         }

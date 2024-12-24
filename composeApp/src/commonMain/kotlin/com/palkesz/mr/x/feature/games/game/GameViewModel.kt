@@ -39,6 +39,8 @@ interface GameViewModel {
 @Stable
 class GameViewModelImpl(
     private val gameId: String,
+    private val addedQuestionId: String?,
+    private val addedBarkochbaQuestionId: String?,
     private val fetchGameResultUseCase: FetchGameResultUseCase,
     private val observeGameResultUseCase: ObserveGameResultUseCase,
     private val gameUiMapper: GameUiMapper,
@@ -62,7 +64,12 @@ class GameViewModelImpl(
 
     override val viewState = combine(loadingResult, event) { result, event ->
         result.map { gameResult ->
-            gameUiMapper.mapViewState(result = gameResult, event = event)
+            gameUiMapper.mapViewState(
+                result = gameResult,
+                addedQuestionId = addedQuestionId,
+                addedBarkochbaQuestionId = addedBarkochbaQuestionId,
+                event = event,
+            )
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ViewState.Loading)
 

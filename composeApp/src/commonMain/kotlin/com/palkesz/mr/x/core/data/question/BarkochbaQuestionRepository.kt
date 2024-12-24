@@ -24,7 +24,7 @@ interface BarkochbaQuestionRepository {
     suspend fun fetchQuestions(gameId: String): Result<List<BarkochbaQuestion>>
     suspend fun fetchQuestions(gameIds: List<String>): Result<List<BarkochbaQuestion>>
     suspend fun createQuestion(question: BarkochbaQuestion): Result<Unit>
-    suspend fun updateText(id: String, text: String): Result<Unit>
+    suspend fun updateText(id: String, text: String): Result<String>
     suspend fun updateAnswer(id: String, answer: Boolean): Result<Unit>
     suspend fun observeQuestions()
 
@@ -41,7 +41,7 @@ interface BarkochbaQuestionRepository {
         override suspend fun createQuestion(question: BarkochbaQuestion): Result<Unit> =
             throw NotImplementedError()
 
-        override suspend fun updateText(id: String, text: String): Result<Unit> =
+        override suspend fun updateText(id: String, text: String): Result<String> =
             throw NotImplementedError()
 
         override suspend fun updateAnswer(id: String, answer: Boolean): Result<Unit> =
@@ -102,7 +102,7 @@ class BarkochbaQuestionRepositoryImpl(
             Pair(STATUS_FIELD_KEY, BarkochbaStatus.ASKED),
             Pair(LAST_MODIFIED_FIELD_KEY, Timestamp.now())
         )
-        Result.success(Unit)
+        Result.success(value = id)
     } catch (exception: Exception) {
         Result.failure(exception = exception)
     }

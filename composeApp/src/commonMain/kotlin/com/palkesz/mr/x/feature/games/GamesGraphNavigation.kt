@@ -35,7 +35,7 @@ fun NavGraphBuilder.gamesGraphNavigation() {
         composable<GameGraph.Game> { backStackEntry ->
             val game = backStackEntry.toRoute<GameGraph.Game>()
             GameScreen(viewModel = koinViewModel<GameViewModelImpl>(parameters = {
-                parameterSetOf(game.id)
+                parameterSetOf(game.id, game.addedQuestionId, game.addedBarkochbaQuestionId)
             }))
         }
         composable<GameGraph.QrCode> { backStackEntry ->
@@ -79,7 +79,11 @@ sealed interface GameGraph {
     data class Games(val joinedGameId: String?) : GameGraph
 
     @Serializable
-    data class Game(val id: String) : GameGraph
+    data class Game(
+        val id: String,
+        val addedQuestionId: String?,
+        val addedBarkochbaQuestionId: String?,
+    ) : GameGraph
 
     @Serializable
     data class QrCode(val id: String) : GameGraph

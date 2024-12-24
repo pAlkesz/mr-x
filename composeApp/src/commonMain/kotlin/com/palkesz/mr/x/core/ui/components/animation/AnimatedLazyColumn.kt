@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListLayoutInfo
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,7 +28,7 @@ fun <T> AnimatedLazyColumn(
     items: ImmutableList<T>,
     animatedItemKey: String?,
     getKey: T.() -> String,
-    listItem: @Composable (T) -> Unit,
+    listItem: @Composable (Int, T) -> Unit,
 ) {
     var isAnimationDone by rememberSaveable(key = animatedItemKey) { mutableStateOf(value = false) }
     val state = rememberLazyListState()
@@ -42,9 +42,9 @@ fun <T> AnimatedLazyColumn(
         state.scrollToItem(index = 0)
     }
     LazyColumn(modifier = modifier, state = state) {
-        items(
+        itemsIndexed(
             items = items.filter { it.getKey() != animatedItemKey || isAnimationDone },
-            key = { it.getKey() }) { item ->
+            key = { _, item -> item.getKey() }) { index, item ->
             Box(
                 modifier = Modifier
                     .animateItem(fadeInSpec = tween(durationMillis = ANIMATION_LENGTH))
@@ -53,7 +53,7 @@ fun <T> AnimatedLazyColumn(
                     }
                     .alpha(alpha = state.layoutInfo.getItemAlpha(key = item.getKey())),
             ) {
-                listItem(item)
+                listItem(index, item)
             }
         }
     }

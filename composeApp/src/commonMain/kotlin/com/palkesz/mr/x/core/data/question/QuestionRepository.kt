@@ -24,7 +24,7 @@ interface QuestionRepository {
 
     suspend fun fetchQuestions(gameId: String): Result<List<Question>>
     suspend fun fetchQuestions(gameIds: List<String>): Result<List<Question>>
-    suspend fun createQuestion(question: Question): Result<Unit>
+    suspend fun createQuestion(question: Question): Result<Question>
     suspend fun updateHostAnswer(id: String, answer: Answer, status: QuestionStatus): Result<Unit>
     suspend fun updatePlayerAnswer(id: String, answer: Answer, status: QuestionStatus): Result<Unit>
     suspend fun updateStatus(id: String, status: QuestionStatus): Result<Unit>
@@ -41,7 +41,7 @@ interface QuestionRepository {
         override suspend fun fetchQuestions(gameIds: List<String>): Result<List<Question>> =
             throw NotImplementedError()
 
-        override suspend fun createQuestion(question: Question): Result<Unit> =
+        override suspend fun createQuestion(question: Question): Result<Question> =
             throw NotImplementedError()
 
         override suspend fun updateHostAnswer(
@@ -110,7 +110,7 @@ class QuestionRepositoryImpl(
             (listOf(question) + cachedQuestions).distinctBy { it.id }
                 .sortedByDescending { it.lastModifiedTimestamp.seconds }
         }
-        Result.success(Unit)
+        Result.success(value = question)
     } catch (exception: Exception) {
         Result.failure(exception = exception)
     }

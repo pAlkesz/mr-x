@@ -8,6 +8,7 @@ import com.palkesz.mr.x.core.data.question.QuestionRepository
 import com.palkesz.mr.x.core.model.game.Game
 import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.model.question.Question
+import com.palkesz.mr.x.core.model.question.QuestionStatus
 import dev.gitlive.firebase.firestore.Timestamp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
@@ -47,7 +48,7 @@ class CreateQuestionUseCaseTest : BaseTest() {
         }
         val useCase = getUseCase(gameRepository = gameRepository)
         assertEquals(
-            expected = Result.success(Unit),
+            expected = Result.success(value = TEST_QUESTION),
             actual = useCase.run(text = "", lastName = "", firstName = "", gameId = TEST_GAME_ID)
         )
     }
@@ -148,7 +149,7 @@ class CreateQuestionUseCaseTest : BaseTest() {
 
     private fun getUseCase(
         userId: String? = TEST_USER_ID,
-        createQuestionResult: Result<Unit> = Result.success(Unit),
+        createQuestionResult: Result<Question> = Result.success(value = TEST_QUESTION),
         gameRepository: GameRepository = object : GameRepository.Stub {
             override val games = MutableStateFlow<List<Game>>(emptyList())
 
@@ -172,6 +173,20 @@ class CreateQuestionUseCaseTest : BaseTest() {
     }
 
     companion object {
+        private const val TEST_QUESTION_ID = "TEST_QUESTION_ID"
+        private val TEST_QUESTION = Question(
+            id = TEST_QUESTION_ID,
+            userId = "",
+            gameId = "",
+            number = 1,
+            expectedFirstName = "",
+            expectedLastName = null,
+            hostAnswer = null,
+            playerAnswer = null,
+            status = QuestionStatus.WAITING_FOR_HOST,
+            text = "",
+            lastModifiedTimestamp = Timestamp.now(),
+        )
         private const val TEST_USER_ID = "TEST_USER_ID"
         private const val TEST_GAME_ID = "TEST_GAME_ID"
         private const val TEST_FIRST_NAME = "Kovács"
