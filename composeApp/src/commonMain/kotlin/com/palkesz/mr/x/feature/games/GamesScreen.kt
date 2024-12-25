@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.model.game.GameStatus
@@ -28,6 +29,7 @@ import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroun
 import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.ui.helpers.bold
+import com.palkesz.mr.x.core.ui.modifiers.conditional
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.feature.games.ui.GameIcon
 import com.palkesz.mr.x.feature.games.ui.GameQuestionChip
@@ -62,7 +64,7 @@ private fun GamesScreenContent(
 ) {
     ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onRetry) { state ->
         HandleEvent(event = state.event, onEventHandled = onEventHandled)
-        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+        Column {
             CenteredTitleBar(
                 title = stringResource(Res.string.games_screen_title),
                 navigationIcon = null,
@@ -87,9 +89,13 @@ private fun GamesScreenContent(
                         items = state.games,
                         animatedItemKey = state.joinedGameId,
                         getKey = { id },
-                    ) { _, item ->
+                    ) { index, item ->
                         GameCard(
-                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .conditional(condition = index != state.games.lastIndex) {
+                                    padding(bottom = 16.dp)
+                                },
                             item = item,
                             onClick = onGameClicked,
                         )
@@ -132,6 +138,8 @@ private fun GameCard(modifier: Modifier = Modifier, item: GameItem, onClick: (St
                     Text(
                         text = stringResource(Res.string.game_host_label, name),
                         style = MaterialTheme.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }

@@ -18,6 +18,7 @@ import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.titlebar.NavigationIcon
 import com.palkesz.mr.x.core.ui.helpers.bold
 import com.palkesz.mr.x.core.util.extensions.capitalizeWords
+import com.palkesz.mr.x.feature.games.GameGraph
 import com.palkesz.mr.x.feature.games.ui.GameIcon
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.game_host_label
@@ -41,7 +42,9 @@ fun GameTitleBar(
 ) {
     var isFullNameVisible by rememberSaveable { mutableStateOf(value = false) }
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        NavigationIcon(navigationAction = { it?.popBackStack() })
+        NavigationIcon(navigationAction = { navController ->
+            navController?.navigate(route = GameGraph.Games(joinedGameId = null))
+        })
         GameIcon(
             modifier = Modifier.padding(start = 8.dp, end = 16.dp),
             icon = vectorResource(if (isHost) Res.drawable.ic_host else Res.drawable.ic_player),
