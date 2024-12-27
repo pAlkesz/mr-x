@@ -19,8 +19,54 @@ fun String.capitalizeWords(): String = split(" ").joinToString(" ") { word ->
 fun String.capitalizeFirstChar(): String =
     replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
 
-fun String?.equalsAsName(other: String?) = this?.trim()?.normalize()
-    .equals(other?.trim()?.normalize(), ignoreCase = true)
-
 fun String.normalize() =
     normalize(Form.NFD).replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
+
+fun String?.equalsAsName(other: String?) =
+    this?.trim()?.normalize().isSimilar(other?.trim()?.normalize())
+
+fun String?.isSimilar(other: String?): Boolean {
+    if (equals(other = other, ignoreCase = true)) {
+        return true
+    }
+    safeLet(
+        p1 = this?.takeIf { it.isNotBlank() }?.lowercase()?.toCharArray(),
+        p2 = other?.takeIf { it.isNotBlank() }?.lowercase()?.toCharArray(),
+    ) { first, second ->
+        return when {
+            first.size == second.size -> {
+                first.isLessThanTwoReplaceAway(other = second)
+            }
+
+            first.size - 2 == second.size || first.size - 1 == second.size -> {
+                first.isLessThanTwoInsertAway(other = second)
+            }
+
+            second.size - 2 == first.size || second.size - 1 == first.size -> {
+                second.isLessThanTwoInsertAway(other = first)
+            }
+
+            else -> false
+        }
+    } ?: return true
+}
+
+fun CharArray.isLessThanTwoReplaceAway(other: CharArray): Boolean {
+    var diffCount = 0
+    forEachIndexed { index, char ->
+        if (char != other[index]) {
+            diffCount += 1
+        }
+    }
+    return diffCount <= 2
+}
+
+fun CharArray.isLessThanTwoInsertAway(other: CharArray): Boolean {
+    var diffCount = 0
+    other.forEachIndexed { index, char ->
+        if (this.getOrNull(index = index + diffCount) != char) {
+            diffCount += 1
+        }
+    }
+    return diffCount <= 2
+}

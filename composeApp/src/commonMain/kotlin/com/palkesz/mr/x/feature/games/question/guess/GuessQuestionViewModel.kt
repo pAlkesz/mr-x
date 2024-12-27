@@ -141,7 +141,7 @@ class GuessQuestionViewModelImpl(
             guessQuestionUseCase.run(
                 questionId = questionId,
                 firstName = firstName.value,
-                lastName = lastName.value,
+                lastName = lastName.value.takeIf { it.isNotBlank() },
             ).onSuccess {
                 event.update { GuessQuestionEvent.NavigateUp }
             }

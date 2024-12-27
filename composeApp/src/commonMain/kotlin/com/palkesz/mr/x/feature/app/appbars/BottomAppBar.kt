@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -93,13 +94,14 @@ private fun NavigationBarItem(currentDestination: NavDestination?, route: Any, i
     )
     Box(
         modifier = Modifier
-            .size(48.dp)
+            .size(size = 48.dp)
+            .clip(shape = CircleShape)
             .debouncedClickable(enabled = !isSelected) { navController?.navigate(route) }
             .background(color = backgroundColor, shape = CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier.size(size = 32.dp),
             imageVector = icon,
             contentDescription = null,
             tint = iconColor,

@@ -134,7 +134,7 @@ class GameRepositoryImpl(
     private fun getGamesQuery(playerId: String) = firestore.collection(GAMES_COLLECTION_KEY).where {
         any(HOST_FIELD_KEY equalTo playerId, PLAYERS_FIELD_KEY contains playerId)?.and(
             LAST_MODIFIED_FIELD_KEY greaterThan Timestamp.fromDuration(
-                duration = Timestamp.now().toDuration() - 7.days
+                duration = Timestamp.now().toDuration() - 30.days
             )
         )
     }.orderBy(LAST_MODIFIED_FIELD_KEY, direction = Direction.DESCENDING).limit(GAMES_FETCH_LIMIT)
