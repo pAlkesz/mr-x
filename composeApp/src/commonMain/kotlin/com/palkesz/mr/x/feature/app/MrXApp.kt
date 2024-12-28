@@ -19,6 +19,7 @@ import com.palkesz.mr.x.core.ui.providers.LocalAppScope
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.feature.app.appbars.MrXBottomAppBar
+import com.palkesz.mr.x.feature.app.appbars.MrXTopAppBar
 import com.palkesz.mr.x.feature.app.appbars.OfflineAppBar
 import com.palkesz.mr.x.feature.authentication.authGraphNavigation
 import com.palkesz.mr.x.feature.games.GameGraph
@@ -47,6 +48,7 @@ private fun MrXAppContent(state: AppViewState, onEventHandled: () -> Unit) {
         Scaffold(
             modifier = Modifier.imePadding(),
             snackbarHost = { SnackbarHost(hostState = LocalSnackBarHostState.current) },
+            topBar = { MrXTopAppBar() },
             bottomBar = { MrXBottomAppBar() },
         ) { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding)) {

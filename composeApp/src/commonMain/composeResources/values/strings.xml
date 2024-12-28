@@ -22,6 +22,8 @@
     <string name="game_host_label">By %1$s</string>
     <string name="expected_answer_label">Expected answer: %1$s</string>
     <string name="games_screen_title">My Games</string>
+    <string name="game_screen_title_placeholder">Game details</string>
+    <string name="join_screen_title">Scan a QR code</string>
     <string name="answer_question_button_label">Guess</string>
     <string name="pass_button_label">Pass</string>
     <string name="answer_button_label">Answer</string>

@@ -23,7 +23,6 @@ interface JoinGameViewModel {
     val viewState: StateFlow<ViewState<JoinGameViewState>>
 
     fun onQrCodeScanned(url: String)
-    fun onBackPressed()
     fun onRetry()
     fun onEventHandled()
 }
@@ -63,10 +62,6 @@ class JoinGameViewModelImpl(
         viewModelScope.launch {
             refreshTrigger.refresh()
         }
-    }
-
-    override fun onBackPressed() {
-        event.update { JoinGameEvent.NavigateToHome }
     }
 
     override fun onRetry() {

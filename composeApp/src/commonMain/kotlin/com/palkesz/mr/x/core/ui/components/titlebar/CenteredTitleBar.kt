@@ -1,6 +1,5 @@
 package com.palkesz.mr.x.core.ui.components.titlebar
 
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -31,7 +30,6 @@ fun CenteredTitleBar(
         navigationIcon = {
             NavigationIcon(iconVector = navigationIcon, navigationAction = navigationAction)
         },
-        windowInsets = WindowInsets(left = 0, top =  0, right =  0, bottom =  0)
     )
 }
 

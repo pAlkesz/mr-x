@@ -25,9 +25,10 @@ import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
 import com.palkesz.mr.x.core.ui.components.input.PrimaryTextField
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
-import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
+import com.palkesz.mr.x.core.ui.effects.TitleBarEffect
 import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.feature.app.appbars.titlebarstate.TitleBarDetails
 import com.palkesz.mr.x.feature.games.game.ui.AnswerText
 import com.palkesz.mr.x.feature.games.game.ui.QuestionText
 import mrx.composeapp.generated.resources.Res
@@ -62,51 +63,53 @@ private fun GuessQuestionScreenContent(
     onAnswerClicked: () -> Unit,
     onEventHandled: () -> Unit,
 ) {
+    TitleBarEffect(
+        details = TitleBarDetails.CenteredTitleBarDetails(
+            title = stringResource(Res.string.guess_question_screen_title)
+        )
+    )
     ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onAnswerClicked) { state ->
         HandleEvent(event = state.event, onEventHandled = onEventHandled)
-        Column {
-            CenteredTitleBar(title = stringResource(Res.string.guess_question_screen_title))
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                QuestionDetails(
-                    text = state.questionText,
-                    hostAnswer = state.hostAnswer,
-                    hostName = state.hostName,
-                    number = state.number,
-                    owner = state.owner,
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            QuestionDetails(
+                text = state.questionText,
+                hostAnswer = state.hostAnswer,
+                hostName = state.hostName,
+                number = state.number,
+                owner = state.owner,
+            )
+            Row(modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)) {
+                PrimaryTextField(
+                    modifier = Modifier.padding(end = 16.dp).weight(1f),
+                    value = state.firstName,
+                    onValueChanged = onFirstNameChanged,
+                    isValueValid = state.isFirstNameValid,
+                    label = stringResource(Res.string.first_name_input_label),
+                    error = stringResource(Res.string.question_first_name_error_message),
+                    showKeyboard = true,
                 )
-                Row(modifier = Modifier.padding(top = 32.dp, bottom = 16.dp)) {
-                    PrimaryTextField(
-                        modifier = Modifier.padding(end = 16.dp).weight(1f),
-                        value = state.firstName,
-                        onValueChanged = onFirstNameChanged,
-                        isValueValid = state.isFirstNameValid,
-                        label = stringResource(Res.string.first_name_input_label),
-                        error = stringResource(Res.string.question_first_name_error_message),
-                        showKeyboard = true,
-                    )
-                    PrimaryTextField(
-                        modifier = Modifier.weight(1f),
-                        value = state.lastName,
-                        onValueChanged = onLastNameChanged,
-                        isValueValid = state.isLastNameValid,
-                        label = stringResource(Res.string.expected_last_name_input_label),
-                        error = stringResource(Res.string.question_last_name_error_message),
-                        showKeyboard = false,
-                    )
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                PrimaryButton(
-                    onClick = onAnswerClicked,
-                    enabled = state.isAnswerButtonEnabled,
-                    text = stringResource(Res.string.answer_question_button_label),
+                PrimaryTextField(
+                    modifier = Modifier.weight(1f),
+                    value = state.lastName,
+                    onValueChanged = onLastNameChanged,
+                    isValueValid = state.isLastNameValid,
+                    label = stringResource(Res.string.expected_last_name_input_label),
+                    error = stringResource(Res.string.question_last_name_error_message),
+                    showKeyboard = false,
                 )
             }
+            Spacer(modifier = Modifier.weight(1f))
+            PrimaryButton(
+                onClick = onAnswerClicked,
+                enabled = state.isAnswerButtonEnabled,
+                text = stringResource(Res.string.answer_question_button_label),
+            )
         }
     }
 }

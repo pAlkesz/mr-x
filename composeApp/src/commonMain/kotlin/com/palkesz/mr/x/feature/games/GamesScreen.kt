@@ -26,11 +26,12 @@ import com.palkesz.mr.x.core.ui.components.animation.AnimatedLazyColumn
 import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
-import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
+import com.palkesz.mr.x.core.ui.effects.TitleBarEffect
 import com.palkesz.mr.x.core.ui.helpers.bold
 import com.palkesz.mr.x.core.ui.modifiers.conditional
 import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.feature.app.appbars.titlebarstate.TitleBarDetails
 import com.palkesz.mr.x.feature.games.ui.GameIcon
 import com.palkesz.mr.x.feature.games.ui.GameQuestionChip
 import mrx.composeapp.generated.resources.Res
@@ -62,47 +63,47 @@ private fun GamesScreenContent(
     onGameClicked: (String) -> Unit,
     onEventHandled: () -> Unit,
 ) {
+    TitleBarEffect(
+        details = TitleBarDetails.CenteredTitleBarDetails(
+            title = stringResource(Res.string.games_screen_title),
+            navigationIcon = null,
+        )
+    )
     ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onRetry) { state ->
         HandleEvent(event = state.event, onEventHandled = onEventHandled)
-        Column {
-            CenteredTitleBar(
-                title = stringResource(Res.string.games_screen_title),
-                navigationIcon = null,
-            )
-            CrossFade(
-                condition = state.games.isEmpty(),
-                onConditionTrue = {
-                    Box(
-                        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.no_games_message),
-                            style = MaterialTheme.typography.bodyLarge,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                },
-                onConditionFalse = {
-                    AnimatedLazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        items = state.games,
-                        animatedItemKey = state.joinedGameId,
-                        getKey = { id },
-                    ) { index, item ->
-                        GameCard(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp)
-                                .conditional(condition = index != state.games.lastIndex) {
-                                    padding(bottom = 16.dp)
-                                },
-                            item = item,
-                            onClick = onGameClicked,
-                        )
-                    }
+        CrossFade(
+            condition = state.games.isEmpty(),
+            onConditionTrue = {
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = stringResource(Res.string.no_games_message),
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                    )
                 }
-            )
-        }
+            },
+            onConditionFalse = {
+                AnimatedLazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    items = state.games,
+                    animatedItemKey = state.joinedGameId,
+                    getKey = { id },
+                ) { index, item ->
+                    GameCard(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .conditional(condition = index != state.games.lastIndex) {
+                                padding(bottom = 16.dp)
+                            },
+                        item = item,
+                        onClick = onGameClicked,
+                    )
+                }
+            }
+        )
     }
 }
 

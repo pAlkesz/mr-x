@@ -19,8 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.palkesz.mr.x.core.ui.components.button.PrimaryCardButton
 import com.palkesz.mr.x.core.ui.components.button.SecondaryCardButton
-import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
+import com.palkesz.mr.x.core.ui.effects.TitleBarEffect
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
+import com.palkesz.mr.x.feature.app.appbars.titlebarstate.TitleBarDetails
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.create_game_button_label
 import mrx.composeapp.generated.resources.create_game_description
@@ -37,47 +38,50 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun HomeScreen() {
     val navController = LocalNavController.current
-    Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        CenteredTitleBar(
+    TitleBarEffect(
+        details = TitleBarDetails.CenteredTitleBarDetails(
             title = stringResource(Res.string.home_screen_title),
             navigationIcon = null,
         )
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            HomeScreenCard(
-                modifier = Modifier.padding(bottom = 16.dp),
-                title = stringResource(Res.string.create_game_title),
-                text = stringResource(Res.string.create_game_description),
-                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-            ) {
-                PrimaryCardButton(
-                    text = stringResource(Res.string.create_game_button_label),
-                    onClick = { navController?.navigate(HomeGraph.CreateGame) },
-                )
-            }
-            HomeScreenCard(
-                modifier = Modifier.padding(bottom = 16.dp),
-                title = stringResource(Res.string.join_game_title),
-                text = stringResource(Res.string.join_game_description),
-                backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-            ) {
-                PrimaryCardButton(
-                    text = stringResource(Res.string.join_game_button_label),
-                    onClick = { navController?.navigate(HomeGraph.JoinGame) },
-                )
-            }
-            HomeScreenCard(
-                title = stringResource(Res.string.tutorial_title),
-                text = stringResource(Res.string.tutorial_description),
-                backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
-            ) {
-                SecondaryCardButton(
-                    text = stringResource(Res.string.tutorial_button_label),
-                    onClick = { navController?.navigate(HomeGraph.Tutorial) },
-                )
-            }
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        HomeScreenCard(
+            modifier = Modifier.padding(bottom = 16.dp),
+            title = stringResource(Res.string.create_game_title),
+            text = stringResource(Res.string.create_game_description),
+            backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+        ) {
+            PrimaryCardButton(
+                text = stringResource(Res.string.create_game_button_label),
+                onClick = { navController?.navigate(HomeGraph.CreateGame) },
+            )
+        }
+        HomeScreenCard(
+            modifier = Modifier.padding(bottom = 16.dp),
+            title = stringResource(Res.string.join_game_title),
+            text = stringResource(Res.string.join_game_description),
+            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+        ) {
+            PrimaryCardButton(
+                text = stringResource(Res.string.join_game_button_label),
+                onClick = { navController?.navigate(HomeGraph.JoinGame) },
+            )
+        }
+        HomeScreenCard(
+            title = stringResource(Res.string.tutorial_title),
+            text = stringResource(Res.string.tutorial_description),
+            backgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
+        ) {
+            SecondaryCardButton(
+                text = stringResource(Res.string.tutorial_button_label),
+                onClick = { navController?.navigate(HomeGraph.Tutorial) },
+            )
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.palkesz.mr.x.core.util.networking
 
+import com.palkesz.mr.x.core.util.extensions.asInstance
+
 sealed interface ViewState<out T> {
 
     val isLoading: Boolean
@@ -16,6 +18,8 @@ sealed interface ViewState<out T> {
     data class Failure(override val isLoading: Boolean = false) : ViewState<Nothing>
 
 }
+
+fun <T> ViewState<T>.getOrNull(): T? = asInstance<ViewState.Success<T>>()?.data
 
 fun <T> ViewState<T>.toLoading() = when (this) {
     is ViewState.Loading -> this

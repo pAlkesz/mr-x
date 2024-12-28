@@ -45,10 +45,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
-import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
+import com.palkesz.mr.x.core.ui.effects.TitleBarEffect
 import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
 import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.feature.app.appbars.titlebarstate.TitleBarDetails
 import com.palkesz.mr.x.feature.games.game.ui.AnswerText
 import com.palkesz.mr.x.feature.games.game.ui.ExpectedAnswerText
 import com.palkesz.mr.x.feature.games.game.ui.QuestionText
@@ -79,35 +80,37 @@ private fun SpecifyQuestionScreenContent(
     onSaveClicked: () -> Unit,
     onEventHandled: () -> Unit,
 ) {
+    TitleBarEffect(
+        details = TitleBarDetails.CenteredTitleBarDetails(
+            title = stringResource(Res.string.specify_question_screen_title)
+        )
+    )
     ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onSaveClicked) { state ->
         HandleEvent(event = state.event, onEventHandled = onEventHandled)
-        Column {
-            CenteredTitleBar(title = stringResource(Res.string.specify_question_screen_title))
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                QuestionDetails(
-                    text = state.oldText,
-                    hostAnswer = state.hostAnswer,
-                    hostName = state.hostName,
-                    expectedAnswer = state.expectedAnswer,
-                    number = state.number,
-                    owner = state.owner,
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                QuestionInputField(
-                    modifier = Modifier.padding(top = 32.dp),
-                    text = state.text,
-                    onTextChanged = onTextChanged,
-                    isTextValid = state.isTextValid,
-                    isSaveButtonEnabled = state.isSaveButtonEnabled,
-                    onSaveClicked = onSaveClicked,
-                )
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            QuestionDetails(
+                text = state.oldText,
+                hostAnswer = state.hostAnswer,
+                hostName = state.hostName,
+                expectedAnswer = state.expectedAnswer,
+                number = state.number,
+                owner = state.owner,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            QuestionInputField(
+                modifier = Modifier.padding(top = 32.dp),
+                text = state.text,
+                onTextChanged = onTextChanged,
+                isTextValid = state.isTextValid,
+                isSaveButtonEnabled = state.isSaveButtonEnabled,
+                onSaveClicked = onSaveClicked,
+            )
         }
     }
 }

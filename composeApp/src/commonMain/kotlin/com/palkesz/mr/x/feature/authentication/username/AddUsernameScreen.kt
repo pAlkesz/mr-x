@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
+import com.palkesz.mr.x.core.ui.effects.TitleBarEffect
 import com.palkesz.mr.x.core.ui.helpers.showSnackbar
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.feature.authentication.ui.AuthInputForm
@@ -41,6 +42,7 @@ private fun AddUsernameScreenContent(
     onSaveClicked: () -> Unit,
     onEventHandled: () -> Unit,
 ) {
+    TitleBarEffect(details = null)
     ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onSaveClicked) { state ->
         HandleEvent(event = state.event, onEventHandled = onEventHandled)
         AuthInputForm(

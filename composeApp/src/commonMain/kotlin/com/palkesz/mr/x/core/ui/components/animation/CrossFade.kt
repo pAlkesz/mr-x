@@ -7,6 +7,7 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.feature.app.appbars.titlebarstate.TitleBarDetails
 
 @Composable
 fun CrossFade(
@@ -25,6 +26,32 @@ fun CrossFade(
 }
 
 @Composable
+fun CrossFade(
+    titleBarDetails: TitleBarDetails?,
+    centeredTitleBar: @Composable (TitleBarDetails.CenteredTitleBarDetails) -> Unit,
+    gameTitleBar: @Composable (TitleBarDetails.GameTitleBarDetails) -> Unit,
+) {
+    CrossFade(
+        targetState = titleBarDetails,
+        contentKey = { details ->
+            details?.let { it::class.simpleName }
+        },
+    ) { details ->
+        when (details) {
+            is TitleBarDetails.CenteredTitleBarDetails -> {
+                centeredTitleBar(details)
+            }
+
+            is TitleBarDetails.GameTitleBarDetails -> {
+                gameTitleBar(details)
+            }
+
+            else -> {}
+        }
+    }
+}
+
+@Composable
 fun <T> CrossFade(
     state: ViewState<T>,
     onLoading: @Composable () -> Unit,
@@ -33,7 +60,8 @@ fun <T> CrossFade(
 ) {
     CrossFade(
         targetState = state,
-        contentKey = { it::class.simpleName + it.isLoading.toString() }) { viewState ->
+        contentKey = { it::class.simpleName + it.isLoading.toString() },
+    ) { viewState ->
         when {
             viewState.isLoading -> {
                 onLoading()

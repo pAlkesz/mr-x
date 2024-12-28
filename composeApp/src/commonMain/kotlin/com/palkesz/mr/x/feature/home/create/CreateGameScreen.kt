@@ -16,9 +16,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
 import com.palkesz.mr.x.core.ui.components.input.PrimaryTextField
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
-import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
+import com.palkesz.mr.x.core.ui.effects.TitleBarEffect
 import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.feature.app.appbars.titlebarstate.TitleBarDetails
 import com.palkesz.mr.x.feature.games.GameGraph
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.create_game_button_label
@@ -50,43 +51,43 @@ private fun CreateGameScreenContent(
     onCreateClicked: () -> Unit,
     onEventHandled: () -> Unit,
 ) {
+    TitleBarEffect(
+        details = TitleBarDetails.CenteredTitleBarDetails(
+            title = stringResource(Res.string.create_game_title)
+        )
+    )
     ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onCreateClicked) { state ->
         HandleEvent(event = state.event, onEventHandled = onEventHandled)
         Column(
-            modifier = Modifier.fillMaxSize().padding(bottom = 16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CenteredTitleBar(title = stringResource(Res.string.create_game_title))
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
-                    .verticalScroll(rememberScrollState()),
-            ) {
-                PrimaryTextField(
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    value = state.firstName,
-                    onValueChanged = onFirstNameChanged,
-                    isValueValid = state.isFirstNameValid,
-                    label = stringResource(Res.string.first_name_input_label),
-                    error = stringResource(Res.string.first_name_error_message),
-                    showKeyboard = true,
-                )
-                PrimaryTextField(
-                    value = state.lastName,
-                    onValueChanged = onLastNameChanged,
-                    isValueValid = state.isLastNameValid,
-                    label = stringResource(Res.string.last_name_input_label),
-                    error = stringResource(Res.string.last_name_error_message),
-                    showKeyboard = false,
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                PrimaryButton(
-                    onClick = onCreateClicked,
-                    enabled = state.isCreateButtonEnabled,
-                    text = stringResource(Res.string.create_game_button_label),
-                )
-            }
+            PrimaryTextField(
+                modifier = Modifier.padding(bottom = 16.dp),
+                value = state.firstName,
+                onValueChanged = onFirstNameChanged,
+                isValueValid = state.isFirstNameValid,
+                label = stringResource(Res.string.first_name_input_label),
+                error = stringResource(Res.string.first_name_error_message),
+                showKeyboard = true,
+            )
+            PrimaryTextField(
+                value = state.lastName,
+                onValueChanged = onLastNameChanged,
+                isValueValid = state.isLastNameValid,
+                label = stringResource(Res.string.last_name_input_label),
+                error = stringResource(Res.string.last_name_error_message),
+                showKeyboard = false,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            PrimaryButton(
+                onClick = onCreateClicked,
+                enabled = state.isCreateButtonEnabled,
+                text = stringResource(Res.string.create_game_button_label),
+            )
         }
     }
 }

@@ -41,6 +41,9 @@ fun <T> AnimatedLazyColumn(
         isAnimationDone = true
         state.scrollToItem(index = 0)
     }
+    LaunchedEffect(key1 = items) {
+        state.animateScrollToItem(index = 0)
+    }
     LazyColumn(modifier = modifier, state = state) {
         itemsIndexed(
             items = items.filter { it.getKey() != animatedItemKey || isAnimationDone },

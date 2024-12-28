@@ -1,7 +1,6 @@
 package com.palkesz.mr.x.feature.home.tutorial
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -17,7 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
+import com.palkesz.mr.x.core.ui.effects.TitleBarEffect
+import com.palkesz.mr.x.feature.app.appbars.titlebarstate.TitleBarDetails
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.ic_flag_check
 import mrx.composeapp.generated.resources.ic_mystery
@@ -40,44 +40,43 @@ import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun TutorialScreen() {
+    TitleBarEffect(
+        details = TitleBarDetails.CenteredTitleBarDetails(
+            title = stringResource(Res.string.tutorial_title)
+        )
+    )
     Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CenteredTitleBar(title = stringResource(Res.string.tutorial_title))
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            TutorialItem(
-                title = stringResource(Res.string.tutorial_first_point_title),
-                description = stringResource(Res.string.tutorial_first_point_description),
-                imageVector = vectorResource(Res.drawable.ic_flag_check),
-            )
-            TutorialItem(
-                title = stringResource(Res.string.tutorial_second_point_title),
-                description = stringResource(Res.string.tutorial_second_point_description),
-                imageVector = vectorResource(Res.drawable.ic_quiz),
-            )
-            TutorialItem(
-                title = stringResource(Res.string.tutorial_third_point_title),
-                description = stringResource(Res.string.tutorial_third_point_description),
-                imageVector = vectorResource(Res.drawable.ic_question_lifecycle),
-            )
-            TutorialItem(
-                title = stringResource(Res.string.tutorial_fourth_point_title),
-                description = stringResource(Res.string.tutorial_fourth_point_description),
-                imageVector = vectorResource(Res.drawable.ic_raised_hand),
-            )
-            TutorialItem(
-                title = stringResource(Res.string.tutorial_fifth_point_title),
-                description = stringResource(Res.string.tutorial_fifth_point_description),
-                imageVector = vectorResource(Res.drawable.ic_mystery),
-            )
-        }
+        TutorialItem(
+            title = stringResource(Res.string.tutorial_first_point_title),
+            description = stringResource(Res.string.tutorial_first_point_description),
+            imageVector = vectorResource(Res.drawable.ic_flag_check),
+        )
+        TutorialItem(
+            title = stringResource(Res.string.tutorial_second_point_title),
+            description = stringResource(Res.string.tutorial_second_point_description),
+            imageVector = vectorResource(Res.drawable.ic_quiz),
+        )
+        TutorialItem(
+            title = stringResource(Res.string.tutorial_third_point_title),
+            description = stringResource(Res.string.tutorial_third_point_description),
+            imageVector = vectorResource(Res.drawable.ic_question_lifecycle),
+        )
+        TutorialItem(
+            title = stringResource(Res.string.tutorial_fourth_point_title),
+            description = stringResource(Res.string.tutorial_fourth_point_description),
+            imageVector = vectorResource(Res.drawable.ic_raised_hand),
+        )
+        TutorialItem(
+            title = stringResource(Res.string.tutorial_fifth_point_title),
+            description = stringResource(Res.string.tutorial_fifth_point_description),
+            imageVector = vectorResource(Res.drawable.ic_mystery),
+        )
     }
 }
 

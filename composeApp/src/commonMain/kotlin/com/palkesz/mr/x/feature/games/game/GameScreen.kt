@@ -20,11 +20,13 @@ import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
+import com.palkesz.mr.x.core.ui.effects.TitleBarEffect
 import com.palkesz.mr.x.core.ui.modifiers.conditional
 import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.core.util.networking.getOrNull
+import com.palkesz.mr.x.feature.app.appbars.titlebarstate.TitleBarDetails
 import com.palkesz.mr.x.feature.games.GameGraph
 import com.palkesz.mr.x.feature.games.game.ui.BarkochbaCard
-import com.palkesz.mr.x.feature.games.game.ui.GameTitleBar
 import com.palkesz.mr.x.feature.games.game.ui.QuestionItemCard
 import com.palkesz.mr.x.feature.games.game.ui.QuestionPager
 import kotlinx.collections.immutable.ImmutableList
@@ -71,49 +73,50 @@ private fun GameScreenContent(
     onEventHandled: () -> Unit,
     onRetry: () -> Unit,
 ) {
-    ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onRetry) { state ->
-        HandleEvent(onEventHandled = onEventHandled, event = state.event)
-        Column {
-            GameTitleBar(
-                modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp, top = 8.dp),
-                firstName = state.firstName,
-                lastName = state.lastName,
-                hostName = state.host,
-                isHost = state.isHost,
+    with(viewState.getOrNull()) {
+        TitleBarEffect(
+            details = TitleBarDetails.GameTitleBarDetails(
+                firstName = this?.firstName,
+                lastName = this?.lastName,
+                hostName = this?.host,
+                isHost = this?.isHost ?: false,
                 onQrCodeClicked = onQrCodeClicked,
             )
-            QuestionPager(
-                modifier = Modifier.padding(top = 16.dp),
-                normalPage = {
-                    NormalQuestionPage(
-                        modifier = Modifier.fillMaxSize(),
-                        questions = state.questions,
-                        animatedQuestionId = state.animatedQuestionId,
-                        isGameOngoing = state.isGameOngoing,
-                        isHost = state.isHost,
-                        isAskQuestionButtonVisible = state.isAskQuestionButtonVisible,
-                        onPassAsHostClicked = onPassAsHostClicked,
-                        onGuessAsHostClicked = onGuessAsHostClicked,
-                        onAcceptAsOwnerClicked = onAcceptAsOwnerClicked,
-                        onDeclineAsOwnerClicked = onDeclineAsOwnerClicked,
-                        onGuessAsPlayerClicked = onGuessAsPlayerClicked,
-                        onAskQuestionClicked = onAskQuestionClicked,
-                    )
-                },
-                barkochbaPage = {
-                    BarkochbaQuestionPage(
-                        modifier = Modifier.fillMaxSize(),
-                        questions = state.barkochbaQuestions,
-                        animatedQuestionId = state.animatedBarkochbaQuestionId,
-                        isGameOngoing = state.isGameOngoing,
-                        isHost = state.isHost,
-                        isAskBarkochbaQuestionButtonVisible = state.isAskBarkochbaQuestionButtonVisible,
-                        onAskQuestionClicked = onAskBarkochbaQuestionClicked,
-                        onBarkochbaQuestionAnswered = onBarkochbaQuestionAnswered,
-                    )
-                }
-            )
-        }
+        )
+    }
+    ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onRetry) { state ->
+        HandleEvent(onEventHandled = onEventHandled, event = state.event)
+        QuestionPager(
+            modifier = Modifier.padding(top = 16.dp),
+            normalPage = {
+                NormalQuestionPage(
+                    modifier = Modifier.fillMaxSize(),
+                    questions = state.questions,
+                    animatedQuestionId = state.animatedQuestionId,
+                    isGameOngoing = state.isGameOngoing,
+                    isHost = state.isHost,
+                    isAskQuestionButtonVisible = state.isAskQuestionButtonVisible,
+                    onPassAsHostClicked = onPassAsHostClicked,
+                    onGuessAsHostClicked = onGuessAsHostClicked,
+                    onAcceptAsOwnerClicked = onAcceptAsOwnerClicked,
+                    onDeclineAsOwnerClicked = onDeclineAsOwnerClicked,
+                    onGuessAsPlayerClicked = onGuessAsPlayerClicked,
+                    onAskQuestionClicked = onAskQuestionClicked,
+                )
+            },
+            barkochbaPage = {
+                BarkochbaQuestionPage(
+                    modifier = Modifier.fillMaxSize(),
+                    questions = state.barkochbaQuestions,
+                    animatedQuestionId = state.animatedBarkochbaQuestionId,
+                    isGameOngoing = state.isGameOngoing,
+                    isHost = state.isHost,
+                    isAskBarkochbaQuestionButtonVisible = state.isAskBarkochbaQuestionButtonVisible,
+                    onAskQuestionClicked = onAskBarkochbaQuestionClicked,
+                    onBarkochbaQuestionAnswered = onBarkochbaQuestionAnswered,
+                )
+            }
+        )
     }
 }
 

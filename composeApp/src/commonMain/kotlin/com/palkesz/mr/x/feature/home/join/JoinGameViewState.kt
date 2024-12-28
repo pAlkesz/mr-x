@@ -10,6 +10,4 @@ sealed interface JoinGameEvent {
 
     data class NavigateToGames(val gameId: String?) : JoinGameEvent
 
-    data object NavigateToHome : JoinGameEvent
-
 }
