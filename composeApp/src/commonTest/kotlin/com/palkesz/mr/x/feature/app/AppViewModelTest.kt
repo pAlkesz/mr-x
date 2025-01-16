@@ -4,11 +4,16 @@ import com.palkesz.mr.x.BaseTest
 import com.palkesz.mr.x.KonnectivityStub
 import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.crashlytics.Crashlytics
+import com.palkesz.mr.x.core.data.datastore.MrxDataStore
 import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepository
 import com.palkesz.mr.x.core.data.user.UserRepository
+import com.palkesz.mr.x.core.model.game.Game
 import com.palkesz.mr.x.core.usecase.game.JoinGameUseCase
+import com.palkesz.mr.x.feature.app.notifications.NotificationHelper
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.test.runTest
@@ -28,7 +33,12 @@ class AppViewModelTest : BaseTest() {
         }
         val viewModel = getViewModel(isLoggedIn = false, konnectivity = konnectivity)
         assertEquals(
-            expected = AppViewState(isLoggedIn = false, isOfflineBarVisible = false, event = null),
+            expected = AppViewState(
+                isLoggedIn = false,
+                isOfflineBarVisible = false,
+                gameNotificationCount = null,
+                event = null,
+            ),
             actual = viewModel.viewState.value,
         )
     }
@@ -48,6 +58,8 @@ class AppViewModelTest : BaseTest() {
             isLoggedIn = true,
             konnectivity = konnectivity,
             gameRepository = object : GameRepository.Stub {
+                override val games = MutableStateFlow(emptyList<Game>())
+
                 override suspend fun observeGames() {
                     isObservingGames = true
                 }
@@ -89,6 +101,8 @@ class AppViewModelTest : BaseTest() {
             isLoggedIn = false,
             konnectivity = konnectivity,
             gameRepository = object : GameRepository.Stub {
+                override val games = MutableStateFlow(emptyList<Game>())
+
                 override suspend fun observeGames() {
                     isObservingGames = true
                 }
@@ -119,6 +133,8 @@ class AppViewModelTest : BaseTest() {
         isLoggedIn: Boolean,
         konnectivity: KonnectivityStub,
         gameRepository: GameRepository = object : GameRepository.Stub {
+            override val games = MutableStateFlow(emptyList<Game>())
+
             override suspend fun observeGames() = Unit
         },
         questionRepository: QuestionRepository = object : QuestionRepository.Stub {
@@ -142,6 +158,13 @@ class AppViewModelTest : BaseTest() {
             override val loggedIn = flowOf(isLoggedIn)
         }
         val joinGameUseCase = JoinGameUseCase { Result.success(Unit) }
+        val notificationHelper = object : NotificationHelper.Stub {
+            override val event = MutableSharedFlow<AppEvent.NavigateToGame?>()
+        }
+        val mrxDataStore = object : MrxDataStore.Stub {
+            override fun observeNotificationCount(gameIds: List<String>) =
+                flowOf(value = emptyList<Pair<String, Int>>())
+        }
         return AppViewModelImpl(
             authRepository = authRepository,
             gameRepository = gameRepository,
@@ -150,6 +173,8 @@ class AppViewModelTest : BaseTest() {
             userRepository = userRepository,
             joinGameUseCase = joinGameUseCase,
             konnectivity = konnectivity,
+            notificationHelper = notificationHelper,
+            mrxDataStore = mrxDataStore,
             crashlytics = crashlytics,
         )
     }

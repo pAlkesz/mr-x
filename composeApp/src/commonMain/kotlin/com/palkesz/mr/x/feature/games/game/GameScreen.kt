@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,6 +55,8 @@ fun GameScreen(viewModel: GameViewModel) {
         onDeclineAsOwnerClicked = viewModel::onDeclineAsOwnerClicked,
         onAskBarkochbaQuestionClicked = viewModel::onAskBarkochbaQuestionClicked,
         onBarkochbaQuestionAnswered = viewModel::onBarkochbaQuestionAnswered,
+        onPageSelected = viewModel::onPageSelected,
+        onLeavingScreen = viewModel::onLeavingScreen,
         onRetry = viewModel::onRetry,
         onEventHandled = viewModel::onEventHandled,
     )
@@ -70,6 +74,8 @@ private fun GameScreenContent(
     onAskBarkochbaQuestionClicked: () -> Unit,
     onBarkochbaQuestionAnswered: (String, Boolean) -> Unit,
     onQrCodeClicked: () -> Unit,
+    onPageSelected: (Int) -> Unit,
+    onLeavingScreen: () -> Unit,
     onEventHandled: () -> Unit,
     onRetry: () -> Unit,
 ) {
@@ -84,10 +90,23 @@ private fun GameScreenContent(
             )
         )
     }
+    DisposableEffect(key1 = Unit) {
+        onDispose {
+            onLeavingScreen()
+        }
+    }
     ContentWithBackgroundLoadingIndicator(state = viewState, onRetry = onRetry) { state ->
-        HandleEvent(onEventHandled = onEventHandled, event = state.event)
+        val pagerState = rememberPagerState { 2 }
+        HandleEvent(
+            onEventHandled = onEventHandled,
+            goToTab = { pagerState.scrollToPage(page = it) },
+            event = state.event
+        )
         QuestionPager(
-            modifier = Modifier.padding(top = 16.dp),
+            pagerState = pagerState,
+            onPageSelected = onPageSelected,
+            questionBadgeCount = state.questionBadgeCount,
+            barkochbaBadgeCount = state.barkochbaBadgeCount,
             normalPage = {
                 NormalQuestionPage(
                     modifier = Modifier.fillMaxSize(),
@@ -242,9 +261,17 @@ private fun BarkochbaQuestionPage(
 }
 
 @Composable
-private fun HandleEvent(event: GameEvent?, onEventHandled: () -> Unit) {
+private fun HandleEvent(
+    event: GameEvent?,
+    goToTab: suspend (Int) -> Unit,
+    onEventHandled: () -> Unit
+) {
     HandleEventEffect(key1 = event) { gameEvent, _, _, navController ->
         when (gameEvent) {
+            is GameEvent.GoToTab -> {
+                goToTab(gameEvent.index)
+            }
+
             is GameEvent.NavigateToQrCode -> {
                 navController?.navigate(GameGraph.QrCode(id = gameEvent.gameId))
             }

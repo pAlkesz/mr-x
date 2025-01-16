@@ -122,6 +122,7 @@ class GameUiMapperTest : FunSpec({
         checkAll(resultArb, eventExhaustive) { result, event ->
             mapper.mapViewState(
                 result = result,
+                notificationCount = 0 to 0,
                 addedQuestionId = null,
                 addedBarkochbaQuestionId = null,
                 event = event

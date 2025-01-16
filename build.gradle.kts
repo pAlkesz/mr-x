@@ -8,4 +8,5 @@ plugins {
     alias(libs.plugins.jetbrains.compose) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.kotest.multiplatform) apply false
+    alias(libs.plugins.squareup.wire) apply false
 }

@@ -31,6 +31,7 @@ data class GameItem(
     val hostName: String?,
     val questionCount: Int,
     val barkochbaCount: Int,
+    val badgeCount: Int?,
 )
 
 @Immutable

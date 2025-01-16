@@ -25,8 +25,8 @@ import com.palkesz.mr.x.feature.authentication.authGraphNavigation
 import com.palkesz.mr.x.feature.games.GameGraph
 import com.palkesz.mr.x.feature.games.gamesGraphNavigation
 import com.palkesz.mr.x.feature.home.homeGraphNavigation
+import com.palkesz.mr.x.proto.LocalNotificationType
 import org.koin.compose.viewmodel.koinViewModel
-
 
 @Composable
 fun MrXApp(viewModel: AppViewModel = koinViewModel<AppViewModelImpl>()) {
@@ -42,14 +42,14 @@ private fun MrXAppContent(state: AppViewState, onEventHandled: () -> Unit) {
     val navController = rememberNavController()
     CompositionLocalProvider(
         LocalNavController provides navController,
-        LocalAppScope provides rememberCoroutineScope()
+        LocalAppScope provides rememberCoroutineScope(),
     ) {
         HandleEvent(onEventHandled = onEventHandled, event = state.event)
         Scaffold(
             modifier = Modifier.imePadding(),
             snackbarHost = { SnackbarHost(hostState = LocalSnackBarHostState.current) },
             topBar = { MrXTopAppBar() },
-            bottomBar = { MrXBottomAppBar() },
+            bottomBar = { MrXBottomAppBar(gameNotificationCount = state.gameNotificationCount) },
         ) { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding)) {
                 AnimatedVisibility(visible = state.isOfflineBarVisible) {
@@ -74,6 +74,17 @@ private fun HandleEvent(event: AppEvent?, onEventHandled: () -> Unit) {
         when (appEvent) {
             is AppEvent.NavigateToGames -> {
                 navController?.navigate(route = GameGraph.Games(joinedGameId = appEvent.gameId))
+            }
+
+            is AppEvent.NavigateToGame -> {
+                navController?.navigate(
+                    route = GameGraph.Game(
+                        id = appEvent.gameId,
+                        tabIndex = if (appEvent.type == LocalNotificationType.QUESTION) 0 else 1,
+                        addedQuestionId = null,
+                        addedBarkochbaQuestionId = null,
+                    )
+                )
             }
         }
         onEventHandled()

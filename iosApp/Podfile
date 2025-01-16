@@ -6,4 +6,6 @@ target 'iosApp' do
   pod 'FirebaseFirestore'
   pod 'FirebaseAuth'
   pod 'FirebaseCrashlytics'
+  pod 'FirebaseMessaging'
+  pod 'FirebaseAppCheck'
 end

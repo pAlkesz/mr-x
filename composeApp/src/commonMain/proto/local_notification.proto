@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package com.palkesz.mr.x.proto;
+
+enum LocalNotificationType {
+  QUESTION = 0;
+  BARKOCHBA = 1;
+}
+
+message LocalNotification {
+  string id = 1;
+  LocalNotificationType type = 2;
+}
+
+message LocalNotifications {
+  repeated LocalNotification notifications = 1;
+}
+
+message LocalNotificationMap {
+  map<string, LocalNotifications> notifications = 1;
+}

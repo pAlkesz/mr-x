@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import co.touchlab.crashkios.crashlytics.enableCrashlytics
 import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.data.crashlytics.Crashlytics
+import com.palkesz.mr.x.core.data.datastore.MrxDataStore
 import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepository
@@ -13,6 +14,7 @@ import com.palkesz.mr.x.core.data.user.UserRepository
 import com.palkesz.mr.x.core.usecase.game.JoinGameUseCase
 import com.palkesz.mr.x.core.util.BUSINESS_TAG
 import com.palkesz.mr.x.core.util.platform.isDebug
+import com.palkesz.mr.x.feature.app.notifications.NotificationHelper
 import com.plusmobileapps.konnectivity.Konnectivity
 import dev.theolm.rinku.DeepLink
 import dev.theolm.rinku.listenForDeepLinks
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -39,6 +42,8 @@ class AppViewModelImpl(
     private val userRepository: UserRepository,
     private val joinGameUseCase: JoinGameUseCase,
     private val konnectivity: Konnectivity,
+    private val notificationHelper: NotificationHelper,
+    private val mrxDataStore: MrxDataStore,
     crashlytics: Crashlytics,
 ) : ViewModel(), AppViewModel {
 
@@ -46,6 +51,7 @@ class AppViewModelImpl(
         AppViewState(
             isLoggedIn = authRepository.isLoggedIn,
             isOfflineBarVisible = !konnectivity.isConnected,
+            gameNotificationCount = null,
         )
     )
     override val viewState = _viewState.asStateFlow()
@@ -57,6 +63,7 @@ class AppViewModelImpl(
         observeQuestions()
         observeBarkochbaQuestions()
         observeUsers()
+        observeNotifications()
         Napier.d(tag = BUSINESS_TAG) { "Crashlytics enabled: ${!isDebug}" }
         if (!isDebug) {
             crashlytics.apply {
@@ -129,6 +136,25 @@ class AppViewModelImpl(
             authRepository.loggedIn.collectLatest { isLoggedIn ->
                 if (isLoggedIn) {
                     userRepository.observeUsers()
+                }
+            }
+        }
+    }
+
+    private fun observeNotifications() {
+        viewModelScope.launch {
+            notificationHelper.event.collect { event ->
+                _viewState.update { it.copy(event = event) }
+            }
+        }
+        viewModelScope.launch {
+            gameRepository.games.flatMapLatest { games ->
+                mrxDataStore.observeNotificationCount(gameIds = games.map { it.id })
+            }.collect { notifications ->
+                _viewState.update { state ->
+                    state.copy(gameNotificationCount = notifications.sumOf { (_, count) ->
+                        count
+                    }.takeIf { badgeCount -> badgeCount > 0 })
                 }
             }
         }

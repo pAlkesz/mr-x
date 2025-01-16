@@ -4,6 +4,7 @@ import com.palkesz.mr.x.core.data.auth.AuthRepository
 import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.model.question.BarkochbaStatus
 import com.palkesz.mr.x.core.model.question.QuestionStatus
+import com.palkesz.mr.x.core.util.extensions.capitalizeWords
 import com.palkesz.mr.x.core.util.extensions.getName
 import com.palkesz.mr.x.core.util.extensions.immutableMap
 import com.palkesz.mr.x.core.util.extensions.immutableMapNotNull
@@ -14,6 +15,7 @@ import org.jetbrains.compose.resources.getString
 fun interface GameUiMapper {
     suspend fun mapViewState(
         result: GameResult,
+        notificationCount: Pair<Int, Int>,
         addedQuestionId: String?,
         addedBarkochbaQuestionId: String?,
         event: GameEvent?
@@ -26,6 +28,7 @@ class GameUiMapperImpl(
 
     override suspend fun mapViewState(
         result: GameResult,
+        notificationCount: Pair<Int, Int>,
         addedQuestionId: String?,
         addedBarkochbaQuestionId: String?,
         event: GameEvent?
@@ -44,6 +47,8 @@ class GameUiMapperImpl(
             barkochbaQuestionCount = result.getBarkochbaQuestionCount(),
             questions = result.mapQuestions(isHost = isHost, hostName = hostName),
             barkochbaQuestions = result.mapBarkochbaQuestions(isHost = isHost, hostName = hostName),
+            questionBadgeCount = notificationCount.first.takeIf { it > 0 },
+            barkochbaBadgeCount = notificationCount.second.takeIf { it > 0 },
             animatedQuestionId = addedQuestionId,
             animatedBarkochbaQuestionId = addedBarkochbaQuestionId,
             event = event,
@@ -119,7 +124,9 @@ class GameUiMapperImpl(
                         text = question.text,
                         number = question.number,
                         owner = getOwner(id = question.userId),
-                        answer = "${question.expectedFirstName} ${question.expectedLastName}",
+                        answer = "${question.expectedFirstName} ${question.expectedLastName.orEmpty()}"
+                            .trim()
+                            .capitalizeWords(),
                     )
                 }
 

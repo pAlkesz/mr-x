@@ -1,9 +1,6 @@
 package com.palkesz.mr.x.feature.app.appbars
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +25,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.palkesz.mr.x.core.ui.components.badge.ContentWithBadge
 import com.palkesz.mr.x.core.ui.modifiers.debouncedClickable
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.feature.games.GameGraph
@@ -38,7 +36,7 @@ import mrx.composeapp.generated.resources.ic_home
 import org.jetbrains.compose.resources.vectorResource
 
 @Composable
-fun MrXBottomAppBar() {
+fun MrXBottomAppBar(gameNotificationCount: Int?) {
     val navController = LocalNavController.current ?: throw IllegalStateException()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -47,11 +45,7 @@ fun MrXBottomAppBar() {
         currentDestination?.hasRoute(it::class) ?: false
     }
 
-    AnimatedVisibility(
-        visible = bottomBarDestination,
-        enter = slideInVertically(initialOffsetY = { it }),
-        exit = slideOutVertically(targetOffsetY = { it }),
-    ) {
+    if (bottomBarDestination) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -69,13 +63,19 @@ fun MrXBottomAppBar() {
                 currentDestination = currentDestination,
                 route = GameGraph.Games(joinedGameId = null),
                 icon = vectorResource(Res.drawable.ic_game_controller),
+                badgeCount = gameNotificationCount,
             )
         }
     }
 }
 
 @Composable
-private fun NavigationBarItem(currentDestination: NavDestination?, route: Any, icon: ImageVector) {
+private fun NavigationBarItem(
+    currentDestination: NavDestination?,
+    route: Any,
+    icon: ImageVector,
+    badgeCount: Int? = null,
+) {
     val navController = LocalNavController.current
     val isSelected = currentDestination?.hierarchy?.any { it.hasRoute(route::class) } == true
     val backgroundColor by animateColorAsState(
@@ -92,20 +92,22 @@ private fun NavigationBarItem(currentDestination: NavDestination?, route: Any, i
             MaterialTheme.colorScheme.primary
         }
     )
-    Box(
-        modifier = Modifier
-            .size(size = 48.dp)
-            .clip(shape = CircleShape)
-            .debouncedClickable(enabled = !isSelected) { navController?.navigate(route) }
-            .background(color = backgroundColor, shape = CircleShape),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            modifier = Modifier.size(size = 32.dp),
-            imageVector = icon,
-            contentDescription = null,
-            tint = iconColor,
-        )
+    ContentWithBadge(badgeCount = badgeCount) {
+        Box(
+            modifier = Modifier
+                .size(size = 48.dp)
+                .clip(shape = CircleShape)
+                .debouncedClickable(enabled = !isSelected) { navController?.navigate(route) }
+                .background(color = backgroundColor, shape = CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier.size(size = 32.dp),
+                imageVector = icon,
+                contentDescription = null,
+                tint = iconColor,
+            )
+        }
     }
 }
 

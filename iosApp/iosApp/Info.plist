@@ -43,9 +43,9 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>NSApplicationCrashOnExceptions</key>
-	<true/>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSApplicationCrashOnExceptions</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) camera description.</string>
@@ -56,6 +56,13 @@
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
 	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>fetch</string>
+		<string>processing</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -75,5 +82,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 </dict>
 </plist>

@@ -20,7 +20,7 @@ val gamesModule = module {
     factoryOf(::ObserveGamesResultUseCaseImpl) bind ObserveGamesResultUseCase::class
     factoryOf(::GamesUiMapperImpl) bind GamesUiMapper::class
     viewModel { parameters ->
-        GamesViewModelImpl(parameters.getOrNull(), get(), get(), get())
+        GamesViewModelImpl(parameters.getOrNull(), get(), get(), get(), get(), get())
     } bind GamesViewModel::class
     includes(
         gameModule,

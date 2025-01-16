@@ -16,11 +16,14 @@ val gameModule = module {
             parameters.get(i = 0),
             parameters.get(i = 1),
             parameters.get(i = 2),
+            parameters.get(i = 3),
             get(),
             get(),
             get(),
             get(),
-            get()
+            get(),
+            get(),
+            get(),
         )
     } bind GameViewModel::class
 }

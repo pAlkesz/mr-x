@@ -123,6 +123,7 @@ private fun HandleEvent(event: CreateQuestionEvent?, onEventHandled: () -> Unit)
                 navController?.navigate(
                     route = GameGraph.Game(
                         id = createQuestionEvent.gameId,
+                        tabIndex = 0,
                         addedQuestionId = createQuestionEvent.questionId,
                         addedBarkochbaQuestionId = null,
                     )

@@ -19,12 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.model.game.GameStatus
 import com.palkesz.mr.x.core.ui.components.animation.AnimatedLazyColumn
 import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.animation.CrossFade
+import com.palkesz.mr.x.core.ui.components.badge.ContentWithBadge
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.ui.effects.TitleBarEffect
@@ -97,6 +99,9 @@ private fun GamesScreenContent(
                             .padding(horizontal = 16.dp)
                             .conditional(condition = index != state.games.lastIndex) {
                                 padding(bottom = 16.dp)
+                            }
+                            .conditional(condition = index == 0) {
+                                padding(top = 4.dp)
                             },
                         item = item,
                         onClick = onGameClicked,
@@ -116,45 +121,51 @@ private fun GameCard(modifier: Modifier = Modifier, item: GameItem, onClick: (St
             MaterialTheme.colorScheme.secondaryContainer
         }
     )
-    Card(
+    ContentWithBadge(
         modifier = modifier,
-        onClick = { onClick(item.id) },
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = containerColor)
+        badgeCount = item.badgeCount,
+        isBadgeBig = true,
+        badgeOffset = DpOffset(x = 4.dp, y = (-4).dp),
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        Card(
+            onClick = { onClick(item.id) },
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(containerColor = containerColor)
         ) {
-            GameIcon(
-                modifier = Modifier.padding(end = 16.dp),
-                icon = vectorResource(if (item.isHost) Res.drawable.ic_host else Res.drawable.ic_player),
-            )
-            Column(modifier = Modifier.padding(end = 16.dp).weight(weight = 1f)) {
-                Text(
-                    text = stringResource(Res.string.game_title_with_initial, item.initial),
-                    style = MaterialTheme.typography.bodyMedium.bold()
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                GameIcon(
+                    modifier = Modifier.padding(end = 16.dp),
+                    icon = vectorResource(if (item.isHost) Res.drawable.ic_host else Res.drawable.ic_player),
                 )
-                AnimatedNullability(item = item.hostName) { name ->
+                Column(modifier = Modifier.padding(end = 16.dp).weight(weight = 1f)) {
                     Text(
-                        text = stringResource(Res.string.game_host_label, name),
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                        text = stringResource(Res.string.game_title_with_initial, item.initial),
+                        style = MaterialTheme.typography.bodyMedium.bold()
                     )
+                    AnimatedNullability(item = item.hostName) { name ->
+                        Text(
+                            text = stringResource(Res.string.game_host_label, name),
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
+                GameQuestionChip(
+                    questionCount = item.questionCount,
+                    barkochbaCount = item.barkochbaCount,
+                    containerColor = containerColor,
+                )
+                Icon(
+                    modifier = Modifier.padding(start = 16.dp),
+                    imageVector = vectorResource(Res.drawable.ic_chevron_right),
+                    tint = LocalContentColor.current,
+                    contentDescription = null,
+                )
             }
-            GameQuestionChip(
-                questionCount = item.questionCount,
-                barkochbaCount = item.barkochbaCount,
-                containerColor = containerColor,
-            )
-            Icon(
-                modifier = Modifier.padding(start = 16.dp),
-                imageVector = vectorResource(Res.drawable.ic_chevron_right),
-                tint = LocalContentColor.current,
-                contentDescription = null,
-            )
         }
     }
 }
@@ -167,6 +178,7 @@ private fun HandleEvent(event: GamesEvent?, onEventHandled: () -> Unit) {
                 navController?.navigate(
                     GameGraph.Game(
                         id = gameEvent.id,
+                        tabIndex = 0,
                         addedQuestionId = null,
                         addedBarkochbaQuestionId = null,
                     )

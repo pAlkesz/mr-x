@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.kotest.multiplatform)
+    alias(libs.plugins.squareup.wire)
 }
 
 kotlin {
@@ -36,6 +37,8 @@ kotlin {
         pod("FirebaseFirestore", linkOnly = true)
         pod("FirebaseAuth", linkOnly = true)
         pod("FirebaseCrashlytics", linkOnly = true)
+        pod("FirebaseMessaging", linkOnly = true)
+        pod("FirebaseAppCheck", linkOnly = true)
         podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "ComposeApp"
@@ -66,6 +69,9 @@ kotlin {
             implementation(libs.koin.androidx.compose)
             implementation(libs.firebase.crashlytics.android)
             implementation(libs.firebase.analytics.android)
+            implementation(libs.firebase.messaging.android)
+            implementation(libs.firebase.appcheck.playintegrity.android)
+            implementation(libs.firebase.appcheck.debug.android)
         }
         commonMain.dependencies {
             api(project.dependencies.platform(libs.androidx.compose.composeBom))
@@ -102,6 +108,7 @@ kotlin {
             implementation(libs.plusmobileapps.konnectivity)
             implementation(libs.crashkios.crashlytics)
             implementation(libs.doist.normalize)
+            implementation(libs.androidx.datastore.okio)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -110,6 +117,13 @@ kotlin {
             implementation(libs.kotest.assertions)
             implementation(libs.kotest.property)
         }
+    }
+}
+
+wire {
+    kotlin {}
+    sourcePath {
+        srcDir("src/commonMain/proto")
     }
 }
 

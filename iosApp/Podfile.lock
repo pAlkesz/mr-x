@@ -1145,6 +1145,10 @@ PODS:
     - abseil/meta/type_traits
     - abseil/xcprivacy
   - abseil/xcprivacy (1.20240116.2)
+  - AppCheckCore (11.2.0):
+    - GoogleUtilities/Environment (~> 8.0)
+    - GoogleUtilities/UserDefaults (~> 8.0)
+    - PromisesObjC (~> 2.4)
   - BoringSSL-GRPC (0.0.36):
     - BoringSSL-GRPC/Implementation (= 0.0.36)
     - BoringSSL-GRPC/Interface (= 0.0.36)
@@ -1152,10 +1156,18 @@ PODS:
     - BoringSSL-GRPC/Interface (= 0.0.36)
   - BoringSSL-GRPC/Interface (0.0.36)
   - composeApp (1.0):
+    - FirebaseAppCheck
     - FirebaseAuth
     - FirebaseCore
     - FirebaseCrashlytics
     - FirebaseFirestore
+    - FirebaseMessaging
+  - FirebaseAppCheck (11.6.0):
+    - AppCheckCore (~> 11.0)
+    - FirebaseAppCheckInterop (~> 11.0)
+    - FirebaseCore (~> 11.6.0)
+    - GoogleUtilities/Environment (~> 8.0)
+    - GoogleUtilities/UserDefaults (~> 8.0)
   - FirebaseAppCheckInterop (11.6.0)
   - FirebaseAuth (11.6.0):
     - FirebaseAppCheckInterop (~> 11.0)
@@ -1209,6 +1221,15 @@ PODS:
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
+  - FirebaseMessaging (11.6.0):
+    - FirebaseCore (~> 11.6.0)
+    - FirebaseInstallations (~> 11.0)
+    - GoogleDataTransport (~> 10.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
+    - GoogleUtilities/Environment (~> 8.0)
+    - GoogleUtilities/Reachability (~> 8.0)
+    - GoogleUtilities/UserDefaults (~> 8.0)
+    - nanopb (~> 3.30910.0)
   - FirebaseRemoteConfigInterop (11.6.0)
   - FirebaseSessions (11.6.0):
     - FirebaseCore (~> 11.6.0)
@@ -1351,15 +1372,19 @@ PODS:
 
 DEPENDENCIES:
   - composeApp (from `../composeApp`)
+  - FirebaseAppCheck
   - FirebaseAuth
   - FirebaseCore
   - FirebaseCrashlytics
   - FirebaseFirestore
+  - FirebaseMessaging
 
 SPEC REPOS:
   trunk:
     - abseil
+    - AppCheckCore
     - BoringSSL-GRPC
+    - FirebaseAppCheck
     - FirebaseAppCheckInterop
     - FirebaseAuth
     - FirebaseAuthInterop
@@ -1370,6 +1395,7 @@ SPEC REPOS:
     - FirebaseFirestore
     - FirebaseFirestoreInternal
     - FirebaseInstallations
+    - FirebaseMessaging
     - FirebaseRemoteConfigInterop
     - FirebaseSessions
     - FirebaseSharedSwift
@@ -1390,8 +1416,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: d121da9ef7e2ff4cab7666e76c5a3e0915ae08c3
+  AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   BoringSSL-GRPC: ca6a8e5d04812fce8ffd6437810c2d46f925eaeb
-  composeApp: 0efa87637f5ec967d2ef38afa22921326557c513
+  composeApp: 1eea7607618090fa128596c09c77498d4a92f6b4
+  FirebaseAppCheck: 44803909e253d677481e9e16eb719b0f58a7ddc2
   FirebaseAppCheckInterop: 347aa09a805219a31249b58fc956888e9fcb314b
   FirebaseAuth: 0304982cfe00df8d49bf533bc4becd3de36c7122
   FirebaseAuthInterop: a919d415797d23b7bfe195a04f322b86c65020ef
@@ -1402,6 +1430,7 @@ SPEC CHECKSUMS:
   FirebaseFirestore: d5dcc15724f291fe4b415322754bfa01616037fe
   FirebaseFirestoreInternal: db478fdaeb98fe8686ff49e600f3871c224a76ff
   FirebaseInstallations: efc0946fc756e4d22d8113f7c761948120322e8c
+  FirebaseMessaging: e1aca1fcc23e8b9eddb0e33f375ff90944623021
   FirebaseRemoteConfigInterop: e75e348953352a000331eb77caf01e424248e176
   FirebaseSessions: 9529d14180868e29a8da164b3a729c036204918b
   FirebaseSharedSwift: a4e5dfca3e210633bb3a3dfb94176c019211948b
@@ -1416,6 +1445,6 @@ SPEC CHECKSUMS:
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
 
-PODFILE CHECKSUM: e684325e2ffa323745d115aa14f90abefe0c5bc9
+PODFILE CHECKSUM: eb430b4157723c6ebf0ff04804c1c18aaa7069c2
 
 COCOAPODS: 1.16.2

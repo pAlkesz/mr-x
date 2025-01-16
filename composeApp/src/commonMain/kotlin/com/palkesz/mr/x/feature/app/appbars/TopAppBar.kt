@@ -29,7 +29,7 @@ fun MrXTopAppBar(modifier: Modifier = Modifier) {
                 modifier = modifier
                     .fillMaxWidth()
                     .windowInsetsPadding(insets = TopAppBarDefaults.windowInsets)
-                    .padding(start = 4.dp, end = 4.dp, top = 8.dp),
+                    .padding(start = 4.dp, end = 4.dp, top = 8.dp, bottom = 16.dp),
                 firstName = details.firstName,
                 lastName = details.lastName,
                 hostName = details.hostName,

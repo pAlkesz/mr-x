@@ -27,6 +27,8 @@ data class GameViewState(
     val barkochbaQuestionCount: Int,
     val questions: ImmutableList<QuestionItem>,
     val barkochbaQuestions: ImmutableList<BarkochbaItem>,
+    val questionBadgeCount: Int?,
+    val barkochbaBadgeCount: Int?,
     val animatedQuestionId: String?,
     val animatedBarkochbaQuestionId: String?,
     val event: GameEvent? = null,
@@ -161,6 +163,8 @@ sealed interface BarkochbaItem {
 
 @Immutable
 sealed interface GameEvent {
+
+    data class GoToTab(val index: Int) : GameEvent
 
     data class NavigateToCreateQuestion(val gameId: String) : GameEvent
 

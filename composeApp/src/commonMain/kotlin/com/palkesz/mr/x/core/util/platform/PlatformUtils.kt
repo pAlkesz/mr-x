@@ -5,3 +5,5 @@ expect val isIOS: Boolean
 expect val isAndroid: Boolean
 
 expect val isDebug: Boolean
+
+expect val locale: String

@@ -3,6 +3,7 @@ package com.palkesz.mr.x.feature.games.game
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.palkesz.mr.x.core.data.datastore.MrxDataStore
 import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepository
 import com.palkesz.mr.x.core.model.question.QuestionStatus
@@ -12,6 +13,9 @@ import com.palkesz.mr.x.core.util.networking.DataLoader
 import com.palkesz.mr.x.core.util.networking.RefreshTrigger
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.core.util.networking.map
+import com.palkesz.mr.x.feature.app.notifications.NotificationFilter
+import com.palkesz.mr.x.feature.app.notifications.NotificationHelper
+import com.palkesz.mr.x.proto.LocalNotificationType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -32,6 +36,8 @@ interface GameViewModel {
     fun onAskBarkochbaQuestionClicked()
     fun onBarkochbaQuestionAnswered(questionId: String, answer: Boolean)
     fun onQrCodeClicked()
+    fun onPageSelected(page: Int)
+    fun onLeavingScreen()
     fun onEventHandled()
     fun onRetry()
 }
@@ -39,6 +45,7 @@ interface GameViewModel {
 @Stable
 class GameViewModelImpl(
     private val gameId: String,
+    tabIndex: Int,
     private val addedQuestionId: String?,
     private val addedBarkochbaQuestionId: String?,
     private val fetchGameResultUseCase: FetchGameResultUseCase,
@@ -46,6 +53,8 @@ class GameViewModelImpl(
     private val gameUiMapper: GameUiMapper,
     private val questionRepository: QuestionRepository,
     private val barkochbaQuestionRepository: BarkochbaQuestionRepository,
+    private val notificationHelper: NotificationHelper,
+    mrxDataStore: MrxDataStore,
 ) : ViewModel(), GameViewModel {
 
     private val dataLoader = DataLoader<GameResult>()
@@ -60,12 +69,17 @@ class GameViewModelImpl(
         observeData = { observeGameResultUseCase.run(id = gameId) },
     )
 
-    private val event = MutableStateFlow<GameEvent?>(null)
+    private val event = MutableStateFlow<GameEvent?>(value = GameEvent.GoToTab(index = tabIndex))
 
-    override val viewState = combine(loadingResult, event) { result, event ->
+    override val viewState = combine(
+        loadingResult,
+        mrxDataStore.observeNotificationCount(gameId = gameId),
+        event,
+    ) { result, notificationCount, event ->
         result.map { gameResult ->
             gameUiMapper.mapViewState(
                 result = gameResult,
+                notificationCount = notificationCount,
                 addedQuestionId = addedQuestionId,
                 addedBarkochbaQuestionId = addedBarkochbaQuestionId,
                 event = event,
@@ -121,6 +135,24 @@ class GameViewModelImpl(
         viewModelScope.launch {
             barkochbaQuestionRepository.updateAnswer(id = questionId, answer = answer)
         }
+    }
+
+    override fun onPageSelected(page: Int) {
+        notificationHelper.setNotificationFilter(
+            filter = NotificationFilter(
+                gameId = gameId,
+                type = if (page == 0) LocalNotificationType.QUESTION else LocalNotificationType.BARKOCHBA,
+            )
+        )
+    }
+
+    override fun onLeavingScreen() {
+        notificationHelper.setNotificationFilter(
+            filter = NotificationFilter(
+                gameId = null,
+                type = LocalNotificationType.QUESTION,
+            )
+        )
     }
 
     override fun onRetry() {

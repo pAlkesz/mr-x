@@ -18,6 +18,7 @@ fun OfflineAppBar(modifier: Modifier = Modifier) {
     Text(
         modifier = modifier
             .fillMaxWidth()
+            .padding(bottom = 16.dp)
             .background(color = MaterialTheme.colorScheme.secondary)
             .padding(vertical = 4.dp),
         text = stringResource(Res.string.offline_bar_label),

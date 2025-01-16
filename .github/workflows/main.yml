@@ -160,10 +160,13 @@ jobs:
           project-path: iosApp/iosApp.xcodeproj
           workspace-path: iosApp/iosApp.xcworkspace
           p12-base64: ${{ secrets.IOS_P12_CERTIFICATE }}
-          mobileprovision-base64: ${{ secrets.IOS_PROVISIONING_PROFILE }}
+          mobileprovision-base64: |
+            ${{ secrets.IOS_PROVISIONING_PROFILE }}
+            ${{ secrets.IOS_NOTIFICATION_SERVICE_PROVISIONING_PROFILE }}
           code-signing-identity: "Apple Distribution"
           team-id: ${{ secrets.IOS_TEAM_ID }}
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          export-options: ExportOptions.plist
 
       - name: Upload IPA file as artifact
         uses: actions/upload-artifact@v4

@@ -1,17 +1,17 @@
 [versions]
-agp = "8.7.3"
+agp = "8.8.0"
 compileSdk = "35"
 minSdk = "24"
 targetSdk = "35"
 kotlin = "2.1.0"
 
 # AndroidX
-androidxActivityCompose = "1.9.3"
+androidxActivityCompose = "1.10.0"
 androidxViewModel = "2.8.7"
-androidxDataStore = "1.1.1"
+androidxDataStore = "1.1.2"
 
 # AndroidX Compose
-composeBom = "2024.12.01"
+composeBom = "2025.01.00"
 composePlugin = "1.7.3"
 composeNavigation = "2.8.0-alpha10"
 composeViewModel = "2.8.2"
@@ -34,6 +34,7 @@ napier = "2.7.1"
 konnectivity = "0.1-alpha01"
 crashkios = "0.8.6"
 normalize = "1.1.1"
+wire = "5.1.0"
 
 # Testing
 kotlinxCoroutinesTest = "1.9.0"
@@ -43,6 +44,7 @@ koTest = "6.0.0.M1"
 # AndroidX
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidxViewModel" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "androidxDataStore" }
+androidx-datastore-okio = { group = "androidx.datastore", name = "datastore-core-okio", version.ref = "androidxDataStore" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDataStore" }
 
 # AndroidX Compose
@@ -57,6 +59,9 @@ androidx-compose-navigation = { group = "org.jetbrains.androidx.navigation", nam
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics-android = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-analytics-android = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-messaging-android = { group = "com.google.firebase", name = "firebase-messaging" }
+firebase-appcheck-playintegrity-android = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity" }
+firebase-appcheck-debug-android = { group = "com.google.firebase", name = "firebase-appcheck-debug" }
 firebase-auth = { group = "dev.gitlive", name = "firebase-auth", version.ref = "firebaseKotlinSdk" }
 firebase-common = { group = "dev.gitlive", name = "firebase-common", version.ref = "firebaseKotlinSdk" }
 firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "firebaseKotlinSdk" }
@@ -99,3 +104,4 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "composePlugin" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 kotest-multiplatform = { id = "io.kotest.multiplatform", version.ref = "koTest" }
+squareup-wire = { id = "com.squareup.wire", version.ref = "wire" }
