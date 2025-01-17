@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.palkesz.mr.x",
+      "sha256_cert_fingerprints": [
+        "DB:42:41:CC:21:2E:3D:8A:A7:DB:0E:BF:14:9C:92:71:F9:0F:23:DF:7D:73:21:86:57:CA:32:26:08:C1:68:9E",
+        "C5:38:CC:6C:00:33:2B:C1:61:97:45:B6:D5:D5:11:F3:D5:ED:B1:1E:D4:25:58:58:B0:FF:3D:41:34:DC:F9:49"
+      ]
+    }
+  }
+]
