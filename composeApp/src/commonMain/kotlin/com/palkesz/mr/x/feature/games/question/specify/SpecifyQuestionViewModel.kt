@@ -113,7 +113,7 @@ class SpecifyQuestionViewModelImpl(
         isQuestionTextValid.update { isTextValid }
         return if (isTextValid) {
             questionRepository.updateText(id = questionId, text = questionText.value).onSuccess {
-                event.update { SpecifyQuestionEvent.NavigateUp }
+                event.update { SpecifyQuestionEvent.NavigateUp(gameId = gameId) }
             }
         } else {
             Result.success(Unit)

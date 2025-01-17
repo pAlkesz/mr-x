@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
@@ -32,6 +33,7 @@ fun AuthInputForm(
     errorMessage: String,
     buttonText: String,
     inputLabel: String,
+    keyboardType: KeyboardType,
     onValueChanged: (String) -> Unit,
     onButtonClicked: () -> Unit,
 ) {
@@ -46,9 +48,11 @@ fun AuthInputForm(
             onValueChanged = onValueChanged,
             isValueValid = isValueValid,
             label = inputLabel,
-            keyboardType = KeyboardType.Email,
+            keyboardType = keyboardType,
+            imeAction = ImeAction.Send,
             error = errorMessage,
             showKeyboard = true,
+            onSend = { onButtonClicked() },
         )
         Spacer(modifier = Modifier.weight(1f))
         PrimaryButton(

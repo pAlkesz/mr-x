@@ -37,7 +37,7 @@ class GamesUiMapperImpl(private val authRepository: AuthRepository) : GamesUiMap
         }
 
     private fun Game.getLastActivityTimeStamp(result: GamesResult) =
-        (result.questions.filter { it.gameId == id }
+        (listOf(lastModifiedTimestamp) + result.questions.filter { it.gameId == id }
             .map { it.lastModifiedTimestamp } + result.barkochbaQuestions.filter { it.gameId == id }
             .map { it.lastModifiedTimestamp }).maxOfOrNull { it.seconds }
 }

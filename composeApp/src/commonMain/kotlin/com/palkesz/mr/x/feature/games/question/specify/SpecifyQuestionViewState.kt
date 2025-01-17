@@ -19,6 +19,6 @@ data class SpecifyQuestionViewState(
 @Immutable
 sealed interface SpecifyQuestionEvent {
 
-    data object NavigateUp : SpecifyQuestionEvent
+    data class NavigateUp(val gameId: String) : SpecifyQuestionEvent
 
 }

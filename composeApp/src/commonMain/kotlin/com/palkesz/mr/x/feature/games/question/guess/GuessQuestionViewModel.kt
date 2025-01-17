@@ -143,7 +143,7 @@ class GuessQuestionViewModelImpl(
                 firstName = firstName.value,
                 lastName = lastName.value.takeIf { it.isNotBlank() },
             ).onSuccess {
-                event.update { GuessQuestionEvent.NavigateUp }
+                event.update { GuessQuestionEvent.NavigateUp(gameId = gameId) }
             }
         } else {
             Result.success(Unit)

@@ -3,6 +3,8 @@ package com.palkesz.mr.x.core.ui.components.input
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.text.KeyboardActionScope
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -13,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
@@ -26,9 +29,11 @@ fun PrimaryTextField(
     label: String,
     error: String,
     keyboardType: KeyboardType = KeyboardType.Text,
+    imeAction: ImeAction = ImeAction.Unspecified,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     showKeyboard: Boolean,
     onValueChanged: (String) -> Unit,
+    onSend: KeyboardActionScope.() -> Unit = {},
 ) {
     val focusRequester = remember { FocusRequester() }
     val keyboard = LocalSoftwareKeyboardController.current
@@ -49,7 +54,9 @@ fun PrimaryTextField(
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType,
             capitalization = KeyboardCapitalization.Sentences,
+            imeAction = imeAction,
         ),
+        keyboardActions = KeyboardActions(onSend = onSend),
         supportingText = {
             AnimatedVisibility(!isValueValid) {
                 Text(text = error)

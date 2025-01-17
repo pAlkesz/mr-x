@@ -20,6 +20,6 @@ data class GuessQuestionViewState(
 @Immutable
 sealed interface GuessQuestionEvent {
 
-    data object NavigateUp : GuessQuestionEvent
+    data class NavigateUp(val gameId: String) : GuessQuestionEvent
 
 }

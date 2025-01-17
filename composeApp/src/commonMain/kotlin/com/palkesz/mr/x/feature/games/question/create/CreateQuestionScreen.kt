@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
@@ -81,6 +82,7 @@ private fun CreateQuestionScreenContent(
                 label = stringResource(Res.string.question_input_label),
                 error = stringResource(Res.string.question_input_error_message),
                 visualTransformation = QuestionMarkTransformation,
+                imeAction = ImeAction.Next,
                 showKeyboard = true,
             )
             Row(modifier = Modifier.padding(bottom = 16.dp)) {
@@ -91,6 +93,7 @@ private fun CreateQuestionScreenContent(
                     isValueValid = state.isFirstNameValid,
                     label = stringResource(Res.string.first_name_input_label),
                     error = stringResource(Res.string.question_first_name_error_message),
+                    imeAction = ImeAction.Next,
                     showKeyboard = false,
                 )
                 PrimaryTextField(
@@ -100,7 +103,9 @@ private fun CreateQuestionScreenContent(
                     isValueValid = state.isLastNameValid,
                     label = stringResource(Res.string.expected_last_name_input_label),
                     error = stringResource(Res.string.question_last_name_error_message),
+                    imeAction = ImeAction.Send,
                     showKeyboard = false,
+                    onSend = { onCreateClicked() }
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -127,7 +132,11 @@ private fun HandleEvent(event: CreateQuestionEvent?, onEventHandled: () -> Unit)
                         addedQuestionId = createQuestionEvent.questionId,
                         addedBarkochbaQuestionId = null,
                     )
-                )
+                ) {
+                    popUpTo<GameGraph.Game> {
+                        inclusive = true
+                    }
+                }
             }
         }
         onEventHandled()

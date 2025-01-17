@@ -17,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,6 +31,7 @@ import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.ui.effects.TitleBarEffect
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.feature.app.appbars.titlebarstate.TitleBarDetails
+import com.palkesz.mr.x.feature.games.GameGraph
 import com.palkesz.mr.x.feature.games.game.ui.AnswerText
 import com.palkesz.mr.x.feature.games.game.ui.QuestionText
 import mrx.composeapp.generated.resources.Res
@@ -92,6 +95,7 @@ private fun GuessQuestionScreenContent(
                     isValueValid = state.isFirstNameValid,
                     label = stringResource(Res.string.first_name_input_label),
                     error = stringResource(Res.string.question_first_name_error_message),
+                    imeAction = ImeAction.Next,
                     showKeyboard = true,
                 )
                 PrimaryTextField(
@@ -101,7 +105,9 @@ private fun GuessQuestionScreenContent(
                     isValueValid = state.isLastNameValid,
                     label = stringResource(Res.string.expected_last_name_input_label),
                     error = stringResource(Res.string.question_last_name_error_message),
+                    imeAction = ImeAction.Send,
                     showKeyboard = false,
+                    onSend = { onAnswerClicked() },
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -156,10 +162,23 @@ private fun QuestionDetails(
 
 @Composable
 private fun HandleEvent(event: GuessQuestionEvent?, onEventHandled: () -> Unit) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     HandleEventEffect(event) { guessEvent, _, _, navController ->
         when (guessEvent) {
             is GuessQuestionEvent.NavigateUp -> {
-                navController?.popBackStack()
+                keyboardController?.hide()
+                navController?.navigate(
+                    route = GameGraph.Game(
+                        id = guessEvent.gameId,
+                        tabIndex = 0,
+                        addedQuestionId = null,
+                        addedBarkochbaQuestionId = null,
+                    )
+                ) {
+                    popUpTo<GameGraph.Game> {
+                        inclusive = true
+                    }
+                }
             }
         }
         onEventHandled()

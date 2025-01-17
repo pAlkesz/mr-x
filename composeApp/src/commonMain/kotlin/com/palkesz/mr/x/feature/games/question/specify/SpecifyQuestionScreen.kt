@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -40,6 +41,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,6 +52,7 @@ import com.palkesz.mr.x.core.ui.effects.TitleBarEffect
 import com.palkesz.mr.x.core.ui.helpers.QuestionMarkTransformation
 import com.palkesz.mr.x.core.util.networking.ViewState
 import com.palkesz.mr.x.feature.app.appbars.titlebarstate.TitleBarDetails
+import com.palkesz.mr.x.feature.games.GameGraph
 import com.palkesz.mr.x.feature.games.game.ui.AnswerText
 import com.palkesz.mr.x.feature.games.game.ui.ExpectedAnswerText
 import com.palkesz.mr.x.feature.games.game.ui.QuestionText
@@ -192,7 +195,11 @@ private fun QuestionInputField(
                 onValueChange = onTextChanged,
                 isError = !isTextValid,
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Send,
+                ),
+                keyboardActions = KeyboardActions(onSend = { onSaveClicked() }),
                 visualTransformation = QuestionMarkTransformation,
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
@@ -244,10 +251,23 @@ private fun SaveButton(modifier: Modifier = Modifier, enabled: Boolean, onClick:
 
 @Composable
 private fun HandleEvent(event: SpecifyQuestionEvent?, onEventHandled: () -> Unit) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     HandleEventEffect(event) { specifyEvent, _, _, navController ->
         when (specifyEvent) {
             is SpecifyQuestionEvent.NavigateUp -> {
-                navController?.popBackStack()
+                keyboardController?.hide()
+                navController?.navigate(
+                    route = GameGraph.Game(
+                        id = specifyEvent.gameId,
+                        tabIndex = 0,
+                        addedQuestionId = null,
+                        addedBarkochbaQuestionId = null,
+                    )
+                ) {
+                    popUpTo<GameGraph.Game> {
+                        inclusive = true
+                    }
+                }
             }
         }
         onEventHandled()

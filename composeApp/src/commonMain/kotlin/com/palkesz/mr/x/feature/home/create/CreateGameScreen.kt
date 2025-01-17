@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
@@ -72,6 +73,7 @@ private fun CreateGameScreenContent(
                 isValueValid = state.isFirstNameValid,
                 label = stringResource(Res.string.first_name_input_label),
                 error = stringResource(Res.string.first_name_error_message),
+                imeAction = ImeAction.Next,
                 showKeyboard = true,
             )
             PrimaryTextField(
@@ -80,7 +82,9 @@ private fun CreateGameScreenContent(
                 isValueValid = state.isLastNameValid,
                 label = stringResource(Res.string.last_name_input_label),
                 error = stringResource(Res.string.last_name_error_message),
+                imeAction = ImeAction.Send,
                 showKeyboard = false,
+                onSend = { onCreateClicked() },
             )
             Spacer(modifier = Modifier.weight(1f))
             PrimaryButton(

@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
@@ -58,7 +59,7 @@ private fun CreateBarkochbaQuestionScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(state = rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             PrimaryTextField(
@@ -68,8 +69,10 @@ private fun CreateBarkochbaQuestionScreenContent(
                 isValueValid = state.isTextValid,
                 label = stringResource(Res.string.question_input_label),
                 error = stringResource(Res.string.question_input_error_message),
+                imeAction = ImeAction.Send,
                 visualTransformation = QuestionMarkTransformation,
                 showKeyboard = true,
+                onSend = { onCreateClicked() },
             )
             Spacer(modifier = Modifier.weight(1f))
             PrimaryButton(
@@ -95,7 +98,11 @@ private fun HandleEvent(event: CreateBarkochbaQuestionEvent?, onEventHandled: ()
                         addedQuestionId = null,
                         addedBarkochbaQuestionId = createEvent.questionId,
                     )
-                )
+                ) {
+                    popUpTo<GameGraph.Game> {
+                        inclusive = true
+                    }
+                }
             }
         }
         onEventHandled()

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.palkesz.mr.x.core.ui.components.loadingindicator.ContentWithBackgroundLoadingIndicator
@@ -54,6 +55,7 @@ private fun AddUsernameScreenContent(
             buttonText = stringResource(Res.string.save_button_label),
             isButtonEnabled = state.isSaveButtonEnabled,
             inputLabel = stringResource(Res.string.username_field_label),
+            keyboardType = KeyboardType.Text,
             onValueChanged = onUsernameChanged,
             onButtonClicked = onSaveClicked,
         )

@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -69,6 +70,7 @@ private fun LoginScreenContent(
                     inputLabel = stringResource(Res.string.email_field_label),
                     buttonText = stringResource(Res.string.sending_login_link_button_label),
                     isButtonEnabled = state.isSendButtonEnabled,
+                    keyboardType = KeyboardType.Email,
                     onValueChanged = onEmailChanged,
                     onButtonClicked = onSendLinkClicked,
                 )
