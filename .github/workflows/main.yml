@@ -166,7 +166,7 @@ jobs:
           code-signing-identity: "Apple Distribution"
           team-id: ${{ secrets.IOS_TEAM_ID }}
           certificate-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
-          export-options: ExportOptions.plist
+          export-options: iosApp/ExportOptions.plist
 
       - name: Upload IPA file as artifact
         uses: actions/upload-artifact@v4
