@@ -14,6 +14,8 @@ EN_STRINGS = {
     "question_answered_notification_title": "Question answered by %s",
     "question_passed_notification_title": "Question passed by %s",
     "question_specified_notification_title": "Question specified by %s",
+    "question_guessed_notification_title": "Question guessed by %s",
+    "question_missed_notification_title": "Question missed by %s",
     "host_answer_rejected_notification_title": "%s's answer rejected, question is ready to answer",
     "game_over_notification_title": "Game won by %s",
     "new_barkochba_question_notification_title": "New barkochba question by %s",
@@ -24,9 +26,11 @@ EN_STRINGS = {
 
 HU_STRINGS = {
     "new_question_notification_title": "%s új kérdést tett fel",
-    "question_answered_notification_title": "%s megválaszolta a kérdésedet",
-    "question_passed_notification_title": "%s passzolta a kérdésedet",
+    "question_answered_notification_title": "%s megválaszolta a kérdést",
+    "question_passed_notification_title": "%s passzolta a kérdést",
     "question_specified_notification_title": "%s szűkített a kérdésén",
+    "question_guessed_notification_title": "%s kitalálta a kérdést",
+    "question_missed_notification_title": "%s elhibázta a kérdést",
     "host_answer_rejected_notification_title": "%s válaszát visszautasították, most te jössz",
     "game_over_notification_title": "%s megnyerte a játékot",
     "new_barkochba_question_notification_title": "%s új barkochba-kérdést tett fel",
@@ -69,6 +73,8 @@ def onQuestionCreated(event: Event[DocumentSnapshot]) -> None:
         ).strip()
         players: list[str] = game.get("players", [])
         recipients.append(players)
+    if recipients.count == 0:
+        return
     tokens = tokenCollection.where("userId", "in", recipients).get()
     messages = []
     logger.info(f"Recipients: {recipients}")
@@ -163,6 +169,50 @@ def onQuestionUpdated(event: Event[Change[DocumentSnapshot]]) -> None:
         notificationBody = capfirst(f"{after["text"]}?")
         players: list[str] = game.get("players", [])
         recipients.append(players)
+    elif (
+        before["status"] == "WAITING_FOR_PLAYERS"
+        and after["status"] == "GUESSED_BY_PLAYER"
+    ):
+        game = gameCollection.document(after["gameId"]).get().to_dict()
+        playerId = after["playerAnswer"]["userId"]
+        notificationTitleParameter = (
+            playerCollection.document(playerId).get().to_dict()["name"]
+        )
+        notificationTitleRes = "question_guessed_notification_title"
+        notificationBody = capfirst(
+            f"{after["text"]}? {capfirst(after["playerAnswer"]["firstName"])} {capfirst(after["playerAnswer"]["lastName"] if after["playerAnswer"]["lastName"] is not None else "")}"
+        ).strip()
+        recipients.append(game["hostId"])
+        recipients.append(after["userId"])
+    elif (
+        before["status"] == "WAITING_FOR_PLAYERS"
+        and after["status"] == "MISSED_BY_PLAYER"
+    ):
+        game = gameCollection.document(after["gameId"]).get().to_dict()
+        playerId = after["playerAnswer"]["userId"]
+        notificationTitleParameter = (
+            playerCollection.document(playerId).get().to_dict()["name"]
+        )
+        notificationTitleRes = "question_missed_notification_title"
+        notificationBody = capfirst(
+            f"{after["text"]}? {capfirst(after["playerAnswer"]["firstName"])} {capfirst(after["playerAnswer"]["lastName"] if after["playerAnswer"]["lastName"] is not None else "")}"
+        ).strip()
+        recipients.append(game["hostId"])
+        recipients.append(after["userId"])
+    elif (
+        before["status"] == "WAITING_FOR_HOST" and after["status"] == "GUESSED_BY_HOST"
+    ):
+        hostId = after["hostAnswer"]["userId"]
+        notificationTitleParameter = (
+            playerCollection.document(hostId).get().to_dict()["name"]
+        )
+        notificationTitleRes = "question_guessed_notification_title"
+        notificationBody = capfirst(
+            f"{after["text"]}? {capfirst(after["hostAnswer"]["firstName"])} {capfirst(after["hostAnswer"]["lastName"] if after["hostAnswer"]["lastName"] is not None else "")}"
+        ).strip()
+        recipients.append(after["userId"])
+    if recipients.count == 0:
+        return
     tokens = tokenCollection.where("userId", "in", recipients).get()
     messages = []
     logger.info(f"Recipients: {recipients}")
@@ -231,6 +281,8 @@ def onBarkochbaQuestionUpdated(event: Event[Change[DocumentSnapshot]]) -> None:
         notificationBodyRes = "yes_label" if after["answer"] == "YES" else "no_label"
         players: list[str] = game.get("players", [])
         recipients.append(players)
+    if recipients.count == 0:
+        return
     tokens = tokenCollection.where("userId", "in", recipients).get()
     messages = []
     logger.info(f"Recipients: {recipients}")

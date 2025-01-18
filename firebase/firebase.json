@@ -24,17 +24,6 @@
         "firebase-debug.*.log",
         "*.local"
       ]
-    },
-    {
-      "source": "mrx",
-      "codebase": "mrx",
-      "ignore": [
-        "venv",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log",
-        "*.local"
-      ]
     }
   ]
 }

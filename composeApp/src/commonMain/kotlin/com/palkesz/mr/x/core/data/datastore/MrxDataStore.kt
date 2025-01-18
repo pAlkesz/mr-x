@@ -59,13 +59,11 @@ class MrXDataStoreImpl(
 
     override suspend fun getUserEmail(): String? = preferencesDataStore.data.first()[USER_EMAIL_KEY]
 
-    override suspend fun storeUserEmail(email: String) = try {
+    override suspend fun storeUserEmail(email: String) = runCatching {
         preferencesDataStore.edit { preferences ->
             preferences[USER_EMAIL_KEY] = email
         }
-        Result.success(Unit)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
+        Unit
     }
 
     override fun observeNotificationCount(gameIds: List<String>) =
@@ -88,7 +86,7 @@ class MrXDataStoreImpl(
         id: String,
         gameId: String,
         type: LocalNotificationType
-    ) = try {
+    ) = runCatching {
         notificationsDataStore.updateData { data ->
             val notifications = data.notifications.toMutableMap()
             notifications[gameId] = LocalNotifications(
@@ -99,32 +97,28 @@ class MrXDataStoreImpl(
             )
             LocalNotificationMap(notifications = notifications)
         }
-        val badgeCount = notificationsDataStore.data.first().notifications.values.sumOf {
+        notificationsDataStore.data.first().notifications.values.sumOf {
             it.notifications.size
         }
-        Result.success(value = badgeCount)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
     }
 
-    override suspend fun clearNotifications(gameId: String, type: LocalNotificationType) = try {
-        var deletedNotifications: List<LocalNotification> = emptyList()
-        var badgeCount = 0
-        notificationsDataStore.updateData { data ->
-            val notifications = data.notifications.toMutableMap()
-            val (clearedNotifications, keptNotifications) =
-                notifications[gameId]?.notifications.orEmpty().partition { it.type == type }
-            deletedNotifications = clearedNotifications
-            notifications[gameId] = LocalNotifications(notifications = keptNotifications)
-            badgeCount = notifications.values.sumOf {
-                it.notifications.size
+    override suspend fun clearNotifications(gameId: String, type: LocalNotificationType) =
+        runCatching {
+            var deletedNotifications: List<LocalNotification> = emptyList()
+            var badgeCount = 0
+            notificationsDataStore.updateData { data ->
+                val notifications = data.notifications.toMutableMap()
+                val (clearedNotifications, keptNotifications) =
+                    notifications[gameId]?.notifications.orEmpty().partition { it.type == type }
+                deletedNotifications = clearedNotifications
+                notifications[gameId] = LocalNotifications(notifications = keptNotifications)
+                badgeCount = notifications.values.sumOf {
+                    it.notifications.size
+                }
+                LocalNotificationMap(notifications = notifications)
             }
-            LocalNotificationMap(notifications = notifications)
+            deletedNotifications to badgeCount
         }
-        Result.success(value = deletedNotifications to badgeCount)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
-    }
 
     companion object {
         private val USER_EMAIL_KEY = stringPreferencesKey("USER_EMAIL_KEY")

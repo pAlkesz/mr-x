@@ -55,64 +55,47 @@ class GameRepositoryImpl(
     private val _games = MutableStateFlow(emptyList<Game>())
     override val games = _games.asStateFlow()
 
-    override suspend fun createGame(game: Game) = try {
+    override suspend fun createGame(game: Game) = runCatching {
         firestore.collection(GAMES_COLLECTION_KEY).document(game.id).set(game)
-        Result.success(game)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
+        game
     }
 
-    override suspend fun updateStatus(id: String, status: GameStatus) = try {
-        firestore.collection(GAMES_COLLECTION_KEY).document(id)
+    override suspend fun updateStatus(id: String, status: GameStatus) = runCatching {
+        firestore.collection(GAMES_COLLECTION_KEY)
+            .document(id)
             .update(Pair(STATUS_FIELD_KEY, status))
-        Result.success(Unit)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
     }
 
-    override suspend fun fetchGame(id: String): Result<Game> {
+    override suspend fun fetchGame(id: String) = runCatching {
         games.value.find { it.id == id }?.let { game ->
-            return Result.success(game)
+            return@runCatching game
         }
-        return try {
-            val game = firestore.collection(GAMES_COLLECTION_KEY).where {
-                ID_FIELD_KEY equalTo id
-            }.limit(1).get().documents.map { it.data(Game.serializer()) }.first()
+        firestore.collection(GAMES_COLLECTION_KEY).where {
+            ID_FIELD_KEY equalTo id
+        }.limit(1).get().documents.map { it.data(Game.serializer()) }.first().also { game ->
             _games.update { cachedGames ->
                 (listOf(game) + cachedGames).distinctBy { it.id }
                     .sortedByDescending { it.lastModifiedTimestamp.seconds }
             }
-            Result.success(game)
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
         }
     }
 
-    override suspend fun fetchGames(playerId: String): Result<List<Game>> {
+    override suspend fun fetchGames(playerId: String) = runCatching {
         if (games.value.isNotEmpty()) {
-            return Result.success(games.value)
+            return@runCatching games.value
         }
-        return try {
-            val games = getGamesQuery(playerId).get().documents.map { it.data(Game.serializer()) }
+        getGamesQuery(playerId).get().documents.map { it.data(Game.serializer()) }.also { games ->
             _games.update { games }
-            Result.success(games)
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
         }
     }
 
-    override suspend fun joinGame(gameId: String, playerId: String): Result<Unit> {
+    override suspend fun joinGame(gameId: String, playerId: String) = runCatching {
         _games.value.find { it.id == gameId }?.let {
-            return Result.success(Unit)
+            return@runCatching
         }
-        return try {
-            firestore.collection(GAMES_COLLECTION_KEY).document(gameId).update(
-                Pair(PLAYERS_FIELD_KEY, FieldValue.arrayUnion(playerId))
-            )
-            Result.success(Unit)
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
-        }
+        firestore.collection(GAMES_COLLECTION_KEY).document(gameId).update(
+            Pair(PLAYERS_FIELD_KEY, FieldValue.arrayUnion(playerId))
+        )
     }
 
     override suspend fun observeGames() {

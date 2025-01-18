@@ -59,63 +59,44 @@ class BarkochbaQuestionRepositoryImpl(
     private val _questions = MutableStateFlow<List<BarkochbaQuestion>>(emptyList())
     override val questions = _questions.asStateFlow()
 
-    override suspend fun fetchQuestions(gameId: String): Result<List<BarkochbaQuestion>> {
-        val gameQuestions = questions.value.filter { it.gameId == gameId }
-        if (gameQuestions.isNotEmpty()) {
-            return Result.success(gameQuestions)
+    override suspend fun fetchQuestions(gameId: String) = runCatching {
+        questions.value.filter { it.gameId == gameId }.takeIf { it.isNotEmpty() }?.let {
+            return@runCatching it
         }
-        return try {
-            val questions = firestore.collection(BARKOCHBA_COLLECTION_NAME).where {
-                GAME_ID_FIELD_KEY equalTo gameId
-            }.processQuestionQuery()
-            Result.success(questions)
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
-        }
+        firestore.collection(BARKOCHBA_COLLECTION_NAME).where {
+            GAME_ID_FIELD_KEY equalTo gameId
+        }.processQuestionQuery()
     }
 
-    override suspend fun fetchQuestions(gameIds: List<String>): Result<List<BarkochbaQuestion>> {
+    override suspend fun fetchQuestions(gameIds: List<String>) = runCatching {
         val gameQuestions = questions.value.filter { it.gameId in gameIds }
         if (gameQuestions.map { it.gameId }.containsAll(elements = gameIds)) {
-            return Result.success(gameQuestions)
+            return@runCatching gameQuestions
         }
-        return try {
-            val questions = firestore.collection(BARKOCHBA_COLLECTION_NAME).where {
-                GAME_ID_FIELD_KEY inArray gameIds
-            }.processQuestionQuery()
-            Result.success(questions)
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
-        }
+        firestore.collection(BARKOCHBA_COLLECTION_NAME).where {
+            GAME_ID_FIELD_KEY inArray gameIds
+        }.processQuestionQuery()
     }
 
-    override suspend fun createQuestion(question: BarkochbaQuestion) = try {
+    override suspend fun createQuestion(question: BarkochbaQuestion) = runCatching {
         firestore.collection(BARKOCHBA_COLLECTION_NAME).document(question.id).set(question)
-        Result.success(Unit)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
     }
 
-    override suspend fun updateText(id: String, text: String) = try {
+    override suspend fun updateText(id: String, text: String) = runCatching {
         firestore.collection(BARKOCHBA_COLLECTION_NAME).document(id).update(
             Pair(TEXT_FIELD_KEY, text),
             Pair(STATUS_FIELD_KEY, BarkochbaStatus.ASKED),
             Pair(LAST_MODIFIED_FIELD_KEY, Timestamp.now())
         )
-        Result.success(value = id)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
+        id
     }
 
-    override suspend fun updateAnswer(id: String, answer: Boolean) = try {
+    override suspend fun updateAnswer(id: String, answer: Boolean) = runCatching {
         firestore.collection(BARKOCHBA_COLLECTION_NAME).document(id).update(
             Pair(ANSWER_FIELD_KEY, answer),
             Pair(STATUS_FIELD_KEY, BarkochbaStatus.ANSWERED),
             Pair(LAST_MODIFIED_FIELD_KEY, Timestamp.now())
         )
-        Result.success(Unit)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
     }
 
     override suspend fun observeQuestions() {

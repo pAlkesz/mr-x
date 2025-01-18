@@ -74,90 +74,65 @@ class QuestionRepositoryImpl(
     private val _questions = MutableStateFlow(emptyList<Question>())
     override val questions = _questions.asStateFlow()
 
-    override suspend fun fetchQuestions(gameId: String): Result<List<Question>> {
-        val gameQuestions = questions.value.filter { it.gameId == gameId }
-        if (gameQuestions.isNotEmpty()) {
-            return Result.success(gameQuestions)
+    override suspend fun fetchQuestions(gameId: String) = runCatching {
+        questions.value.filter { it.gameId == gameId }.takeIf { it.isNotEmpty() }?.let {
+            return@runCatching it
         }
-        return try {
-            val questions = firestore.collection(QUESTIONS_COLLECTION_NAME).where {
-                GAME_ID_FIELD_KEY equalTo gameId
-            }.processQuestionQuery()
-            Result.success(questions)
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
-        }
+        firestore.collection(QUESTIONS_COLLECTION_NAME).where {
+            GAME_ID_FIELD_KEY equalTo gameId
+        }.processQuestionQuery()
     }
 
-    override suspend fun fetchQuestions(gameIds: List<String>): Result<List<Question>> {
+    override suspend fun fetchQuestions(gameIds: List<String>) = runCatching {
         val gameQuestions = questions.value.filter { it.gameId in gameIds }
         if (gameQuestions.map { it.gameId }.containsAll(elements = gameIds)) {
-            return Result.success(gameQuestions)
+            return@runCatching gameQuestions
         }
-        return try {
-            val questions = firestore.collection(QUESTIONS_COLLECTION_NAME).where {
-                GAME_ID_FIELD_KEY inArray gameIds
-            }.processQuestionQuery()
-            Result.success(questions)
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
-        }
+        firestore.collection(QUESTIONS_COLLECTION_NAME).where {
+            GAME_ID_FIELD_KEY inArray gameIds
+        }.processQuestionQuery()
     }
 
-    override suspend fun createQuestion(question: Question) = try {
+    override suspend fun createQuestion(question: Question) = runCatching {
         firestore.collection(QUESTIONS_COLLECTION_NAME).document(question.id).set(question)
         _questions.update { cachedQuestions ->
             (listOf(question) + cachedQuestions).distinctBy { it.id }
                 .sortedByDescending { it.lastModifiedTimestamp.seconds }
         }
-        Result.success(value = question)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
+        question
     }
 
     override suspend fun updateHostAnswer(id: String, answer: Answer, status: QuestionStatus) =
-        try {
+        runCatching {
             firestore.collection(QUESTIONS_COLLECTION_NAME).document(id).update(
                 Pair(HOST_ANSWER_FIELD_KEY, answer),
                 Pair(STATUS_FIELD_KEY, status),
                 Pair(LAST_MODIFIED_FIELD_KEY, Timestamp.now())
             )
-            Result.success(Unit)
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
         }
 
     override suspend fun updatePlayerAnswer(id: String, answer: Answer, status: QuestionStatus) =
-        try {
+        runCatching {
             firestore.collection(QUESTIONS_COLLECTION_NAME).document(id).update(
                 Pair(PLAYER_ANSWER_FIELD_KEY, answer),
                 Pair(STATUS_FIELD_KEY, status),
                 Pair(LAST_MODIFIED_FIELD_KEY, Timestamp.now())
             )
-            Result.success(Unit)
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
         }
 
-    override suspend fun updateStatus(id: String, status: QuestionStatus) = try {
+    override suspend fun updateStatus(id: String, status: QuestionStatus) = runCatching {
         firestore.collection(QUESTIONS_COLLECTION_NAME).document(id).update(
             Pair(STATUS_FIELD_KEY, status),
             Pair(LAST_MODIFIED_FIELD_KEY, Timestamp.now())
         )
-        Result.success(Unit)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
     }
 
-    override suspend fun updateText(id: String, text: String) = try {
+    override suspend fun updateText(id: String, text: String) = runCatching {
         firestore.collection(QUESTIONS_COLLECTION_NAME).document(id).update(
             Pair(TEXT_FIELD_KEY, text),
             Pair(STATUS_FIELD_KEY, QuestionStatus.WAITING_FOR_HOST),
             Pair(LAST_MODIFIED_FIELD_KEY, Timestamp.now())
         )
-        Result.success(Unit)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
     }
 
     override suspend fun observeQuestions() {

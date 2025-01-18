@@ -30,7 +30,11 @@ class ObserveGameResultUseCase(
             game = game,
             host = host,
             players = players,
-            questions = questions.filter { it.userId in playerIds },
+            questions = questions.filter { question ->
+                question.userId in playerIds && question.playerAnswer?.userId?.let { userId ->
+                    userId in playerIds
+                } ?: true
+            },
             barkochbaQuestions = barkochbaQuestions.filter { it.userId in playerIds },
         )
     }

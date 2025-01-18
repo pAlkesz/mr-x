@@ -15,14 +15,11 @@ class MessagingRepositoryImpl(
     private val authRepository: AuthRepository,
 ) : MessagingRepository {
 
-    override suspend fun uploadToken(token: String) = try {
+    override suspend fun uploadToken(token: String) = runCatching {
         val userId = authRepository.userId ?: throw Throwable(message = NO_USER_ID_FOUND_MESSAGE)
         firestore.collection(TOKENS_COLLECTION_KEY)
             .document(userId)
             .set(Token(userId = userId, token = token, locale = locale))
-        Result.success(value = Unit)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
     }
 
     companion object {

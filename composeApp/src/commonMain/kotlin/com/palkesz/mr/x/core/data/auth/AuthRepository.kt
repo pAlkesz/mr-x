@@ -57,35 +57,24 @@ class AuthRepositoryImpl(
     override val loggedIn: Flow<Boolean>
         get() = auth.authStateChanged.map { it != null }
 
-    override suspend fun sendSignInLinkToEmail(email: String): Result<Unit> {
+    override suspend fun sendSignInLinkToEmail(email: String) = runCatching {
         val actionCodeSettings = ActionCodeSettings(
             url = SIGN_IN_LINK,
             canHandleCodeInApp = true,
             iOSBundleId = APP_ID,
             androidPackageName = AndroidPackageName(APP_ID, installIfNotAvailable = true),
         )
-        return try {
-            auth.sendSignInLinkToEmail(email = email, actionCodeSettings = actionCodeSettings)
-            Result.success(Unit)
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
-        }
+        auth.sendSignInLinkToEmail(email = email, actionCodeSettings = actionCodeSettings)
     }
 
-    override suspend fun signInWithEmailLink(email: String, link: String) = try {
+    override suspend fun signInWithEmailLink(email: String, link: String) = runCatching {
         auth.signInWithEmailLink(email = email, link = link)
-        Result.success(Unit)
-    } catch (exception: Exception) {
-        Result.failure(exception = exception)
+        Unit
     }
 
-    override suspend fun updateUsername(name: String) =
-        try {
-            auth.currentUser?.updateProfile(displayName = name)
-            Result.success(Unit)
-        } catch (exception: Exception) {
-            Result.failure(exception = exception)
-        }
+    override suspend fun updateUsername(name: String) = runCatching {
+        auth.currentUser?.updateProfile(displayName = name) ?: Unit
+    }
 
     override fun isSignInLink(link: DeepLink) =
         link.getSignInLink()?.let { signInLink ->

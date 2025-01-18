@@ -19,7 +19,10 @@ class FetchGameResultUseCase(
         val questions = questionRepository.fetchQuestions(gameId = id).getOrThrow()
         val barkochbaQuestions =
             barkochbaQuestionRepository.fetchQuestions(gameId = id).getOrThrow()
-        val players = userRepository.fetchUsers(ids = questions.map { it.userId }).getOrThrow()
+        val playerIds = (questions.map { question ->
+            listOfNotNull(question.userId, question.playerAnswer?.userId)
+        }.flatten() + barkochbaQuestions.map { it.userId }).distinct()
+        val players = userRepository.fetchUsers(ids = playerIds).getOrThrow()
         GameResult(
             game = game,
             host = host,

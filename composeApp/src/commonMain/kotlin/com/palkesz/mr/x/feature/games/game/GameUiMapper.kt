@@ -6,7 +6,6 @@ import com.palkesz.mr.x.core.model.question.BarkochbaStatus
 import com.palkesz.mr.x.core.model.question.QuestionStatus
 import com.palkesz.mr.x.core.util.extensions.capitalizeWords
 import com.palkesz.mr.x.core.util.extensions.getName
-import com.palkesz.mr.x.core.util.extensions.immutableMap
 import com.palkesz.mr.x.core.util.extensions.immutableMapNotNull
 import mrx.composeapp.generated.resources.Res
 import mrx.composeapp.generated.resources.own_name_label
@@ -66,7 +65,7 @@ class GameUiMapperImpl(
     private suspend fun GameResult.getOwner(id: String) = if (id == authRepository.userId) {
         getString(resource = Res.string.own_name_label)
     } else {
-        players.first { it.id == id }.name
+        players.firstOrNull { it.id == id }?.name
     }
 
     private suspend fun GameResult.getHostName(isHost: Boolean) = if (isHost) {
@@ -76,14 +75,18 @@ class GameUiMapperImpl(
     }
 
     private suspend fun GameResult.mapQuestions(isHost: Boolean, hostName: String) =
-        questions.immutableMap { question ->
+        questions.immutableMapNotNull { question ->
+            val owner = getOwner(id = question.userId) ?: return@immutableMapNotNull null
+            val answerOwner = question.playerAnswer?.userId?.let { id ->
+                getOwner(id = id)
+            }
             when {
                 question.status == QuestionStatus.WAITING_FOR_HOST && isHost -> {
                     QuestionItem.GuessAsHostItem(
                         id = question.id,
                         text = question.text,
                         number = question.number,
-                        owner = getOwner(id = question.userId),
+                        owner = owner,
                     )
                 }
 
@@ -92,7 +95,7 @@ class GameUiMapperImpl(
                         id = question.id,
                         text = question.text,
                         number = question.number,
-                        owner = getOwner(id = question.userId),
+                        owner = owner,
                     )
                 }
 
@@ -103,7 +106,7 @@ class GameUiMapperImpl(
                         hostAnswer = question.hostAnswer?.getName(),
                         hostName = hostName,
                         number = question.number,
-                        owner = getOwner(id = question.userId),
+                        owner = owner,
                     )
                 }
 
@@ -114,7 +117,7 @@ class GameUiMapperImpl(
                         hostAnswer = question.hostAnswer?.getName(),
                         hostName = hostName,
                         number = question.number,
-                        owner = getOwner(id = question.userId),
+                        owner = owner,
                     )
                 }
 
@@ -123,7 +126,7 @@ class GameUiMapperImpl(
                         id = question.id,
                         text = question.text,
                         number = question.number,
-                        owner = getOwner(id = question.userId),
+                        owner = owner,
                         answer = "${question.expectedFirstName} ${question.expectedLastName.orEmpty()}"
                             .trim()
                             .capitalizeWords(),
@@ -137,7 +140,7 @@ class GameUiMapperImpl(
                         hostAnswer = question.hostAnswer?.getName().orEmpty(),
                         hostName = hostName,
                         number = question.number,
-                        owner = getOwner(id = question.userId),
+                        owner = owner,
                     )
                 }
 
@@ -148,7 +151,7 @@ class GameUiMapperImpl(
                         hostAnswer = question.hostAnswer?.getName().orEmpty(),
                         hostName = hostName,
                         number = question.number,
-                        owner = getOwner(id = question.userId),
+                        owner = owner,
                     )
                 }
 
@@ -159,52 +162,56 @@ class GameUiMapperImpl(
                         hostAnswer = question.hostAnswer?.getName().orEmpty(),
                         hostName = hostName,
                         number = question.number,
-                        owner = getOwner(id = question.userId),
+                        owner = owner,
                     )
                 }
 
                 question.status == QuestionStatus.GUESSED_BY_PLAYER -> {
-                    QuestionItem.GuessedByPlayerItem(
-                        id = question.id,
-                        text = question.text,
-                        answer = question.playerAnswer?.getName().orEmpty(),
-                        answerOwner = question.playerAnswer?.userId?.let { id ->
-                            getOwner(id = id)
-                        }.orEmpty(),
-                        hostAnswer = question.hostAnswer?.getName(),
-                        hostName = hostName,
-                        number = question.number,
-                        owner = getOwner(id = question.userId),
-                    )
+                    answerOwner?.let {
+                        QuestionItem.GuessedByPlayerItem(
+                            id = question.id,
+                            text = question.text,
+                            answer = question.playerAnswer.getName(),
+                            answerOwner = answerOwner,
+                            hostAnswer = question.hostAnswer?.getName(),
+                            hostName = hostName,
+                            number = question.number,
+                            owner = owner,
+                        )
+                    }
                 }
 
                 else -> {
-                    QuestionItem.MissedByPlayerItem(
-                        id = question.id,
-                        text = question.text,
-                        answer = question.playerAnswer?.getName().orEmpty(),
-                        answerOwner = question.playerAnswer?.userId?.let { id ->
-                            getOwner(id = id)
-                        }.orEmpty(),
-                        hostAnswer = question.hostAnswer?.getName(),
-                        hostName = hostName,
-                        number = question.number,
-                        owner = getOwner(id = question.userId),
-                        expectedAnswer = "${question.expectedFirstName} ${question.expectedLastName ?: ""}"
-                    )
+                    answerOwner?.let {
+                        QuestionItem.MissedByPlayerItem(
+                            id = question.id,
+                            text = question.text,
+                            answer = question.playerAnswer.getName(),
+                            answerOwner = answerOwner,
+                            hostAnswer = question.hostAnswer?.getName(),
+                            hostName = hostName,
+                            number = question.number,
+                            owner = owner,
+                            expectedAnswer = "${question.expectedFirstName} ${question.expectedLastName ?: ""}"
+                        )
+                    }
                 }
             }
         }
 
-    private suspend fun GameResult.mapBarkochbaQuestions(isHost: Boolean, hostName: String) =
+    private suspend fun GameResult.mapBarkochbaQuestions(
+        isHost: Boolean,
+        hostName: String
+    ) =
         barkochbaQuestions.immutableMapNotNull { question ->
+            val owner = getOwner(id = question.userId) ?: return@immutableMapNotNull null
             when {
                 question.status == BarkochbaStatus.ASKED && isHost -> {
                     BarkochbaItem.AnswerAsHostItem(
                         id = question.id,
                         text = question.text,
                         number = question.number,
-                        owner = getOwner(id = question.userId),
+                        owner = owner,
                     )
                 }
 
@@ -213,7 +220,7 @@ class GameUiMapperImpl(
                         id = question.id,
                         text = question.text,
                         number = question.number,
-                        owner = getOwner(id = question.userId),
+                        owner = owner,
                     )
                 }
 
@@ -222,7 +229,7 @@ class GameUiMapperImpl(
                         id = question.id,
                         text = question.text,
                         number = question.number,
-                        owner = getOwner(id = question.userId),
+                        owner = owner,
                         answer = question.answer,
                         hostName = hostName,
                     )
