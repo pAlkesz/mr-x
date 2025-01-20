@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -71,6 +72,7 @@ private fun LoginScreenContent(
                     buttonText = stringResource(Res.string.sending_login_link_button_label),
                     isButtonEnabled = state.isSendButtonEnabled,
                     keyboardType = KeyboardType.Email,
+                    capitalization = KeyboardCapitalization.None,
                     onValueChanged = onEmailChanged,
                     onButtonClicked = onSendLinkClicked,
                 )

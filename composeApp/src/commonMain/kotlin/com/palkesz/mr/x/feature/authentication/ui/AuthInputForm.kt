@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
@@ -34,6 +35,7 @@ fun AuthInputForm(
     buttonText: String,
     inputLabel: String,
     keyboardType: KeyboardType,
+    capitalization: KeyboardCapitalization = KeyboardCapitalization.Sentences,
     onValueChanged: (String) -> Unit,
     onButtonClicked: () -> Unit,
 ) {
@@ -49,6 +51,7 @@ fun AuthInputForm(
             isValueValid = isValueValid,
             label = inputLabel,
             keyboardType = keyboardType,
+            capitalization = capitalization,
             imeAction = ImeAction.Send,
             error = errorMessage,
             showKeyboard = true,

@@ -154,7 +154,7 @@ private fun NormalQuestionPage(
     onDeclineAsOwnerClicked: (String) -> Unit,
     onAskQuestionClicked: () -> Unit,
 ) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         CrossFade(
             modifier = Modifier.fillMaxWidth().weight(1f),
             condition = questions.isEmpty(),
@@ -214,7 +214,7 @@ private fun BarkochbaQuestionPage(
     onBarkochbaQuestionAnswered: (String, Boolean) -> Unit,
     onAskQuestionClicked: () -> Unit,
 ) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         CrossFade(
             modifier = Modifier.fillMaxWidth().weight(1f),
             condition = questions.isEmpty(),

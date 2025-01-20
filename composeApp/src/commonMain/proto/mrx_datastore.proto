@@ -16,6 +16,7 @@ message LocalNotifications {
   repeated LocalNotification notifications = 1;
 }
 
-message LocalNotificationMap {
+message MrXData {
   map<string, LocalNotifications> notifications = 1;
+  string email = 2;
 }

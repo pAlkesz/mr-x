@@ -9,13 +9,8 @@ import platform.Foundation.NSUserDomainMask
 
 actual val dataStoreModule = module {
     single {
-        createPreferencesDataStore(producePath = {
-            getPath(fileName = PREFERENCES_DATA_STORE_FILE_NAME)
-        })
-    }
-    single {
-        createNotificationsDataStore(producePath = {
-            getPath(fileName = NOTIFICATIONS_DATA_STORE_FILE_NAME).toPath()
+        createDataStore(producePath = {
+            getPath(fileName = DATA_STORE_FILE_NAME).toPath()
         })
     }
 }

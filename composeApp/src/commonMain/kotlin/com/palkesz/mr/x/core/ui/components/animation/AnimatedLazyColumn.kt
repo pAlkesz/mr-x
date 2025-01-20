@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,7 @@ import kotlin.math.absoluteValue
 @Composable
 fun <T> AnimatedLazyColumn(
     modifier: Modifier = Modifier,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     items: ImmutableList<T>,
     animatedItemKey: String?,
     getKey: T.() -> String,
@@ -44,7 +46,7 @@ fun <T> AnimatedLazyColumn(
     LaunchedEffect(key1 = items) {
         state.animateScrollToItem(index = 0)
     }
-    LazyColumn(modifier = modifier, state = state) {
+    LazyColumn(modifier = modifier, state = state, horizontalAlignment = horizontalAlignment) {
         itemsIndexed(
             items = items.filter { it.getKey() != animatedItemKey || isAnimationDone },
             key = { _, item -> item.getKey() }) { index, item ->

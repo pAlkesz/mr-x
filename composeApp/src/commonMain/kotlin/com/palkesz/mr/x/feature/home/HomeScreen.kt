@@ -3,6 +3,7 @@ package com.palkesz.mr.x.feature.home
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -48,7 +49,7 @@ fun HomeScreen() {
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(state = rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         HomeScreenCard(
@@ -95,7 +96,7 @@ private fun HomeScreenCard(
     button: @Composable () -> Unit,
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier.widthIn(max = 488.dp),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {

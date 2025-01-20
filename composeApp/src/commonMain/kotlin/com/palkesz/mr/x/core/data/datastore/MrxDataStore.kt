@@ -1,13 +1,10 @@
 package com.palkesz.mr.x.core.data.datastore
 
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.palkesz.mr.x.proto.LocalNotification
-import com.palkesz.mr.x.proto.LocalNotificationMap
 import com.palkesz.mr.x.proto.LocalNotificationType
 import com.palkesz.mr.x.proto.LocalNotifications
+import com.palkesz.mr.x.proto.MrXData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -53,41 +50,38 @@ interface MrxDataStore {
 }
 
 class MrXDataStoreImpl(
-    private val preferencesDataStore: DataStore<Preferences>,
-    private val notificationsDataStore: DataStore<LocalNotificationMap>,
+    private val dataStore: DataStore<MrXData>,
 ) : MrxDataStore {
 
-    override suspend fun getUserEmail(): String? = preferencesDataStore.data.first()[USER_EMAIL_KEY]
+    override suspend fun getUserEmail(): String = dataStore.data.first().email
 
     override suspend fun storeUserEmail(email: String) = runCatching {
-        preferencesDataStore.edit { preferences ->
-            preferences[USER_EMAIL_KEY] = email
+        dataStore.updateData { data ->
+            data.copy(email = email)
         }
         Unit
     }
 
-    override fun observeNotificationCount(gameIds: List<String>) =
-        notificationsDataStore.data.map { data ->
-            gameIds.map { id ->
-                id to (data.notifications[id]?.notifications?.size ?: 0)
-            }
+    override fun observeNotificationCount(gameIds: List<String>) = dataStore.data.map { data ->
+        gameIds.map { id ->
+            id to (data.notifications[id]?.notifications?.size ?: 0)
         }
+    }
 
-    override fun observeNotificationCount(gameId: String) =
-        notificationsDataStore.data.map { data ->
-            val notifications = data.notifications[gameId]?.notifications.orEmpty()
-            Pair(
-                first = notifications.count { it.type == LocalNotificationType.QUESTION },
-                second = notifications.count { it.type == LocalNotificationType.BARKOCHBA },
-            )
-        }
+    override fun observeNotificationCount(gameId: String) = dataStore.data.map { data ->
+        val notifications = data.notifications[gameId]?.notifications.orEmpty()
+        Pair(
+            first = notifications.count { it.type == LocalNotificationType.QUESTION },
+            second = notifications.count { it.type == LocalNotificationType.BARKOCHBA },
+        )
+    }
 
     override suspend fun storeNotification(
         id: String,
         gameId: String,
         type: LocalNotificationType
     ) = runCatching {
-        notificationsDataStore.updateData { data ->
+        dataStore.updateData { data ->
             val notifications = data.notifications.toMutableMap()
             notifications[gameId] = LocalNotifications(
                 notifications = (notifications[gameId]?.notifications.orEmpty() + LocalNotification(
@@ -95,9 +89,9 @@ class MrXDataStoreImpl(
                     type = type
                 )).distinctBy { it.id }
             )
-            LocalNotificationMap(notifications = notifications)
+            data.copy(notifications = notifications)
         }
-        notificationsDataStore.data.first().notifications.values.sumOf {
+        dataStore.data.first().notifications.values.sumOf {
             it.notifications.size
         }
     }
@@ -106,7 +100,7 @@ class MrXDataStoreImpl(
         runCatching {
             var deletedNotifications: List<LocalNotification> = emptyList()
             var badgeCount = 0
-            notificationsDataStore.updateData { data ->
+            dataStore.updateData { data ->
                 val notifications = data.notifications.toMutableMap()
                 val (clearedNotifications, keptNotifications) =
                     notifications[gameId]?.notifications.orEmpty().partition { it.type == type }
@@ -115,12 +109,8 @@ class MrXDataStoreImpl(
                 badgeCount = notifications.values.sumOf {
                     it.notifications.size
                 }
-                LocalNotificationMap(notifications = notifications)
+                data.copy(notifications = notifications)
             }
             deletedNotifications to badgeCount
         }
-
-    companion object {
-        private val USER_EMAIL_KEY = stringPreferencesKey("USER_EMAIL_KEY")
-    }
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -90,6 +91,7 @@ private fun GamesScreenContent(
             onConditionFalse = {
                 AnimatedLazyColumn(
                     modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     items = state.games,
                     animatedItemKey = state.joinedGameId,
                     getKey = { id },
@@ -128,6 +130,7 @@ private fun GameCard(modifier: Modifier = Modifier, item: GameItem, onClick: (St
         badgeOffset = DpOffset(x = 4.dp, y = (-4).dp),
     ) {
         Card(
+            modifier = Modifier.widthIn(max = 488.dp),
             onClick = { onClick(item.id) },
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = containerColor)

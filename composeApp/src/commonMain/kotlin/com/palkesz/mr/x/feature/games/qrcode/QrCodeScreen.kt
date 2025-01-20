@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
@@ -79,6 +80,7 @@ private fun QrCodeScreenContent(viewState: QrCodeViewState, onShareButtonClicked
         )
         Image(
             modifier = Modifier
+                .widthIn(max = 488.dp)
                 .fillMaxWidth()
                 .padding(start = 64.dp, end = 64.dp, bottom = 32.dp),
             painter = painter,

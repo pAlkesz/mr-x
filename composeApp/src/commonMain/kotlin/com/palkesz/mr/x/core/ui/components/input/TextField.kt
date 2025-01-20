@@ -29,6 +29,7 @@ fun PrimaryTextField(
     label: String,
     error: String,
     keyboardType: KeyboardType = KeyboardType.Text,
+    capitalization: KeyboardCapitalization = KeyboardCapitalization.Sentences,
     imeAction: ImeAction = ImeAction.Unspecified,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     showKeyboard: Boolean,
@@ -53,7 +54,7 @@ fun PrimaryTextField(
         visualTransformation = visualTransformation,
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType,
-            capitalization = KeyboardCapitalization.Sentences,
+            capitalization = capitalization,
             imeAction = imeAction,
         ),
         keyboardActions = KeyboardActions(onSend = onSend),
