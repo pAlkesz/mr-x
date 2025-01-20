@@ -526,12 +526,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					composeApp,
-					"$(inherited)",
-				);
-				"OTHER_LDFLAGS[sdk=iphoneos*]" = "-ObjC";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.palkesz.mr.x;
 				PRODUCT_NAME = "${APP_NAME}";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -567,11 +562,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					composeApp,
-					"$(inherited)",
-				);
+				OTHER_LDFLAGS = "$(inherited)";
 				"OTHER_LDFLAGS[sdk=iphoneos*]" = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.palkesz.mr.x;
 				PRODUCT_NAME = "${APP_NAME}";
