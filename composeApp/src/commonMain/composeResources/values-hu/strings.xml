@@ -79,4 +79,10 @@
     <string name="yes_answer_label">Igen</string>
     <string name="no_answer_label">Nem</string>
     <string name="own_name_label">Te</string>
+    <string name="settings_screen_title">Beállítások</string>
+    <string name="delete_account_setting_label">Fiók törlése</string>
+    <string name="confirm_button_label">Megerősítem</string>
+    <string name="cancel_button_label">Mégsem</string>
+    <string name="delete_account_dialog_title">Biztosan törölni szeretnéd a fiókod?</string>
+    <string name="delete_account_dialog_message">Ezáltal minden személyes adatod végleg törölve lesz az adatbázisunkból és ezt nem lehet visszafordítani!</string>
 </resources>

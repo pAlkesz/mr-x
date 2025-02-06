@@ -79,4 +79,10 @@
     <string name="yes_answer_label">Yes</string>
     <string name="no_answer_label">No</string>
     <string name="own_name_label">You</string>
+    <string name="settings_screen_title">Settings</string>
+    <string name="delete_account_setting_label">Delete Account</string>
+    <string name="confirm_button_label">Confirm</string>
+    <string name="cancel_button_label">Cancel</string>
+    <string name="delete_account_dialog_title">Are you sure you want to delete your account?</string>
+    <string name="delete_account_dialog_message">This action removes all your personal data from our database and cannot be undone!</string>
 </resources>

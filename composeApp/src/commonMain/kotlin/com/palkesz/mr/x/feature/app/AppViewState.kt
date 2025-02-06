@@ -18,4 +18,10 @@ sealed interface AppEvent {
 
     data class NavigateToGame(val gameId: String, val type: LocalNotificationType) : AppEvent
 
+    data object NavigateToLogin : AppEvent
+
+    data object NavigateToAddUsername : AppEvent
+
+    data object NavigateToHome : AppEvent
+
 }

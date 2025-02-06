@@ -6,6 +6,7 @@ import androidx.navigation.compose.navigation
 import com.palkesz.mr.x.feature.app.MrXGraph
 import com.palkesz.mr.x.feature.home.create.CreateGameScreen
 import com.palkesz.mr.x.feature.home.join.JoinGameScreen
+import com.palkesz.mr.x.feature.home.settings.SettingsScreen
 import com.palkesz.mr.x.feature.home.tutorial.TutorialScreen
 import kotlinx.serialization.Serializable
 
@@ -13,6 +14,9 @@ fun NavGraphBuilder.homeGraphNavigation() {
     navigation(startDestination = HomeGraph.Home, route = MrXGraph.Home::class) {
         composable<HomeGraph.Home> {
             HomeScreen()
+        }
+        composable<HomeGraph.Settings> {
+            SettingsScreen()
         }
         composable<HomeGraph.CreateGame> {
             CreateGameScreen()
@@ -30,6 +34,9 @@ sealed interface HomeGraph {
 
     @Serializable
     data object Home : HomeGraph
+
+    @Serializable
+    data object Settings : HomeGraph
 
     @Serializable
     data object CreateGame : HomeGraph

@@ -1,6 +1,8 @@
 package com.palkesz.mr.x.core.util.networking
 
 import com.palkesz.mr.x.core.util.extensions.asInstance
+import com.palkesz.mr.x.core.util.extensions.updateIfInstance
+import kotlinx.coroutines.flow.MutableStateFlow
 
 sealed interface ViewState<out T> {
 
@@ -39,3 +41,8 @@ suspend fun <T, R> ViewState<T>.map(transform: suspend (T) -> R): ViewState<R> =
     is ViewState.Success -> ViewState.Success(data = transform(this.data))
     is ViewState.Failure -> this
 }
+
+fun <T> MutableStateFlow<ViewState<T>>.updateIfSuccess(block: (T) -> T) =
+    updateIfInstance<ViewState.Success<T>> {
+        ViewState.Success(data = block(it.data))
+    }

@@ -28,6 +28,7 @@ import mrx.composeapp.generated.resources.create_game_button_label
 import mrx.composeapp.generated.resources.create_game_description
 import mrx.composeapp.generated.resources.create_game_title
 import mrx.composeapp.generated.resources.home_screen_title
+import mrx.composeapp.generated.resources.ic_settings
 import mrx.composeapp.generated.resources.join_game_button_label
 import mrx.composeapp.generated.resources.join_game_description
 import mrx.composeapp.generated.resources.join_game_title
@@ -35,6 +36,7 @@ import mrx.composeapp.generated.resources.tutorial_button_label
 import mrx.composeapp.generated.resources.tutorial_description
 import mrx.composeapp.generated.resources.tutorial_title
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun HomeScreen() {
@@ -43,6 +45,7 @@ fun HomeScreen() {
         details = TitleBarDetails.CenteredTitleBarDetails(
             title = stringResource(Res.string.home_screen_title),
             navigationIcon = null,
+            actionIcon = vectorResource(Res.drawable.ic_settings),
         )
     )
     Column(

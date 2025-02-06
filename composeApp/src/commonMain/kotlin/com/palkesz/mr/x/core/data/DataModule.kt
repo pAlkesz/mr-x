@@ -27,6 +27,7 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.crashlytics.crashlytics
 import dev.gitlive.firebase.firestore.firestore
+import dev.gitlive.firebase.functions.functions
 import okio.FileSystem
 import okio.Path
 import okio.SYSTEM
@@ -39,6 +40,7 @@ val dataModule = module {
     single { Firebase.auth }
     single { Firebase.firestore }
     single { Firebase.crashlytics }
+    single { Firebase.functions }
     includes(dataStoreModule)
     singleOf(::FirebaseAuthenticationImpl) bind FirebaseAuthentication::class
     singleOf(::CrashlyticsImpl) bind Crashlytics::class

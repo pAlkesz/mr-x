@@ -15,17 +15,23 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
+import com.palkesz.mr.x.core.ui.helpers.showSnackbar
 import com.palkesz.mr.x.core.ui.providers.LocalAppScope
 import com.palkesz.mr.x.core.ui.providers.LocalNavController
 import com.palkesz.mr.x.core.ui.providers.LocalSnackBarHostState
 import com.palkesz.mr.x.feature.app.appbars.MrXBottomAppBar
 import com.palkesz.mr.x.feature.app.appbars.MrXTopAppBar
 import com.palkesz.mr.x.feature.app.appbars.OfflineAppBar
+import com.palkesz.mr.x.feature.authentication.AuthGraph
 import com.palkesz.mr.x.feature.authentication.authGraphNavigation
 import com.palkesz.mr.x.feature.games.GameGraph
 import com.palkesz.mr.x.feature.games.gamesGraphNavigation
+import com.palkesz.mr.x.feature.home.HomeGraph
 import com.palkesz.mr.x.feature.home.homeGraphNavigation
 import com.palkesz.mr.x.proto.LocalNotificationType
+import mrx.composeapp.generated.resources.Res
+import mrx.composeapp.generated.resources.login_success_message
+import org.jetbrains.compose.resources.getString
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -70,7 +76,7 @@ private fun MrXAppContent(state: AppViewState, onEventHandled: () -> Unit) {
 
 @Composable
 private fun HandleEvent(event: AppEvent?, onEventHandled: () -> Unit) {
-    HandleEventEffect(key1 = event) { appEvent, _, _, navController ->
+    HandleEventEffect(key1 = event) { appEvent, appScope, snackbarHostState, navController ->
         when (appEvent) {
             is AppEvent.NavigateToGames -> {
                 navController?.navigate(route = GameGraph.Games(joinedGameId = appEvent.gameId))
@@ -85,6 +91,22 @@ private fun HandleEvent(event: AppEvent?, onEventHandled: () -> Unit) {
                         addedBarkochbaQuestionId = null,
                     )
                 )
+            }
+
+            is AppEvent.NavigateToLogin -> {
+                navController?.navigate(route = AuthGraph.Login)
+            }
+
+            is AppEvent.NavigateToHome -> {
+                appScope?.showSnackbar(
+                    snackbarHostState = snackbarHostState,
+                    message = getString(Res.string.login_success_message),
+                )
+                navController?.navigate(route = HomeGraph.Home)
+            }
+
+            is AppEvent.NavigateToAddUsername -> {
+                navController?.navigate(route = AuthGraph.AddUsername)
             }
         }
         onEventHandled()

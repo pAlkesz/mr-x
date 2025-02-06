@@ -1,4 +1,4 @@
-from firebase_admin import initialize_app, firestore, messaging
+from firebase_admin import initialize_app, firestore, messaging, auth
 from firebase_functions.firestore_fn import (
     on_document_created,
     on_document_updated,
@@ -6,8 +6,9 @@ from firebase_functions.firestore_fn import (
     Change,
     DocumentSnapshot,
 )
-from firebase_functions import logger
+from firebase_functions import logger, https_fn
 import google.cloud.firestore
+from typing import Any
 
 EN_STRINGS = {
     "new_question_notification_title": "New question by %s",
@@ -45,6 +46,18 @@ STRINGS = {
 }
 
 initialize_app()
+
+# HTTP functions
+
+
+@https_fn.on_call(enforce_app_check=False)  # TODO enforce app check
+def deleteAccount(req: https_fn.CallableRequest) -> Any:
+    firestore_client: google.cloud.firestore.Client = firestore.client()
+    playerCollection = firestore_client.collection("players")
+    playerCollection.document(req.auth.uid).update({"name": "N/A"})
+    auth.delete_user(req.auth.uid)
+    return {}
+
 
 # Question notification triggers
 

@@ -39,6 +39,7 @@ kotlin {
         pod("FirebaseCrashlytics", linkOnly = true)
         pod("FirebaseMessaging", linkOnly = true)
         pod("FirebaseAppCheck", linkOnly = true)
+        pod("FirebaseFunctions", linkOnly = true)
         podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "ComposeApp"
@@ -70,6 +71,7 @@ kotlin {
             implementation(libs.firebase.crashlytics.android)
             implementation(libs.firebase.analytics.android)
             implementation(libs.firebase.messaging.android)
+            implementation(libs.firebase.functions.android)
             implementation(libs.firebase.appcheck.playintegrity.android)
             implementation(libs.firebase.appcheck.debug.android)
         }
@@ -92,6 +94,7 @@ kotlin {
             implementation(libs.firebase.common)
             implementation(libs.firebase.auth)
             implementation(libs.firebase.crashlytics)
+            implementation(libs.firebase.functions)
 
             api(project.dependencies.platform(libs.koin.bom))
             api(libs.koin.core)

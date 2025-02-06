@@ -77,18 +77,18 @@ fun GameTitleBar(
                 )
             }
         }
+        AnimatedNullability(
+            item = vectorResource(
+                if (isFullNameVisible) Res.drawable.ic_visibility_off else Res.drawable.ic_visibility_on
+            ).takeIf { isHost }
+        ) { imageVector ->
+            NavigationIcon(
+                imageVector = imageVector,
+                navigationAction = { isFullNameVisible = !isFullNameVisible },
+            )
+        }
         NavigationIcon(
-            iconVector = vectorResource(
-                if (isFullNameVisible) {
-                    Res.drawable.ic_visibility_off
-                } else {
-                    Res.drawable.ic_visibility_on
-                }
-            ).takeIf { isHost },
-            navigationAction = { isFullNameVisible = !isFullNameVisible },
-        )
-        NavigationIcon(
-            iconVector = vectorResource(Res.drawable.ic_qr_code),
+            imageVector = vectorResource(Res.drawable.ic_qr_code),
             navigationAction = { onQrCodeClicked() },
         )
     }

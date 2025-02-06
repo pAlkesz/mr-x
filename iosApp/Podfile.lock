@@ -1161,6 +1161,7 @@ PODS:
     - FirebaseCore
     - FirebaseCrashlytics
     - FirebaseFirestore
+    - FirebaseFunctions
     - FirebaseMessaging
   - FirebaseAppCheck (11.6.0):
     - AppCheckCore (~> 11.0)
@@ -1216,6 +1217,14 @@ PODS:
     - gRPC-Core (~> 1.65.0)
     - leveldb-library (~> 1.22)
     - nanopb (~> 3.30910.0)
+  - FirebaseFunctions (11.6.0):
+    - FirebaseAppCheckInterop (~> 11.0)
+    - FirebaseAuthInterop (~> 11.0)
+    - FirebaseCore (~> 11.6.0)
+    - FirebaseCoreExtension (~> 11.6.0)
+    - FirebaseMessagingInterop (~> 11.0)
+    - FirebaseSharedSwift (~> 11.0)
+    - GTMSessionFetcher/Core (< 5.0, >= 3.4)
   - FirebaseInstallations (11.6.0):
     - FirebaseCore (~> 11.6.0)
     - GoogleUtilities/Environment (~> 8.0)
@@ -1230,6 +1239,7 @@ PODS:
     - GoogleUtilities/Reachability (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - nanopb (~> 3.30910.0)
+  - FirebaseMessagingInterop (11.7.0)
   - FirebaseRemoteConfigInterop (11.6.0)
   - FirebaseSessions (11.6.0):
     - FirebaseCore (~> 11.6.0)
@@ -1377,6 +1387,7 @@ DEPENDENCIES:
   - FirebaseCore
   - FirebaseCrashlytics
   - FirebaseFirestore
+  - FirebaseFunctions
   - FirebaseMessaging
 
 SPEC REPOS:
@@ -1394,8 +1405,10 @@ SPEC REPOS:
     - FirebaseCrashlytics
     - FirebaseFirestore
     - FirebaseFirestoreInternal
+    - FirebaseFunctions
     - FirebaseInstallations
     - FirebaseMessaging
+    - FirebaseMessagingInterop
     - FirebaseRemoteConfigInterop
     - FirebaseSessions
     - FirebaseSharedSwift
@@ -1418,7 +1431,7 @@ SPEC CHECKSUMS:
   abseil: d121da9ef7e2ff4cab7666e76c5a3e0915ae08c3
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   BoringSSL-GRPC: ca6a8e5d04812fce8ffd6437810c2d46f925eaeb
-  composeApp: 1eea7607618090fa128596c09c77498d4a92f6b4
+  composeApp: 2ec393b16a98653863c53ebd86f66efe59c150c6
   FirebaseAppCheck: 44803909e253d677481e9e16eb719b0f58a7ddc2
   FirebaseAppCheckInterop: 347aa09a805219a31249b58fc956888e9fcb314b
   FirebaseAuth: 0304982cfe00df8d49bf533bc4becd3de36c7122
@@ -1429,8 +1442,10 @@ SPEC CHECKSUMS:
   FirebaseCrashlytics: b21c665fb50138766480bce73ebdb1aa30f7f300
   FirebaseFirestore: d5dcc15724f291fe4b415322754bfa01616037fe
   FirebaseFirestoreInternal: db478fdaeb98fe8686ff49e600f3871c224a76ff
+  FirebaseFunctions: 6c4f1d143d3dc6ca1b5d9f4e042408ede2eb1016
   FirebaseInstallations: efc0946fc756e4d22d8113f7c761948120322e8c
   FirebaseMessaging: e1aca1fcc23e8b9eddb0e33f375ff90944623021
+  FirebaseMessagingInterop: b7acc94b0b65ce2df02a795b5488f698ac7d5c52
   FirebaseRemoteConfigInterop: e75e348953352a000331eb77caf01e424248e176
   FirebaseSessions: 9529d14180868e29a8da164b3a729c036204918b
   FirebaseSharedSwift: a4e5dfca3e210633bb3a3dfb94176c019211948b
@@ -1445,6 +1460,6 @@ SPEC CHECKSUMS:
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
 
-PODFILE CHECKSUM: eb430b4157723c6ebf0ff04804c1c18aaa7069c2
+PODFILE CHECKSUM: 968600df2b3ea8d3ed216d0f034894c47b8a427d
 
 COCOAPODS: 1.16.2

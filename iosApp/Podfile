@@ -8,4 +8,5 @@ target 'iosApp' do
   pod 'FirebaseCrashlytics'
   pod 'FirebaseMessaging'
   pod 'FirebaseAppCheck'
+  pod 'FirebaseFunctions'
 end

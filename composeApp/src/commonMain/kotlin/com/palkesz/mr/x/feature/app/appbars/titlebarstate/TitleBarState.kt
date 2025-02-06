@@ -15,6 +15,7 @@ sealed interface TitleBarDetails {
     data class CenteredTitleBarDetails(
         val title: String,
         val navigationIcon: ImageVector? = Icons.AutoMirrored.Filled.ArrowBack,
+        val actionIcon: ImageVector? = null,
     ) : TitleBarDetails
 
     data class GameTitleBarDetails(

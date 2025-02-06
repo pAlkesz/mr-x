@@ -15,3 +15,9 @@ captures
 !*.xcodeproj/project.xcworkspace/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
+.kotlin
+release
+/iosApp/iosApp.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+/iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+/iosApp/iosApp.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+/iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved

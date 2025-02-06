@@ -2,12 +2,8 @@ package com.palkesz.mr.x.feature.authentication.login
 
 import com.palkesz.mr.x.BaseTest
 import com.palkesz.mr.x.KonnectivityStub
-import com.palkesz.mr.x.core.data.auth.AuthRepository
-import com.palkesz.mr.x.core.usecase.auth.IsUsernameUploadedUseCase
 import com.palkesz.mr.x.core.usecase.auth.SendSignInLinkUseCase
-import com.palkesz.mr.x.core.usecase.auth.SignInWithLinkUseCase
 import com.palkesz.mr.x.core.util.networking.ViewState
-import dev.theolm.rinku.DeepLink
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
@@ -27,10 +23,7 @@ class LoginViewModelTest : BaseTest() {
             override val isConnectedState = isConnectedState
         }
         val viewModel = getViewModel(
-            isUserNameUploaded = false,
-            isSignInLink = false,
             sendSignInLinkResult = Result.success(Unit),
-            signInWithLinkResult = Result.success(Unit),
             konnectivity = konnectivity,
         )
         assertEquals(
@@ -40,7 +33,6 @@ class LoginViewModelTest : BaseTest() {
                     isEmailValid = true,
                     isLinkSent = false,
                     isSendButtonEnabled = true,
-                    event = null,
                 )
             ),
             actual = viewModel.viewState.value
@@ -55,10 +47,7 @@ class LoginViewModelTest : BaseTest() {
             override val isConnectedState = isConnectedState
         }
         val viewModel = getViewModel(
-            isUserNameUploaded = false,
-            isSignInLink = false,
             sendSignInLinkResult = Result.success(Unit),
-            signInWithLinkResult = Result.success(Unit),
             konnectivity = konnectivity,
         )
         assertEquals(
@@ -68,7 +57,6 @@ class LoginViewModelTest : BaseTest() {
                     isEmailValid = true,
                     isLinkSent = false,
                     isSendButtonEnabled = false,
-                    event = null,
                 )
             ),
             actual = viewModel.viewState.value
@@ -83,10 +71,7 @@ class LoginViewModelTest : BaseTest() {
             override val isConnectedState = isConnectedState
         }
         val viewModel = getViewModel(
-            isUserNameUploaded = false,
-            isSignInLink = false,
             sendSignInLinkResult = Result.success(Unit),
-            signInWithLinkResult = Result.success(Unit),
             konnectivity = konnectivity,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -100,7 +85,6 @@ class LoginViewModelTest : BaseTest() {
                     isEmailValid = true,
                     isLinkSent = false,
                     isSendButtonEnabled = true,
-                    event = null,
                 )
             ),
             actual = viewModel.viewState.value,
@@ -115,10 +99,7 @@ class LoginViewModelTest : BaseTest() {
             override val isConnectedState = isConnectedState
         }
         val viewModel = getViewModel(
-            isUserNameUploaded = false,
-            isSignInLink = false,
             sendSignInLinkResult = Result.success(Unit),
-            signInWithLinkResult = Result.success(Unit),
             konnectivity = konnectivity,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -132,7 +113,6 @@ class LoginViewModelTest : BaseTest() {
                     isEmailValid = false,
                     isLinkSent = false,
                     isSendButtonEnabled = false,
-                    event = null,
                 )
             ),
             actual = viewModel.viewState.value,
@@ -147,10 +127,7 @@ class LoginViewModelTest : BaseTest() {
             override val isConnectedState = isConnectedState
         }
         val viewModel = getViewModel(
-            isUserNameUploaded = false,
-            isSignInLink = false,
             sendSignInLinkResult = Result.success(Unit),
-            signInWithLinkResult = Result.success(Unit),
             konnectivity = konnectivity,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -165,7 +142,6 @@ class LoginViewModelTest : BaseTest() {
                     isEmailValid = true,
                     isLinkSent = true,
                     isSendButtonEnabled = true,
-                    event = null,
                 )
             ),
             actual = viewModel.viewState.value,
@@ -180,10 +156,7 @@ class LoginViewModelTest : BaseTest() {
             override val isConnectedState = isConnectedState
         }
         val viewModel = getViewModel(
-            isUserNameUploaded = false,
-            isSignInLink = false,
             sendSignInLinkResult = Result.failure(exception = Exception()),
-            signInWithLinkResult = Result.success(Unit),
             konnectivity = konnectivity,
         )
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -198,23 +171,12 @@ class LoginViewModelTest : BaseTest() {
     }
 
     private fun getViewModel(
-        isUserNameUploaded: Boolean,
-        isSignInLink: Boolean,
         sendSignInLinkResult: Result<Unit>,
-        signInWithLinkResult: Result<Unit>,
         konnectivity: KonnectivityStub,
     ): LoginViewModel {
-        val isUserNameUploadedUseCase = IsUsernameUploadedUseCase { isUserNameUploaded }
         val sendSignInLinkUseCase = SendSignInLinkUseCase { sendSignInLinkResult }
-        val signInWithLinkUseCase = SignInWithLinkUseCase { signInWithLinkResult }
-        val authRepository = object : AuthRepository.Stub {
-            override fun isSignInLink(link: DeepLink) = isSignInLink
-        }
         return LoginViewModelImpl(
             sendSignInLinkUseCase = sendSignInLinkUseCase,
-            signInWithLinkUseCase = signInWithLinkUseCase,
-            isUsernameUploadedUseCase = isUserNameUploadedUseCase,
-            authRepository = authRepository,
             konnectivity = konnectivity,
         )
     }

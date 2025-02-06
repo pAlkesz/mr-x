@@ -11,13 +11,13 @@ androidxViewModel = "2.8.7"
 androidxDataStore = "1.1.2"
 
 # AndroidX Compose
-composeBom = "2025.01.00"
+composeBom = "2025.01.01"
 composePlugin = "1.7.3"
 composeNavigation = "2.8.0-alpha10"
 composeViewModel = "2.8.2"
 
 # Firebase
-firebaseBom = "33.7.0"
+firebaseBom = "33.8.0"
 firebaseKotlinSdk = "2.1.0"
 googleServices = "4.4.2"
 firebaseCrashlytics = "3.0.2"
@@ -27,9 +27,9 @@ koinBom = "4.0.0"
 
 # Miscellanious
 kotlinxCollectionsImmutable = "0.3.7"
-kotlinxSerializationJson = "1.7.3"
+kotlinxSerializationJson = "1.8.0"
 qrKit = "3.0.1"
-rinku = "1.3.0"
+rinku = "1.3.2"
 napier = "2.7.1"
 konnectivity = "0.1-alpha01"
 crashkios = "0.8.6"
@@ -37,7 +37,7 @@ normalize = "1.1.1"
 wire = "5.1.0"
 
 # Testing
-kotlinxCoroutinesTest = "1.9.0"
+kotlinxCoroutinesTest = "1.10.1"
 koTest = "6.0.0.M1"
 
 [libraries]
@@ -60,12 +60,14 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-crashlytics-android = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-analytics-android = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-messaging-android = { group = "com.google.firebase", name = "firebase-messaging" }
+firebase-functions-android = { group = "com.google.firebase", name = "firebase-functions" }
 firebase-appcheck-playintegrity-android = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity" }
 firebase-appcheck-debug-android = { group = "com.google.firebase", name = "firebase-appcheck-debug" }
 firebase-auth = { group = "dev.gitlive", name = "firebase-auth", version.ref = "firebaseKotlinSdk" }
 firebase-common = { group = "dev.gitlive", name = "firebase-common", version.ref = "firebaseKotlinSdk" }
 firebase-firestore = { group = "dev.gitlive", name = "firebase-firestore", version.ref = "firebaseKotlinSdk" }
 firebase-crashlytics = { group = "dev.gitlive", name = "firebase-crashlytics", version.ref = "firebaseKotlinSdk" }
+firebase-functions = { group = "dev.gitlive", name = "firebase-functions", version.ref = "firebaseKotlinSdk" }
 
 # Koin
 koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koinBom" }

@@ -11,6 +11,8 @@ import com.palkesz.mr.x.core.data.game.GameRepository
 import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepository
 import com.palkesz.mr.x.core.data.user.UserRepository
+import com.palkesz.mr.x.core.usecase.auth.IsUsernameUploadedUseCase
+import com.palkesz.mr.x.core.usecase.auth.SignInWithLinkUseCase
 import com.palkesz.mr.x.core.usecase.game.JoinGameUseCase
 import com.palkesz.mr.x.core.util.BUSINESS_TAG
 import com.palkesz.mr.x.core.util.platform.isDebug
@@ -44,6 +46,8 @@ class AppViewModelImpl(
     private val konnectivity: Konnectivity,
     private val notificationHelper: NotificationHelper,
     private val mrxDataStore: MrxDataStore,
+    private val signInWithLinkUseCase: SignInWithLinkUseCase,
+    private val isUsernameUploadedUseCase: IsUsernameUploadedUseCase,
     crashlytics: Crashlytics,
 ) : ViewModel(), AppViewModel {
 
@@ -58,6 +62,7 @@ class AppViewModelImpl(
 
     init {
         observeConnectivity()
+        observeLoggedInStatus()
         observeDeepLinks()
         observeGames()
         observeQuestions()
@@ -89,14 +94,20 @@ class AppViewModelImpl(
         }
     }
 
-    private fun observeDeepLinks() {
+    private fun observeLoggedInStatus() {
         viewModelScope.launch {
             authRepository.loggedIn.collectLatest { isLoggedIn ->
-                if (isLoggedIn) {
-                    listenForDeepLinks { link ->
-                        onDeepLinkReceived(link = link)
-                    }
+                if (!isLoggedIn) {
+                    _viewState.update { it.copy(event = AppEvent.NavigateToLogin) }
                 }
+            }
+        }
+    }
+
+    private fun observeDeepLinks() {
+        viewModelScope.launch {
+            listenForDeepLinks { link ->
+                onDeepLinkReceived(link = link)
             }
         }
     }
@@ -162,15 +173,35 @@ class AppViewModelImpl(
 
     private fun onDeepLinkReceived(link: DeepLink) {
         if (authRepository.isSignInLink(link = link)) {
-            return
-        }
-        val gameId = link.parameters[GAME_ID_PARAM_NAME] ?: return
-        Napier.d(tag = BUSINESS_TAG) { "Join game link received with game id: $gameId" }
-        viewModelScope.launch {
-            joinGameUseCase.run(gameId = gameId).onSuccess {
-                _viewState.update {
-                    it.copy(event = AppEvent.NavigateToGames(gameId))
+            signInWithLink(link = link)
+        } else {
+            val gameId = link.parameters[GAME_ID_PARAM_NAME] ?: return
+            Napier.d(tag = BUSINESS_TAG) { "Join game link received with game id: $gameId" }
+            viewModelScope.launch {
+                joinGameUseCase.run(gameId = gameId).onSuccess {
+                    _viewState.update {
+                        it.copy(event = AppEvent.NavigateToGames(gameId))
+                    }
                 }
+            }
+        }
+    }
+
+    private fun signInWithLink(link: DeepLink) {
+        viewModelScope.launch {
+            signInWithLinkUseCase.run(link = link).onSuccess {
+                Napier.d(tag = BUSINESS_TAG) { "Sign in was successful" }
+                _viewState.update { state ->
+                    state.copy(
+                        event = if (isUsernameUploadedUseCase.run()) {
+                            AppEvent.NavigateToHome
+                        } else {
+                            AppEvent.NavigateToAddUsername
+                        }
+                    )
+                }
+            }.onFailure { error ->
+                Napier.d(tag = BUSINESS_TAG) { "Sign in failed with error: $error" }
             }
         }
     }

@@ -10,6 +10,8 @@ import com.palkesz.mr.x.core.data.question.BarkochbaQuestionRepository
 import com.palkesz.mr.x.core.data.question.QuestionRepository
 import com.palkesz.mr.x.core.data.user.UserRepository
 import com.palkesz.mr.x.core.model.game.Game
+import com.palkesz.mr.x.core.usecase.auth.IsUsernameUploadedUseCase
+import com.palkesz.mr.x.core.usecase.auth.SignInWithLinkUseCase
 import com.palkesz.mr.x.core.usecase.game.JoinGameUseCase
 import com.palkesz.mr.x.feature.app.notifications.NotificationHelper
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,7 +39,7 @@ class AppViewModelTest : BaseTest() {
                 isLoggedIn = false,
                 isOfflineBarVisible = false,
                 gameNotificationCount = null,
-                event = null,
+                event = AppEvent.NavigateToLogin,
             ),
             actual = viewModel.viewState.value,
         )
@@ -158,6 +160,8 @@ class AppViewModelTest : BaseTest() {
             override val loggedIn = flowOf(isLoggedIn)
         }
         val joinGameUseCase = JoinGameUseCase { Result.success(Unit) }
+        val isUserNameUploadedUseCase = IsUsernameUploadedUseCase { true }
+        val signInWithLinkUseCase = SignInWithLinkUseCase { Result.success(value = Unit) }
         val notificationHelper = object : NotificationHelper.Stub {
             override val event = MutableSharedFlow<AppEvent.NavigateToGame?>()
         }
@@ -175,6 +179,8 @@ class AppViewModelTest : BaseTest() {
             konnectivity = konnectivity,
             notificationHelper = notificationHelper,
             mrxDataStore = mrxDataStore,
+            signInWithLinkUseCase = signInWithLinkUseCase,
+            isUsernameUploadedUseCase = isUserNameUploadedUseCase,
             crashlytics = crashlytics,
         )
     }

@@ -1,6 +1,7 @@
 package com.palkesz.mr.x.core.util.extensions
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
 fun <T1, T2, T3, T4, T5, T6, R> combine(
@@ -110,4 +111,14 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> combine(
         t4.second,
         t4.third,
     )
+}
+
+inline fun <reified T : Any> MutableStateFlow<in T>.updateIfInstance(function: (T) -> T): Boolean {
+    while (true) {
+        val prevValue = value.asInstance<T>() ?: return false
+        val nextValue = function(prevValue)
+        if (compareAndSet(prevValue, nextValue)) {
+            return prevValue != nextValue
+        }
+    }
 }

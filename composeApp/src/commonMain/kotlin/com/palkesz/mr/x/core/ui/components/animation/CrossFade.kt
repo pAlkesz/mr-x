@@ -4,6 +4,9 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.palkesz.mr.x.core.util.networking.ViewState
@@ -46,7 +49,9 @@ fun CrossFade(
                 gameTitleBar(details)
             }
 
-            else -> {}
+            else -> {
+                Spacer(modifier = Modifier.windowInsetsPadding(insets = TopAppBarDefaults.windowInsets))
+            }
         }
     }
 }

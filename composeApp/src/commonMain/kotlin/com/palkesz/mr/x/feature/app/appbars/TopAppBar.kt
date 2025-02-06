@@ -7,10 +7,13 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.palkesz.mr.x.core.ui.components.animation.AnimatedNullability
 import com.palkesz.mr.x.core.ui.components.animation.CrossFade
 import com.palkesz.mr.x.core.ui.components.titlebar.CenteredTitleBar
 import com.palkesz.mr.x.core.ui.components.titlebar.GameTitleBar
+import com.palkesz.mr.x.core.ui.components.titlebar.NavigationIcon
 import com.palkesz.mr.x.core.ui.providers.LocalTitleBarState
+import com.palkesz.mr.x.feature.home.HomeGraph
 
 @Composable
 fun MrXTopAppBar(modifier: Modifier = Modifier) {
@@ -21,7 +24,21 @@ fun MrXTopAppBar(modifier: Modifier = Modifier) {
             CenteredTitleBar(
                 modifier = modifier,
                 title = details.title,
-                navigationIcon = details.navigationIcon,
+                navigationIcon = {
+                    AnimatedNullability(item = details.navigationIcon) { imageVector ->
+                        NavigationIcon(imageVector = imageVector)
+                    }
+                },
+                actions = {
+                    AnimatedNullability(item = details.actionIcon) { imageVector ->
+                        NavigationIcon(
+                            imageVector = imageVector,
+                            navigationAction = { navController ->
+                                navController?.navigate(route = HomeGraph.Settings)
+                            },
+                        )
+                    }
+                }
             )
         },
         gameTitleBar = { details ->
