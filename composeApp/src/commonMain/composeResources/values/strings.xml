@@ -62,7 +62,7 @@
     <string name="yes_button_label">Yes</string>
     <string name="no_button_label">No</string>
     <string name="add_username_title">Enter your username</string>
-    <string name="invalid_username_label">Please enter a username without whitespaces between 5 and 50 characters</string>
+    <string name="invalid_username_label">Please enter a username without whitespaces between 5 and 20 characters</string>
     <string name="login_success_message">Welcome to the Mr. X app</string>
     <string name="offline_bar_label">You are offline. Check your connection</string>
     <string name="normal_question_tab_title">Normal</string>

@@ -62,7 +62,7 @@
     <string name="yes_button_label">Igen</string>
     <string name="no_button_label">Nem</string>
     <string name="add_username_title">Add meg a felhasználóneved</string>
-    <string name="invalid_username_label">Adj meg egy felhasználónevet 5 és 50 karakter között, szóköz nélkül.</string>
+    <string name="invalid_username_label">Adj meg egy felhasználónevet 5 és 20 karakter között, szóköz nélkül.</string>
     <string name="login_success_message">Üdv Papp Pál titokzatos világában!</string>
     <string name="offline_bar_label">Nincs net. Csiholj.</string>
     <string name="normal_question_tab_title">Normál</string>
