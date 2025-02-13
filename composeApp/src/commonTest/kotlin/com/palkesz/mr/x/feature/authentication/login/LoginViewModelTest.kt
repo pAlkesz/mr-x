@@ -3,6 +3,7 @@ package com.palkesz.mr.x.feature.authentication.login
 import com.palkesz.mr.x.BaseTest
 import com.palkesz.mr.x.KonnectivityStub
 import com.palkesz.mr.x.core.usecase.auth.SendSignInLinkUseCase
+import com.palkesz.mr.x.core.usecase.auth.SignInWithPasswordUseCase
 import com.palkesz.mr.x.core.util.networking.ViewState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
@@ -175,8 +176,10 @@ class LoginViewModelTest : BaseTest() {
         konnectivity: KonnectivityStub,
     ): LoginViewModel {
         val sendSignInLinkUseCase = SendSignInLinkUseCase { sendSignInLinkResult }
+        val signInWithPasswordUseCase = SignInWithPasswordUseCase { _, _ -> Result.success(Unit) }
         return LoginViewModelImpl(
             sendSignInLinkUseCase = sendSignInLinkUseCase,
+            signInWithPasswordUseCase = signInWithPasswordUseCase,
             konnectivity = konnectivity,
         )
     }

@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.palkesz.mr.x.core.data.auth.AuthRepositoryImpl.Companion.AUTH_TAG
 import com.palkesz.mr.x.core.usecase.auth.SendSignInLinkUseCase
+import com.palkesz.mr.x.core.usecase.auth.SignInWithPasswordUseCase
+import com.palkesz.mr.x.core.util.extensions.combine
 import com.palkesz.mr.x.core.util.extensions.validateAsEmail
 import com.palkesz.mr.x.core.util.networking.DataLoader
 import com.palkesz.mr.x.core.util.networking.RefreshTrigger
@@ -15,7 +17,6 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,11 +26,13 @@ interface LoginViewModel {
 
     fun onEmailChanged(email: String)
     fun onSendLinkClicked()
+    fun onEventHandled()
 }
 
 @Stable
 class LoginViewModelImpl(
     private val sendSignInLinkUseCase: SendSignInLinkUseCase,
+    private val signInWithPasswordUseCase: SignInWithPasswordUseCase,
     konnectivity: Konnectivity,
 ) : ViewModel(), LoginViewModel {
 
@@ -42,6 +45,8 @@ class LoginViewModelImpl(
     private val isEmailValid = MutableStateFlow(value = true)
 
     private val isLinkSent = MutableStateFlow(value = false)
+
+    private val event = MutableStateFlow<LoginEvent?>(value = null)
 
     private val loadingResult = dataLoader.loadAndObserveDataAsState(
         coroutineScope = viewModelScope,
@@ -56,14 +61,16 @@ class LoginViewModelImpl(
             email,
             isEmailValid,
             isLinkSent,
+            event,
             konnectivity.isConnectedState
-        ) { result, email, isEmailValid, isLinkSent, isConnected ->
+        ) { result, email, isEmailValid, isLinkSent, event, isConnected ->
             result.map {
                 LoginViewState(
                     email = email,
                     isEmailValid = isEmailValid,
                     isLinkSent = isLinkSent,
                     isSendButtonEnabled = isConnected && isEmailValid,
+                    event = event,
                 )
             }
         }.stateIn(
@@ -90,13 +97,35 @@ class LoginViewModelImpl(
         }
     }
 
-    private suspend fun sendSignInLink() = if (!email.value.validateAsEmail()) {
-        isEmailValid.update { false }
-        Result.success(Unit)
-    } else {
-        isLinkSent.update { true }
-        sendSignInLinkUseCase.run(email = email.value).also {
-            Napier.d(tag = AUTH_TAG) { "Sending sign in link: $it" }
+    override fun onEventHandled() {
+        event.update { null }
+    }
+
+    private suspend fun sendSignInLink() = when {
+        !email.value.validateAsEmail() -> {
+            isEmailValid.update { false }
+            Result.success(Unit)
         }
+
+        email.value == APP_REVIEW_EMAIL -> {
+            signInWithPasswordUseCase.run(
+                email = APP_REVIEW_EMAIL,
+                password = APP_REVIEW_PASSWORD,
+            ).onSuccess {
+                event.update { LoginEvent.NavigateToHome }
+            }
+        }
+
+        else -> {
+            isLinkSent.update { true }
+            sendSignInLinkUseCase.run(email = email.value).also {
+                Napier.d(tag = AUTH_TAG) { "Sending sign in link: $it" }
+            }
+        }
+    }
+
+    companion object {
+        private const val APP_REVIEW_EMAIL = "appreview@test.com"
+        private const val APP_REVIEW_PASSWORD = "jXbQuYymJ8Lnapi3Q6tD"
     }
 }
