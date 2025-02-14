@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  iosApp
+
+  Created by Papp Pal on 14/02/2025.
+  Copyright © 2025 orgName. All rights reserved.
+*/
+
+"NSCameraUsageDescription" = "This app requires access to the camera to be able to scan QR codes and join games.";

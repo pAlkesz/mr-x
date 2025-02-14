@@ -13,6 +13,7 @@
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 		99069C822D32051F00E4AB56 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99069C812D32051F00E4AB56 /* NotificationService.swift */; };
 		99069C862D32051F00E4AB56 /* NotificationService.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 99069C7F2D32051E00E4AB56 /* NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		99DB2BC82D5F50D20057297F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 99DB2BC42D5F4AF00057297F /* InfoPlist.strings */; };
 		E2E347952BEE646C00037700 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E2E347942BEE646C00037700 /* GoogleService-Info.plist */; };
 		F6D1552228B4676837CE12F0 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4CE9768200F8A3790B4E79C /* Pods_iosApp.framework */; };
 /* End PBXBuildFile section */
@@ -64,6 +65,8 @@
 		99069C832D32051F00E4AB56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		990932D72D3939AB00AC9330 /* iosAppRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iosAppRelease.entitlements; sourceTree = "<group>"; };
 		990932D82D393BA500AC9330 /* NotificationService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationService.entitlements; sourceTree = "<group>"; };
+		99DB2BC52D5F4AF00057297F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		99DB2BC72D5F4B2C0057297F /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		9C375CAD3AE67935B925E0DC /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		AB3632DC29227652001CCB65 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		B840BC273B1E272F35AD9C64 /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -130,6 +133,7 @@
 				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
+				99DB2BC42D5F4AF00057297F /* InfoPlist.strings */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -238,6 +242,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				hu,
 				Base,
 			);
 			mainGroup = 7555FF72242A565900829871;
@@ -257,6 +262,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */,
+				99DB2BC82D5F50D20057297F /* InfoPlist.strings in Resources */,
 				058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */,
 				E2E347952BEE646C00037700 /* GoogleService-Info.plist in Resources */,
 			);
@@ -380,6 +386,18 @@
 			targetProxy = 99069C842D32051F00E4AB56 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		99DB2BC42D5F4AF00057297F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				99DB2BC52D5F4AF00057297F /* en */,
+				99DB2BC72D5F4B2C0057297F /* hu */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		7555FFA3242A565B00829871 /* Debug */ = {

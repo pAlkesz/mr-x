@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  iosApp
+
+  Created by Papp Pal on 14/02/2025.
+  Copyright © 2025 orgName. All rights reserved.
+*/
+
+"NSCameraUsageDescription" = "Szükségünk van hozzáférésre a kamerához, hogy be tudjuk szkennelni a QR kódokat, amivel kapcsolódni lehet játékokhoz.";

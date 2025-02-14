@@ -56,9 +56,7 @@
 	<key>NSApplicationCrashOnExceptions</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) camera description.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME)photos description.</string>
+	<string>This app requires access to the camera to be able to scan QR codes and join games.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
