@@ -2,6 +2,7 @@ package com.palkesz.mr.x.feature.authentication.login
 
 import com.palkesz.mr.x.BaseTest
 import com.palkesz.mr.x.KonnectivityStub
+import com.palkesz.mr.x.core.usecase.auth.IsUsernameUploadedUseCase
 import com.palkesz.mr.x.core.usecase.auth.SendSignInLinkUseCase
 import com.palkesz.mr.x.core.usecase.auth.SignInWithPasswordUseCase
 import com.palkesz.mr.x.core.util.networking.ViewState
@@ -177,9 +178,11 @@ class LoginViewModelTest : BaseTest() {
     ): LoginViewModel {
         val sendSignInLinkUseCase = SendSignInLinkUseCase { sendSignInLinkResult }
         val signInWithPasswordUseCase = SignInWithPasswordUseCase { _, _ -> Result.success(Unit) }
+        val isUsernameUploadedUseCase = IsUsernameUploadedUseCase { true }
         return LoginViewModelImpl(
             sendSignInLinkUseCase = sendSignInLinkUseCase,
             signInWithPasswordUseCase = signInWithPasswordUseCase,
+            isUsernameUploadedUseCase = isUsernameUploadedUseCase,
             konnectivity = konnectivity,
         )
     }

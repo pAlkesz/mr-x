@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.palkesz.mr.x.core.data.auth.AuthRepositoryImpl.Companion.AUTH_TAG
+import com.palkesz.mr.x.core.usecase.auth.IsUsernameUploadedUseCase
 import com.palkesz.mr.x.core.usecase.auth.SendSignInLinkUseCase
 import com.palkesz.mr.x.core.usecase.auth.SignInWithPasswordUseCase
 import com.palkesz.mr.x.core.util.extensions.combine
@@ -33,6 +34,7 @@ interface LoginViewModel {
 class LoginViewModelImpl(
     private val sendSignInLinkUseCase: SendSignInLinkUseCase,
     private val signInWithPasswordUseCase: SignInWithPasswordUseCase,
+    private val isUsernameUploadedUseCase: IsUsernameUploadedUseCase,
     konnectivity: Konnectivity,
 ) : ViewModel(), LoginViewModel {
 
@@ -112,7 +114,13 @@ class LoginViewModelImpl(
                 email = APP_REVIEW_EMAIL,
                 password = APP_REVIEW_PASSWORD,
             ).onSuccess {
-                event.update { LoginEvent.NavigateToHome }
+                event.update {
+                    if (isUsernameUploadedUseCase.run()) {
+                        LoginEvent.NavigateToHome
+                    } else {
+                        LoginEvent.NavigateToAddUsername
+                    }
+                }
             }
         }
 

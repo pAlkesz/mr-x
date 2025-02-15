@@ -16,4 +16,6 @@ sealed interface LoginEvent {
 
     data object NavigateToHome : LoginEvent
 
+    data object NavigateToAddUsername : LoginEvent
+
 }

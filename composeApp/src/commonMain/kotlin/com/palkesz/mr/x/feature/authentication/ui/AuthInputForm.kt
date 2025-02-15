@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.palkesz.mr.x.core.ui.components.button.PrimaryButton
 import com.palkesz.mr.x.core.ui.components.input.PrimaryTextField
@@ -44,6 +45,7 @@ fun AuthInputForm(
             modifier = Modifier.padding(bottom = 8.dp),
             text = title,
             style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
         )
         PrimaryTextField(
             value = value,

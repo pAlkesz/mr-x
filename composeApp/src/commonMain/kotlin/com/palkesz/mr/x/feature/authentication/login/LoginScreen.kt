@@ -18,6 +18,7 @@ import com.palkesz.mr.x.core.ui.effects.HandleEventEffect
 import com.palkesz.mr.x.core.ui.effects.TitleBarEffect
 import com.palkesz.mr.x.core.ui.helpers.showSnackbar
 import com.palkesz.mr.x.core.util.networking.ViewState
+import com.palkesz.mr.x.feature.authentication.AuthGraph
 import com.palkesz.mr.x.feature.authentication.ui.AuthInputForm
 import com.palkesz.mr.x.feature.authentication.ui.ColumnWithMrxIcon
 import com.palkesz.mr.x.feature.home.HomeGraph
@@ -106,6 +107,10 @@ private fun HandleEvent(event: LoginEvent?, onEventHandled: () -> Unit) {
                     message = getString(Res.string.login_success_message),
                 )
                 navController?.navigate(HomeGraph.Home)
+            }
+
+            is LoginEvent.NavigateToAddUsername -> {
+                navController?.navigate(AuthGraph.AddUsername)
             }
         }
         onEventHandled()
