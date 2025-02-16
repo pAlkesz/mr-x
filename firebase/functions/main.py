@@ -50,7 +50,7 @@ initialize_app()
 # HTTP functions
 
 
-@https_fn.on_call(enforce_app_check=False)  # TODO enforce app check
+@https_fn.on_call(enforce_app_check=True)
 def deleteAccount(req: https_fn.CallableRequest) -> Any:
     firestore_client: google.cloud.firestore.Client = firestore.client()
     playerCollection = firestore_client.collection("players")
