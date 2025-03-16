@@ -50,7 +50,7 @@ fun MrXBottomAppBar(gameNotificationCount: Int?) {
             modifier = Modifier
                 .fillMaxWidth()
                 .windowInsetsPadding(insets = NavigationBarDefaults.windowInsets)
-                .padding(top = 16.dp),
+                .padding(bottom = 8.dp, top = 16.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically,
         ) {
