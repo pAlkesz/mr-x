@@ -1,8 +1,8 @@
 [versions]
 agp = "8.8.2"
-compileSdk = "35"
+compileSdk = "36"
 minSdk = "24"
-targetSdk = "35"
+targetSdk = "36"
 kotlin = "2.1.0"
 
 # AndroidX
