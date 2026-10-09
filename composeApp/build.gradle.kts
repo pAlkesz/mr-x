@@ -187,3 +187,12 @@ android {
         debugImplementation(libs.androidx.compose.ui.tooling)
     }
 }
+
+// CameraX < 1.4.0 (pulled in by qr-kit) ships native libs that are not 16 KB page size aligned
+configurations.configureEach {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "androidx.camera") {
+            useVersion(libs.versions.cameraX.get())
+        }
+    }
+}

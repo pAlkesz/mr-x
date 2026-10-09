@@ -35,6 +35,7 @@ konnectivity = "0.1-alpha01"
 crashkios = "0.8.6"
 normalize = "1.1.1"
 wire = "5.1.0"
+cameraX = "1.4.2"
 
 # Testing
 kotlinxCoroutinesTest = "1.10.1"
